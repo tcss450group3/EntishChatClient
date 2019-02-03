@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item
+        android:id="@+id/butt_navigation_home"
+        android:icon="@drawable/ic_home_black_24dp"
+        android:title="@string/nav_button_home" />
+
+    <item
+        android:id="@+id/butt_navigation_chats"
+        android:icon="@android:drawable/sym_action_chat"
+        android:title="@string/nav_button_chats" />
+
+    <item
+        android:id="@+id/butt_navigation_connections"
+        android:icon="?android:attr/actionModePasteDrawable"
+        android:title="@string/nav_button_connections" />
+    <item
+        android:id="@+id/butt_navigation_weather"
+        android:icon="@android:drawable/ic_menu_mapmode"
+        android:title="@string/nav_button_weather" />
+
+</menu>
