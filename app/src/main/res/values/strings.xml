@@ -8,4 +8,6 @@
     <string name="nav_button_chats">Chats</string>
     <string name="nav_button_connections">Connections</string>
     <string name="nav_button_weather">Weather</string>
+    <string name="text_login_btn">Login</string>
+    <string name="text_register_btn">Register</string>
 </resources>
