@@ -14,7 +14,7 @@
     <string name="text_last_name">Last Name</string>
     <string name="text_username">Username</string>
     <string name="text_email">Email</string>
-    <string name="text_pasword">Password</string>
-    <string name="text_pasword2">Re-enter password</string>
+    <string name="text_password">Password</string>
+    <string name="text_password2">Re-enter password</string>
 
 </resources>
