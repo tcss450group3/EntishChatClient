@@ -1,5 +1,6 @@
 package com.example.blw13.chatclient;
 
+import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.widget.Toast;
@@ -14,6 +15,7 @@ public class MainActivity extends AppCompatActivity implements LoginFragment.OnL
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
 
         if(savedInstanceState == null) {
             if (findViewById(R.id.frame_main_container) != null) {
@@ -33,8 +35,15 @@ public class MainActivity extends AppCompatActivity implements LoginFragment.OnL
 
     @Override
     public void onRegisterClicked() {
-        Toast.makeText(this, "You just clicked register.",
-                Toast.LENGTH_LONG).show();
+        /**
+         * Create a new register fragment and add it to the replace the current
+         * fragment in the container.
+         */
+        RegisterFragment registerFragment;
+        registerFragment = new RegisterFragment();
+        FragmentTransaction transaction = getSupportFragmentManager()
+                .beginTransaction() .replace(R.id.frame_main_container, registerFragment) .addToBackStack(null);
+        transaction.commit();
 
     }
 }
