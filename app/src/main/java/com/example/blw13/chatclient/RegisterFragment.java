@@ -1,20 +1,42 @@
 package com.example.blw13.chatclient;
 
 
+import android.content.Context;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.EditText;
+import android.widget.TextView;
 
 import com.example.blw13.chatclient.Model.Credentials;
+import com.example.blw13.chatclient.utils.SendPostAsyncTask;
+
+import org.json.JSONException;
+import org.json.JSONObject;
 
 
 /**
  * A simple {@link Fragment} subclass.
  */
-public class RegisterFragment extends Fragment {
+public class RegisterFragment extends Fragment implements View.OnClickListener {
 
+    //stores the activity that contains this fragment
+    private OnRegisterFragmentInteractionListener mListener;
+
+    //Store the EditText views so their text can be accessed when register is pressed.
+    private EditText mEmailEt;
+    private EditText mFnameEt;
+    private EditText mLnameEt;
+    private EditText mPass1Et;
+    private EditText mPass2Et;
+    private EditText mUsernameEt;
+
+    //Stores a credentials object for registration.
+    private Credentials mCredentials;
 
     public RegisterFragment() {
         // Required empty public constructor
@@ -24,8 +46,153 @@ public class RegisterFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_register, container, false);
+        View v = inflater.inflate(R.layout.fragment_register, container, false);
+
+        //store EditText views in instance variables for access to text in them
+        v.findViewById(R.id.register_register_btn).setOnClickListener(this);
+        mEmailEt = v.findViewById(R.id.register_email_editText);
+        mFnameEt = v.findViewById(R.id.register_firstname_editText);
+        mLnameEt = v.findViewById(R.id.register_lastname_editText);
+        mPass1Et = v.findViewById(R.id.register_pw_editText);
+        mPass2Et = v.findViewById(R.id.register_pw2_editText);
+        mUsernameEt = v.findViewById(R.id.register_username_editText);
+
+        return v;
+    }
+
+    /**
+     * Handle onPostExecute of the AsyncTask. The result from our webservice is
+     * a JSON formatted String. Parse it for success or failure.
+     * @param result the JSON formatted String response from the web service
+     */
+    private void handleRegisterOnPost(String result) {
+        try {
+            JSONObject resultsJSON = new JSONObject(result);
+            boolean success =
+                    resultsJSON.getBoolean(
+                            getString(R.string.keys_json_login_success));
+            if (success) {
+                //register was successful. Switch to the loadSuccessFragment.
+                mListener.onRegisterSuccess(mCredentials);
+                return;
+            } else {
+                //register was unsuccessful. Don’t switch fragments and
+                // inform the user
+                mEmailEt.setError("Register Unsuccessful");
+            }
+            mListener.onWaitFragmentInteractionHide();
+        } catch (JSONException e) {
+            //It appears that the web service did not return a JSON formatted
+            //String or it did not have what we expected in it.
+            Log.e("JSON_PARSE_ERROR", result
+                    + System.lineSeparator()
+                    + e.getMessage());
+            mListener.onWaitFragmentInteractionHide();
+            mEmailEt.setError("Register Unsuccessful");
+        }
+    }
+
+    /**
+     * Handle errors that may occur during the AsyncTask.
+     * @param result the error message provide from the AsyncTask
+     */
+    private void handleErrorsInTask(String result) {
+        Log.e("ASYNC_TASK_ERROR", result);
+    }
+
+    /**
+     * Handle the setup of the UI before the HTTP call to the webservice.
+     */
+    private void handleRegisterOnPre() {
+        mListener.onWaitFragmentInteractionShow();
+    }
+
+    @Override
+    public void onClick(View v) {
+        String email = mEmailEt.getText().toString();
+        String pass1 = mPass1Et.getText().toString();
+        String pass2 = mPass2Et.getText().toString();
+        String fname = mFnameEt.getText().toString();
+        String lname = mLnameEt.getText().toString();
+        String username = mUsernameEt.getText().toString();
+
+        if(!email.isEmpty()
+                && email.contains("@")
+                && !fname.isEmpty()
+                && !lname.isEmpty()
+                && !pass1.isEmpty()
+                && !username.isEmpty()
+                && pass1.length() > 5
+                && pass1.equals(pass2)){
+            Credentials credentials = new Credentials.Builder(
+                    email,
+                    pass1)
+                    .addFirstName(fname)
+                    .addLastName(lname)
+                    .addUsername(username)
+                    .build();
+            //build the web service URL
+            Uri uri = new Uri.Builder()
+                    .scheme("https")
+                    .appendPath(getString(R.string.ep_base_url))
+                    .appendPath(getString(R.string.ep_register))
+                    .build();
+            //build the JSONObject
+            JSONObject msg = credentials.asJSONObject();
+            mCredentials = credentials;
+            //instantiate and execute the AsyncTask.
+            new SendPostAsyncTask.Builder(uri.toString(), msg)
+                    .onPreExecute(this::handleRegisterOnPre)
+                    .onPostExecute(this::handleRegisterOnPost)
+                    .onCancelled(this::handleErrorsInTask)
+                    .build().execute();
+
+        } else {
+            if(email.isEmpty()) {
+                mEmailEt.setError("Email must not be blank");
+            } else if(!email.contains("@")) {
+                mEmailEt.setError("Must be a valid email");
+            }
+
+            if(pass1.isEmpty()){
+                mPass1Et.setError("Password must not be blank");
+            } else if(!pass1.equals(pass2)) {
+                mPass2Et.setError("Passwords must match");
+            } else if(pass1.length() < 6) {
+                mPass1Et.setError("Password must be longer than 6 characters");
+            }
+
+            if(fname.isEmpty()) {
+                mFnameEt.setError("First name must not be blank");
+            }
+
+            if(lname.isEmpty()) {
+                mLnameEt.setError("Last name must not be blank");
+            }
+
+            if(username.isEmpty()) {
+                mUsernameEt.setError("Username must not be blank");
+            }
+        }
+    }
+
+    @Override
+    public void onAttach(Context context) {
+        super.onAttach(context);
+        if (context instanceof OnRegisterFragmentInteractionListener) {
+            mListener = (OnRegisterFragmentInteractionListener) context;
+        } else {
+            throw new RuntimeException(context.toString()
+                    + " must implement OnBlogPostFragmentInteractionListener");
+        }
+    }
+
+    @Override
+    public void onDetach() {
+        super.onDetach();
+        mListener = null;
     }
 
     /**

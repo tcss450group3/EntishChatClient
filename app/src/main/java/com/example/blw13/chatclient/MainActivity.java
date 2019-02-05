@@ -1,5 +1,6 @@
 package com.example.blw13.chatclient;
 
+import android.net.Uri;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -7,7 +8,8 @@ import android.widget.Toast;
 
 import com.example.blw13.chatclient.Model.Credentials;
 
-public class MainActivity extends AppCompatActivity implements LoginFragment.OnLoginFragmentInteractionListener{
+public class  MainActivity extends AppCompatActivity implements LoginFragment.OnLoginFragmentInteractionListener,
+        RegisterFragment.OnRegisterFragmentInteractionListener, VerifyFragment.OnFragmentInteractionListener{
 //testcommit ROB
     // test2
 //test2
@@ -50,7 +52,9 @@ public class MainActivity extends AppCompatActivity implements LoginFragment.OnL
         RegisterFragment registerFragment;
         registerFragment = new RegisterFragment();
         FragmentTransaction transaction = getSupportFragmentManager()
-                .beginTransaction() .replace(R.id.frame_main_container, registerFragment) .addToBackStack(null);
+                .beginTransaction()
+                .replace(R.id.frame_main_container, registerFragment)
+                .addToBackStack("login");
         transaction.commit();
 
     }
@@ -62,6 +66,31 @@ public class MainActivity extends AppCompatActivity implements LoginFragment.OnL
 
     @Override
     public void onWaitFragmentInteractionHide() {
+
+    }
+
+    @Override
+    public void onRegisterSuccess(Credentials id) {
+
+        VerifyFragment verifyFragment;
+        verifyFragment = new VerifyFragment();
+        Bundle args = new Bundle();
+        args.putCharSequence(getString(R.string.keys_verify_email), id.getEmail());
+        verifyFragment.setArguments(args);
+        FragmentTransaction transaction = getSupportFragmentManager()
+                .beginTransaction()
+                .replace(R.id.frame_main_container, verifyFragment);
+        transaction.commit();
+
+    }
+
+    @Override
+    public void onFragmentInteraction(Uri uri) {
+        LoginFragment loginFragment = new LoginFragment();
+        FragmentTransaction transaction = getSupportFragmentManager()
+                .beginTransaction()
+                .replace(R.id.frame_main_container, getSupportFragmentManager().findFragmentByTag("login"));
+        transaction.commit();
 
     }
 }
