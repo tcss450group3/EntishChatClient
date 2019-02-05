@@ -111,6 +111,7 @@ public class RegisterFragment extends Fragment implements View.OnClickListener {
 
     @Override
     public void onClick(View v) {
+        //store the strings contained in the editText variables to make credentials object.
         String email = mEmailEt.getText().toString();
         String pass1 = mPass1Et.getText().toString();
         String pass2 = mPass2Et.getText().toString();
@@ -118,14 +119,41 @@ public class RegisterFragment extends Fragment implements View.OnClickListener {
         String lname = mLnameEt.getText().toString();
         String username = mUsernameEt.getText().toString();
 
-        if(!email.isEmpty()
-                && email.contains("@")
-                && !fname.isEmpty()
-                && !lname.isEmpty()
-                && !pass1.isEmpty()
-                && !username.isEmpty()
-                && pass1.length() > 5
-                && pass1.equals(pass2)){
+        //boolean tracking if every field is entered and correct.
+        boolean badCredentials = false;
+
+        //check if all the fields are correct.
+        if(email.isEmpty()) {
+            mEmailEt.setError("Email must not be blank");
+            badCredentials = true;
+        } else if(!email.contains("@")) {
+            mEmailEt.setError("Must be a valid email");
+            badCredentials = true;
+        }
+        if(pass1.isEmpty()){
+            mPass1Et.setError("Password must not be blank");
+            badCredentials = true;
+        } else if(!pass1.equals(pass2)) {
+            mPass2Et.setError("Passwords must match");
+            badCredentials = true;
+        } else if(pass1.length() < 6) {
+            mPass1Et.setError("Password must be longer than 6 characters");
+            badCredentials = true;
+        }
+        if(fname.isEmpty()) {
+            mFnameEt.setError("First name must not be blank");
+            badCredentials = true;
+        }
+        if(lname.isEmpty()) {
+            mLnameEt.setError("Last name must not be blank");
+            badCredentials = true;
+        }
+        if(username.isEmpty()) {
+            mUsernameEt.setError("Username must not be blank");
+            badCredentials = true;
+        }
+
+        if(!badCredentials){
             Credentials credentials = new Credentials.Builder(
                     email,
                     pass1)
@@ -149,32 +177,6 @@ public class RegisterFragment extends Fragment implements View.OnClickListener {
                     .onCancelled(this::handleErrorsInTask)
                     .build().execute();
 
-        } else {
-            if(email.isEmpty()) {
-                mEmailEt.setError("Email must not be blank");
-            } else if(!email.contains("@")) {
-                mEmailEt.setError("Must be a valid email");
-            }
-
-            if(pass1.isEmpty()){
-                mPass1Et.setError("Password must not be blank");
-            } else if(!pass1.equals(pass2)) {
-                mPass2Et.setError("Passwords must match");
-            } else if(pass1.length() < 6) {
-                mPass1Et.setError("Password must be longer than 6 characters");
-            }
-
-            if(fname.isEmpty()) {
-                mFnameEt.setError("First name must not be blank");
-            }
-
-            if(lname.isEmpty()) {
-                mLnameEt.setError("Last name must not be blank");
-            }
-
-            if(username.isEmpty()) {
-                mUsernameEt.setError("Username must not be blank");
-            }
         }
     }
 

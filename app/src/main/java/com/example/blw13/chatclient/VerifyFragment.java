@@ -16,6 +16,8 @@ import android.widget.TextView;
  * Activities that contain this fragment must implement the
  * {@link VerifyFragment.OnFragmentInteractionListener} interface
  * to handle interaction events.
+ *
+ * A fragment that prompts the user to
  */
 public class VerifyFragment extends Fragment implements View.OnClickListener {
 
@@ -32,7 +34,10 @@ public class VerifyFragment extends Fragment implements View.OnClickListener {
         // Inflate the layout for this fragment
         View v = inflater.inflate(R.layout.fragment_verify, container, false);
 
+        //sets the fragment as a click listener for login button
         v.findViewById(R.id.verify_login_btn).setOnClickListener(this);
+
+        //gets arguments from Bundle and retrieves email to display.
         Bundle args = getArguments();
         if(args != null) {
             ((TextView)v.findViewById(R.id.verify_textView_notice)).setText("A confirmation email has been sent to "

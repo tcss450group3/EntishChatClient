@@ -38,7 +38,9 @@ public class  MainActivity extends AppCompatActivity implements LoginFragment.On
         WaitFragment waitFrag;
         waitFrag = new WaitFragment();
         FragmentTransaction transaction = getSupportFragmentManager()
-                .beginTransaction() .add(R.id.frame_main_container, waitFrag) .addToBackStack(null);
+                .beginTransaction()
+                .add(R.id.frame_main_container, waitFrag)
+                .addToBackStack(null);
         transaction.commit();
 
     }
@@ -61,17 +63,29 @@ public class  MainActivity extends AppCompatActivity implements LoginFragment.On
 
     @Override
     public void onWaitFragmentInteractionShow() {
+        //create and add wait fragment to activity, while an asynchronous task is running
+        getSupportFragmentManager()
+                .beginTransaction()
+                .add(R.id.frame_main_container, new WaitFragment(), "WAIT")
+                .addToBackStack(null)
+                .commit();
 
     }
 
     @Override
     public void onWaitFragmentInteractionHide() {
+        //remove wait fragment from activity after asynchronous task is complete.
+        getSupportFragmentManager()
+                .beginTransaction()
+                .remove(getSupportFragmentManager().findFragmentByTag("WAIT"))
+                .commit();
 
     }
 
     @Override
     public void onRegisterSuccess(Credentials id) {
 
+        //opens a verification fragment that prompts the user to verify their email address.
         VerifyFragment verifyFragment;
         verifyFragment = new VerifyFragment();
         Bundle args = new Bundle();
@@ -86,6 +100,7 @@ public class  MainActivity extends AppCompatActivity implements LoginFragment.On
 
     @Override
     public void onFragmentInteraction(Uri uri) {
+        //loads the login fragment from a verification fragment.
         LoginFragment loginFragment = new LoginFragment();
         FragmentTransaction transaction = getSupportFragmentManager()
                 .beginTransaction()
