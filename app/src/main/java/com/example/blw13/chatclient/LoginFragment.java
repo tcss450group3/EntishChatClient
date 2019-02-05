@@ -96,7 +96,7 @@ public class LoginFragment extends Fragment implements View.OnClickListener {
      * "http://developer.android.com/training/basics/fragments/communicating.html"
      * >Communicating with Other Fragments</a> for more information.
      */
-    public interface OnLoginFragmentInteractionListener {
+    public interface OnLoginFragmentInteractionListener extends WaitFragment.OnWaitFragmentInteractionListener {
 
         void onLoginSuccess(Credentials id, String jwt);
 

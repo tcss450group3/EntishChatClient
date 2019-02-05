@@ -28,8 +28,16 @@ public class MainActivity extends AppCompatActivity implements LoginFragment.OnL
 
     @Override
     public void onLoginSuccess(Credentials id, String jwt) {
-        Toast.makeText(this, "You just clicked Login.",
-                Toast.LENGTH_LONG).show();
+
+        /**
+         * Testing the waiting fragment
+         * delete it when done
+         */
+        WaitFragment waitFrag;
+        waitFrag = new WaitFragment();
+        FragmentTransaction transaction = getSupportFragmentManager()
+                .beginTransaction() .add(R.id.frame_main_container, waitFrag) .addToBackStack(null);
+        transaction.commit();
 
     }
 
@@ -44,6 +52,16 @@ public class MainActivity extends AppCompatActivity implements LoginFragment.OnL
         FragmentTransaction transaction = getSupportFragmentManager()
                 .beginTransaction() .replace(R.id.frame_main_container, registerFragment) .addToBackStack(null);
         transaction.commit();
+
+    }
+
+    @Override
+    public void onWaitFragmentInteractionShow() {
+
+    }
+
+    @Override
+    public void onWaitFragmentInteractionHide() {
 
     }
 }

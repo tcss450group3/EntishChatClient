@@ -7,16 +7,14 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.example.blw13.chatclient.Model.Credentials;
-
 
 /**
  * A simple {@link Fragment} subclass.
  */
-public class RegisterFragment extends Fragment {
+public class WaitFragment extends Fragment {
 
 
-    public RegisterFragment() {
+    public WaitFragment() {
         // Required empty public constructor
     }
 
@@ -25,7 +23,7 @@ public class RegisterFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_register, container, false);
+        return inflater.inflate(R.layout.fragment_wait, container, false);
     }
 
     /**
@@ -38,9 +36,9 @@ public class RegisterFragment extends Fragment {
      * "http://developer.android.com/training/basics/fragments/communicating.html"
      * >Communicating with Other Fragments</a> for more information.
      */
-    public interface OnRegisterFragmentInteractionListener extends WaitFragment.OnWaitFragmentInteractionListener{
-        // TODO: Update argument type and name
-        void onRegisterSuccess(Credentials id);
+    public interface OnWaitFragmentInteractionListener {
+        void onWaitFragmentInteractionShow();
+        void onWaitFragmentInteractionHide();
     }
 
 }
