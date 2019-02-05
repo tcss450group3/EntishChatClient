@@ -1,5 +1,6 @@
 package com.example.blw13.chatclient;
 
+import android.net.Uri;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -7,7 +8,8 @@ import android.widget.Toast;
 
 import com.example.blw13.chatclient.Model.Credentials;
 
-public class MainActivity extends AppCompatActivity implements LoginFragment.OnLoginFragmentInteractionListener{
+public class  MainActivity extends AppCompatActivity implements LoginFragment.OnLoginFragmentInteractionListener,
+        RegisterFragment.OnRegisterFragmentInteractionListener, VerifyFragment.OnFragmentInteractionListener{
 //testcommit ROB
     // test2
 //test2
@@ -36,7 +38,9 @@ public class MainActivity extends AppCompatActivity implements LoginFragment.OnL
         WaitFragment waitFrag;
         waitFrag = new WaitFragment();
         FragmentTransaction transaction = getSupportFragmentManager()
-                .beginTransaction() .add(R.id.frame_main_container, waitFrag) .addToBackStack(null);
+                .beginTransaction()
+                .add(R.id.frame_main_container, waitFrag)
+                .addToBackStack(null);
         transaction.commit();
 
     }
@@ -50,18 +54,58 @@ public class MainActivity extends AppCompatActivity implements LoginFragment.OnL
         RegisterFragment registerFragment;
         registerFragment = new RegisterFragment();
         FragmentTransaction transaction = getSupportFragmentManager()
-                .beginTransaction() .replace(R.id.frame_main_container, registerFragment) .addToBackStack(null);
+                .beginTransaction()
+                .replace(R.id.frame_main_container, registerFragment)
+                .addToBackStack("login");
         transaction.commit();
 
     }
 
     @Override
     public void onWaitFragmentInteractionShow() {
+        //create and add wait fragment to activity, while an asynchronous task is running
+        getSupportFragmentManager()
+                .beginTransaction()
+                .add(R.id.frame_main_container, new WaitFragment(), "WAIT")
+                .addToBackStack(null)
+                .commit();
 
     }
 
     @Override
     public void onWaitFragmentInteractionHide() {
+        //remove wait fragment from activity after asynchronous task is complete.
+        getSupportFragmentManager()
+                .beginTransaction()
+                .remove(getSupportFragmentManager().findFragmentByTag("WAIT"))
+                .commit();
+
+    }
+
+    @Override
+    public void onRegisterSuccess(Credentials id) {
+
+        //opens a verification fragment that prompts the user to verify their email address.
+        VerifyFragment verifyFragment;
+        verifyFragment = new VerifyFragment();
+        Bundle args = new Bundle();
+        args.putCharSequence(getString(R.string.keys_verify_email), id.getEmail());
+        verifyFragment.setArguments(args);
+        FragmentTransaction transaction = getSupportFragmentManager()
+                .beginTransaction()
+                .replace(R.id.frame_main_container, verifyFragment);
+        transaction.commit();
+
+    }
+
+    @Override
+    public void onFragmentInteraction(Uri uri) {
+        //loads the login fragment from a verification fragment.
+        LoginFragment loginFragment = new LoginFragment();
+        FragmentTransaction transaction = getSupportFragmentManager()
+                .beginTransaction()
+                .replace(R.id.frame_main_container, getSupportFragmentManager().findFragmentByTag("login"));
+        transaction.commit();
 
     }
 }
