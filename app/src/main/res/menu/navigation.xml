@@ -19,6 +19,7 @@
     <item
         android:id="@+id/butt_navigation_weather"
         android:icon="@android:drawable/ic_menu_mapmode"
-        android:title="@string/nav_button_weather" />
+        android:title="@string/nav_button_weather"
+        android:titleCondensed="@string/nav_button_weather" />
 
 </menu>

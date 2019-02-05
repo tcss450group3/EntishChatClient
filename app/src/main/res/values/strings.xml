@@ -1,12 +1,16 @@
 <resources>
     <string name="app_name">chatclient</string>
 
-    <string name="hello_blank_fragment">Hello blank fragment</string>
+
     <string name="title_activity_home">HomeActivity</string>
+
+    <!-- MENU BAR ITEMS-->
     <string name="nav_button_home">Home</string>
     <string name="nav_button_chats">Chats</string>
     <string name="nav_button_connections">Connections</string>
     <string name="nav_button_weather">Weather</string>
+
+    <!--LOGIN / REGISTER -->
     <string name="text_login_btn">Login</string>
     <string name="text_register_btn">Register</string>
     <string name="text_first_name">First Name</string>
