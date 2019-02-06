@@ -35,7 +35,7 @@ function sendEmail(from, receiver, subj, message) {
 
     // setup email data with unicode symbols
     let mailOptions = {
-        from: "ChatClient" + sendEmail.toString, // sender address
+        from: "ChatClient <TCSS450.group.three@gmail.com>" , // sender address
         to: receiver.toString, // list of receivers
         subject: subj.toString, // Subject line
         // text: message.toString, // plain text body
