@@ -1,6 +1,7 @@
 package com.example.blw13.chatclient.utils;
 
 import android.os.AsyncTask;
+import android.util.Log;
 
 import org.json.JSONObject;
 
@@ -168,6 +169,8 @@ public class SendPostAsyncTask extends AsyncTask<Void, String, String> {
             wr.flush();
             wr.close();
 
+
+
             InputStream content = urlConnection.getInputStream();
             BufferedReader buffer = new BufferedReader(new InputStreamReader(content));
             String s = "";
@@ -192,19 +195,19 @@ public class SendPostAsyncTask extends AsyncTask<Void, String, String> {
     @Override
     protected void onCancelled(String result) {
         super.onCancelled(result);
-
+        mOnCancel.accept(result);
     }
 
     @Override
     protected void onProgressUpdate(String... values) {
         super.onProgressUpdate(values);
-
+        mOnProgress.accept(values);
 
     }
 
     @Override
     protected void onPostExecute(String result) {
-
+        mOnPost.accept(result);
     }
 }
 
