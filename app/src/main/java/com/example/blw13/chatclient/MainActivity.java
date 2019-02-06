@@ -1,5 +1,6 @@
 package com.example.blw13.chatclient;
 
+import android.content.Intent;
 import android.net.Uri;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
@@ -32,17 +33,13 @@ public class  MainActivity extends AppCompatActivity implements LoginFragment.On
     public void onLoginSuccess(Credentials id, String jwt) {
 
         /**
-         * Testing the waiting fragment
-         * delete it when done
+         * Start a new activity.
          */
-        WaitFragment waitFrag;
-        waitFrag = new WaitFragment();
-        FragmentTransaction transaction = getSupportFragmentManager()
-                .beginTransaction()
-                .add(R.id.frame_main_container, waitFrag)
-                .addToBackStack(null);
-        transaction.commit();
-
+        Intent intent = new Intent(MainActivity.this, HomeActivity.class);
+        intent.putExtra("info",id.getEmail().toString() );
+        intent.putExtra(getString(R.string.keys_intent_jwt), jwt);
+        startActivity(intent);
+        finish();
     }
 
     @Override
