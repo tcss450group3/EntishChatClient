@@ -4,6 +4,7 @@ const express = require('express');
 //We use this create the SHA256 hash
 const crypto = require("crypto");
 
+
 //Create connection to Heroku Database
 let db = require('../utilities/utils').db;
 
@@ -28,6 +29,8 @@ router.post('/', (req, res) => {
     var password = req.body['password'];
     //Verify that the caller supplied all the parameters
     //In js, empty strings or null values evaluate to false
+    passwordOK = false;
+    if (password.toString < 6 )
     if(first && last && username && email && password) {
         //We're storing salted hashes to make our application more secure
         //If you're interested as to what that is, and why we should use it
@@ -45,7 +48,7 @@ router.post('/', (req, res) => {
             res.send({
                 success: true
             });
-            sendEmail("uwnetid@uw.edu", email, "Welcome!", "<strong>Welcome to our app!</strong>");
+            sendEmail("TCSS450.group.three@gmail.com", email, "Welcome!", "<strong>Welcome to our app!</strong>");
         }).catch((err) => {
             //log the error
             console.log(err);
