@@ -2,6 +2,7 @@
 <resources>
     <string name="keys_json_login_success">success</string>
     <string name="keys_verify_email">verifyEmail</string>
+    <string name="keys_verify_credentials">verifyCredentials</string>
     <string name="keys_json_login_jwt">token</string>
     <string name="keys_intent_jwt">intent key for jwt</string>
 </resources>

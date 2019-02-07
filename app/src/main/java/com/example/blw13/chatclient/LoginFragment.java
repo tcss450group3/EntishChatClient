@@ -27,7 +27,8 @@ public class LoginFragment extends Fragment implements View.OnClickListener {
 
     private OnLoginFragmentInteractionListener mListener;
     public Credentials mCredentials;
-
+    private EditText mEmailEntry;
+    private EditText mPassEntry;
 
     public LoginFragment() {
         // Required empty public constructor
@@ -42,6 +43,16 @@ public class LoginFragment extends Fragment implements View.OnClickListener {
         v.findViewById(R.id.login_login_btn).setOnClickListener(this);
         v.findViewById(R.id.login_register_btn).setOnClickListener(this);
 
+        mEmailEntry = (EditText) v.findViewById(R.id.login_editText_email);
+        mPassEntry = (EditText) v.findViewById(R.id.login_editText_pw);
+
+        //check to see if credentials were passed in. If they were, set the email and password to them
+        if (getArguments() != null && getArguments().containsKey(getString(R.string.keys_verify_credentials))){
+            Credentials c = (Credentials) getArguments().get(getString(R.string.keys_verify_credentials));
+            mEmailEntry.setText(c.getEmail());
+            mPassEntry.setText(c.getPassword());
+        }
+
         return v;
     }
 
@@ -54,7 +65,7 @@ public class LoginFragment extends Fragment implements View.OnClickListener {
             mListener = (OnLoginFragmentInteractionListener) context;
         } else {
             throw new RuntimeException(context.toString()
-                    + " must implement OnFragmentInteractionListener");
+                    + " must implement OnVerifyFragmentInteractionListener");
         }
     }
 
@@ -76,10 +87,10 @@ public class LoginFragment extends Fragment implements View.OnClickListener {
     @Override
     public void onClick(View v) {
 
-        EditText email = (EditText)getView().findViewById(R.id.login_editText_email);
-        EditText password = (EditText)getView().findViewById(R.id.login_editText_pw);
+//        EditText email = (EditText)getView().findViewById(R.id.login_editText_email);
+//        EditText password = (EditText)getView().findViewById(R.id.login_editText_pw);
 
-        if((v.getId() == R.id.login_login_btn) && !validate(email,password)) {
+        if((v.getId() == R.id.login_login_btn) && !validate(mEmailEntry,mPassEntry)) {
             return;
         }
 

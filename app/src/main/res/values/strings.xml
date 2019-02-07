@@ -20,7 +20,9 @@
     <string name="text_pasword">Password</string>
     <string name="text_pasword2">Re-enter password</string>
 
-    <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <!--VERIFY-->
+    <string name="text_verify_message">Enter the 4 Digit Code From Your Email</string>
+    <string name="text_verify_btn">Verify</string>
+    <string name="text_verify_editText_Hint">4 Digit Code</string>
 
 </resources>
