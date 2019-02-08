@@ -87,9 +87,6 @@ public class LoginFragment extends Fragment implements View.OnClickListener {
     @Override
     public void onClick(View v) {
 
-//        EditText email = (EditText)getView().findViewById(R.id.login_editText_email);
-//        EditText password = (EditText)getView().findViewById(R.id.login_editText_pw);
-
         if((v.getId() == R.id.login_login_btn) && !validate(mEmailEntry,mPassEntry)) {
             return;
         }

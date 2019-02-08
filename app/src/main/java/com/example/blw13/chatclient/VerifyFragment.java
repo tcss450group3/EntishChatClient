@@ -69,7 +69,6 @@ public class VerifyFragment extends Fragment implements View.OnClickListener {
     private void setVerify(View view) {
 
         EditText codeInput = getActivity().findViewById(R.id.verify_code_editText);
-        mCredentials.setVerification(Integer.parseInt(codeInput.getText().toString()));
         //build the web service URL
         Uri uri = new Uri.Builder()
                 .scheme("https")
@@ -79,8 +78,13 @@ public class VerifyFragment extends Fragment implements View.OnClickListener {
                 .build();
 
         //build the JSONObject
-        JSONObject msg = mCredentials.asJSONObject();
-
+        JSONObject msg = new JSONObject();
+        try {
+            msg.put("email", mCredentials.getEmail());
+            msg.put("verification", codeInput.getText());
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
 
 
         //instantiate and execute the AsyncTask.
