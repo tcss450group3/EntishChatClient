@@ -82,7 +82,28 @@ public class RegisterFragment extends Fragment implements View.OnClickListener {
                 // inform the user
                 if(resultsJSON.has("field")){
                     String field = resultsJSON.getString(getString(R.string.keys_json_incorrect_field));
-                    Switch
+                    EditText errorField;
+                    switch(field){
+                        case "email":
+                            errorField = mEmailEt;
+                            break;
+                        case "first":
+                            errorField = mFnameEt;
+                            break;
+                        case "last":
+                            errorField = mLnameEt;
+                            break;
+                        case "username":
+                            errorField = mUsernameEt;
+                            break;
+                        case "password":
+                            errorField = mPass1Et;
+                            break;
+                        default:
+                            errorField = mEmailEt;
+                            break;
+                    }
+                    errorField.setError(resultsJSON.getString(getString(R.string.keys_json_error)));
                 }
 
             }

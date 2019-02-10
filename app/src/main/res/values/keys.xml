@@ -6,9 +6,5 @@
     <string name="keys_json_login_jwt">token</string>
     <string name="keys_intent_jwt">intent key for jwt</string>
     <string name="keys_json_incorrect_field">field</string>
-    <string name="keys_json_field_email">email</string>
-    <string name="keys_json_field_first_name">first</string>
-    <string name="keys_json_field_last_name">last</string>
-    <string name="keys_json_field_username">username</string>
-    <string name="keys_json_field_password">password</string>
+    <string name="keys_json_error">error</string>
 </resources>
