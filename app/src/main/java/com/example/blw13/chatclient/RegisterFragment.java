@@ -10,6 +10,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
+import android.widget.Switch;
 
 import com.example.blw13.chatclient.Model.Credentials;
 import com.example.blw13.chatclient.utils.SendPostAsyncTask;
@@ -79,7 +80,11 @@ public class RegisterFragment extends Fragment implements View.OnClickListener {
             } else {
                 //register was unsuccessful. Don’t switch fragments and
                 // inform the user
-                mEmailEt.setError("Register Unsuccessful");
+                if(resultsJSON.has("field")){
+                    String field = resultsJSON.getString(getString(R.string.keys_json_incorrect_field));
+                    Switch
+                }
+
             }
             mListener.onWaitFragmentInteractionHide();
         } catch (JSONException e) {
