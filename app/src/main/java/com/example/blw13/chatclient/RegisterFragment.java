@@ -72,6 +72,8 @@ public class RegisterFragment extends Fragment implements View.OnClickListener {
             boolean success =
                     resultsJSON.getBoolean(
                             getString(R.string.keys_json_login_success));
+            Log.v("HANDLEREGISTERONPOST", "" + success);
+            Log.v("HANDLEREGISTERONPOST", "" + resultsJSON);
             if (success) {
                 //register was successful. Switch to the loadSuccessFragment.
                 mListener.onRegisterSuccess(mCredentials);

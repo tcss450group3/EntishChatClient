@@ -19,6 +19,7 @@
     <string name="text_email">Email</string>
     <string name="text_pasword">Password</string>
     <string name="text_pasword2">Re-enter password</string>
+    <string name="action_logout">Logout</string>
 
     <!--VERIFY-->
     <string name="text_verify_message">Enter the 4 Digit Code From Your Email</string>
