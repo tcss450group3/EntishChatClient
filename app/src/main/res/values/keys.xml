@@ -7,4 +7,7 @@
     <string name="keys_intent_jwt">intent key for jwt</string>
     <string name="keys_json_incorrect_field">field</string>
     <string name="keys_json_error">error</string>
+    <string name="keys_json_detail">detail</string>
+    <string name="keys_json_detail_email">(email)</string>
+    <string name="keys_json_detail_username">(username)</string>
 </resources>
