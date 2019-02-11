@@ -104,6 +104,18 @@ public class RegisterFragment extends Fragment implements View.OnClickListener {
                             break;
                     }
                     errorField.setError(resultsJSON.getString(getString(R.string.keys_json_error)));
+                } else if(resultsJSON.has("error")){
+                    JSONObject error = resultsJSON.getJSONObject("error");
+                    if(error.has("detail")){
+
+                        Log.wtf("whelp", "we here");
+                        String details = error.getString("detail");
+                        if(details.contains("(email)")){
+                            mEmailEt.setError("Account already exists with this email");
+                        } if(details.contains("(username)")){
+                            mUsernameEt.setError("Username is taken");
+                        }
+                    }
                 }
 
             }
