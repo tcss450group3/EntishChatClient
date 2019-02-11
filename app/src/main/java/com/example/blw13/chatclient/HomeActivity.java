@@ -6,10 +6,10 @@ import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.BottomNavigationView;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
 import android.view.MenuItem;
 import android.widget.TextView;
-import android.widget.Toast;
 
 public class HomeActivity extends AppCompatActivity {
 
@@ -35,9 +35,13 @@ public class HomeActivity extends AppCompatActivity {
                 case R.id.butt_navigation_weather:
                     //handle weather button
                     return true;
-                case R.id.action_logout:
-                    //Handle logout
-                    logout();
+                case R.id.butt_navigation_account:
+                    AccountFragment accountFragment = new AccountFragment();
+                    FragmentTransaction transaction = getSupportFragmentManager()
+                            .beginTransaction()
+                            .replace(R.id.home_container, accountFragment)
+                            .addToBackStack(null);
+                    transaction.commit();
                     return true;
             }
             return false;
@@ -54,7 +58,7 @@ public class HomeActivity extends AppCompatActivity {
         navigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
     }
 
-    private void logout() {
+    protected void logout() {
         SharedPreferences prefs =
                 getSharedPreferences(
                         getString(R.string.keys_shared_prefs),
