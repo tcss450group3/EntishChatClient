@@ -21,5 +21,12 @@
         android:icon="@android:drawable/ic_menu_mapmode"
         android:title="@string/nav_button_weather"
         android:titleCondensed="@string/nav_button_weather" />
+    <item
+        android:id="@+id/butt_navigation_account"
+        android:icon="@drawable/ic_account_box"
+        android:orderInCategory="100"
+        android:title="@string/text_account_title"/>
+        <!--app:showAsAction="never" />-->
+
 
 </menu>
