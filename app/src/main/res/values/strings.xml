@@ -9,6 +9,7 @@
     <string name="nav_button_chats">Chats</string>
     <string name="nav_button_connections">Connections</string>
     <string name="nav_button_weather">Weather</string>
+    <string name="nav_button_account">Account</string>
 
     <!--LOGIN / REGISTER -->
     <string name="text_login_btn">Login</string>
@@ -20,9 +21,17 @@
     <string name="text_pasword">Password</string>
     <string name="text_pasword2">Re-enter password</string>
 
+
     <!--VERIFY-->
     <string name="text_verify_message">Enter the 4 Digit Code From Your Email</string>
     <string name="text_verify_btn">Verify</string>
     <string name="text_verify_editText_Hint">4 Digit Code</string>
+
+    <!--ACCOUNT-->
+    <string name="action_logout">Logout</string>
+    <string name="text_account_title">Account</string>
+    <string name="text_account_username">Username:</string>
+    <string name="text_account_email">Email:</string>
+    <string name="switch_account_stay_logged_in">Stay Logged In </string>
 
 </resources>
