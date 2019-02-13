@@ -11,7 +11,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.view.MenuItem;
 import android.widget.TextView;
 
-public class HomeActivity extends AppCompatActivity {
+public class HomeActivity extends AppCompatActivity implements ConversationListFragment.OnListFragmentInteractionListener{
 
     private TextView mTextMessage;
 
@@ -27,7 +27,12 @@ public class HomeActivity extends AppCompatActivity {
                     return true;
 
                 case R.id.butt_navigation_chats:
-                    //handle chats
+                    ChatFragment chat = new ChatFragment();
+                    FragmentTransaction transaction = getSupportFragmentManager()
+                            .beginTransaction()
+                            .replace(R.id.home_display_container, chat)
+                            .addToBackStack("conversationList");
+                    transaction.commit();
                     return true;
                 case R.id.butt_navigation_connections:
                    //handle weather button
@@ -37,11 +42,11 @@ public class HomeActivity extends AppCompatActivity {
                     return true;
                 case R.id.butt_navigation_account:
                     AccountFragment accountFragment = new AccountFragment();
-                    FragmentTransaction transaction = getSupportFragmentManager()
+                    FragmentTransaction transaction2 = getSupportFragmentManager()
                             .beginTransaction()
-                            .replace(R.id.home_container, accountFragment)
+                            .replace(R.id.home_display_container, accountFragment)
                             .addToBackStack(null);
-                    transaction.commit();
+                    transaction2.commit();
                     return true;
             }
             return false;
@@ -56,6 +61,7 @@ public class HomeActivity extends AppCompatActivity {
         mTextMessage = (TextView) findViewById(R.id.message);
         BottomNavigationView navigation = (BottomNavigationView) findViewById(R.id.home_navigation_bar);
         navigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
+
     }
 
     protected void logout() {
@@ -78,4 +84,8 @@ public class HomeActivity extends AppCompatActivity {
          finish();
     }
 
+    @Override
+    public void onListFragmentInteraction(ConversationListFragment item) {
+
+    }
 }
