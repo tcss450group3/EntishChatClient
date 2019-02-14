@@ -10,7 +10,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-
+import com.example.blw13.chatclient.dummy.ConversationListContent;
+import com.example.blw13.chatclient.dummy.ConversationListContent.Conversation;
 
 /**
  * A fragment representing a list of Items.
@@ -55,7 +56,7 @@ public class ConversationListFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_conversation_list, container, false);
+        View view = inflater.inflate(R.layout.fragment_conversationlist_list, container, false);
 
         // Set the adapter
         if (view instanceof RecyclerView) {
@@ -66,7 +67,7 @@ public class ConversationListFragment extends Fragment {
             } else {
                 recyclerView.setLayoutManager(new GridLayoutManager(context, mColumnCount));
             }
-            recyclerView.setAdapter(new MyConversationListRecyclerViewAdapter(com.example.blw13.chatclient.Content.ConversationList.ITEMS, mListener));
+            recyclerView.setAdapter(new MyConversationListRecyclerViewAdapter(ConversationListContent.CONVERSATIONS, mListener));
         }
         return view;
     }
@@ -101,6 +102,6 @@ public class ConversationListFragment extends Fragment {
      */
     public interface OnListFragmentInteractionListener {
         // TODO: Update argument type and name
-        void onListFragmentInteraction(ConversationListFragment item);
+        void onConversationListFragmentInteraction(Conversation item);
     }
 }
