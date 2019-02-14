@@ -10,8 +10,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.example.blw13.chatclient.Content.OneConversation;
-import com.example.blw13.chatclient.Content.OneConversation.Message;
+import com.example.blw13.chatclient.dummy.ConnectionListContent;
+import com.example.blw13.chatclient.dummy.ConnectionListContent.Connection;
 
 /**
  * A fragment representing a list of Items.
@@ -19,7 +19,7 @@ import com.example.blw13.chatclient.Content.OneConversation.Message;
  * Activities containing this fragment MUST implement the {@link OnListFragmentInteractionListener}
  * interface.
  */
-public class OneConversationFragment extends Fragment {
+public class ConnectionListFragment extends Fragment {
 
     // TODO: Customize parameter argument names
     private static final String ARG_COLUMN_COUNT = "column-count";
@@ -31,13 +31,13 @@ public class OneConversationFragment extends Fragment {
      * Mandatory empty constructor for the fragment manager to instantiate the
      * fragment (e.g. upon screen orientation changes).
      */
-    public OneConversationFragment() {
+    public ConnectionListFragment() {
     }
 
     // TODO: Customize parameter initialization
     @SuppressWarnings("unused")
-    public static OneConversationFragment newInstance(int columnCount) {
-        OneConversationFragment fragment = new OneConversationFragment();
+    public static ConnectionListFragment newInstance(int columnCount) {
+        ConnectionListFragment fragment = new ConnectionListFragment();
         Bundle args = new Bundle();
         args.putInt(ARG_COLUMN_COUNT, columnCount);
         fragment.setArguments(args);
@@ -56,7 +56,7 @@ public class OneConversationFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_oneconversation_list, container, false);
+        View view = inflater.inflate(R.layout.fragment_connectionlist_list, container, false);
 
         // Set the adapter
         if (view instanceof RecyclerView) {
@@ -67,7 +67,7 @@ public class OneConversationFragment extends Fragment {
             } else {
                 recyclerView.setLayoutManager(new GridLayoutManager(context, mColumnCount));
             }
-            recyclerView.setAdapter(new MyOneConversationRecyclerViewAdapter(OneConversation.ITEMS, mListener));
+            recyclerView.setAdapter(new MyConnectionListRecyclerViewAdapter(ConnectionListContent.CONNECTIONS, mListener));
         }
         return view;
     }
@@ -102,6 +102,6 @@ public class OneConversationFragment extends Fragment {
      */
     public interface OnListFragmentInteractionListener {
         // TODO: Update argument type and name
-        void onListFragmentInteraction(Message item);
+        void onConnectionListFragmentInteraction(Connection item);
     }
 }

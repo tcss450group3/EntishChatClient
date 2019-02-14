@@ -1,4 +1,4 @@
-package com.example.blw13.chatclient.Content;
+package com.example.blw13.chatclient.dummy;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -11,34 +11,34 @@ import java.util.Map;
  * <p>
  * TODO: Replace all uses of this class before publishing your app.
  */
-public class OneConversation {
+public class ConversationListContent {
 
     /**
      * An array of sample (dummy) items.
      */
-    public static final List<Message> ITEMS = new ArrayList<Message>();
+    public static final List<Conversation> CONVERSATIONS = new ArrayList<Conversation>();
 
     /**
      * A map of sample (dummy) items, by ID.
      */
-    public static final Map<String, Message> ITEM_MAP = new HashMap<String, Message>();
+    public static final Map<String, Conversation> CONVERSATION_HASH_MAP = new HashMap<String, Conversation>();
 
     private static final int COUNT = 25;
 
     static {
         // Add some sample items.
         for (int i = 1; i <= COUNT; i++) {
-            addItem(createDummyItem(i));
+            addItem(createConversation(i));
         }
     }
 
-    private static void addItem(Message item) {
-        ITEMS.add(item);
-        ITEM_MAP.put(item.id, item);
+    private static void addItem(Conversation item) {
+        CONVERSATIONS.add(item);
+        CONVERSATION_HASH_MAP.put(item.id, item);
     }
 
-    private static Message createDummyItem(int position) {
-        return new Message(String.valueOf(position), "Item " + position, makeDetails(position));
+    private static Conversation createConversation(int position) {
+        return new Conversation(String.valueOf(position), "Conversation " + position, makeDetails(position));
     }
 
     private static String makeDetails(int position) {
@@ -53,20 +53,20 @@ public class OneConversation {
     /**
      * A dummy item representing a piece of name.
      */
-    public static class Message {
+    public static class Conversation {
         public final String id;
-        public final String content;
+        public final String name;
         public final String details;
 
-        public Message(String id, String content, String details) {
+        public Conversation(String id, String name, String details) {
             this.id = id;
-            this.content = content;
+            this.name = name;
             this.details = details;
         }
 
         @Override
         public String toString() {
-            return content;
+            return name;
         }
     }
 }

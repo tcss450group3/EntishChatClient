@@ -11,7 +11,11 @@ import android.support.v7.app.AppCompatActivity;
 import android.view.MenuItem;
 import android.widget.TextView;
 
-public class HomeActivity extends AppCompatActivity implements ConversationListFragment.OnListFragmentInteractionListener{
+import com.example.blw13.chatclient.dummy.ConnectionListContent;
+import com.example.blw13.chatclient.dummy.ConversationListContent;
+
+public class HomeActivity extends AppCompatActivity implements ConversationListFragment.OnListFragmentInteractionListener,
+ConnectionListFragment.OnListFragmentInteractionListener{
 
     private TextView mTextMessage;
 
@@ -21,32 +25,48 @@ public class HomeActivity extends AppCompatActivity implements ConversationListF
         @Override
         public boolean onNavigationItemSelected(@NonNull MenuItem item) {
             switch (item.getItemId()) {
-                case R.id.home_navigation_bar:
-
+                case R.id.butt_navigation_home:
+                    HomeFragment home = new HomeFragment();
+                    FragmentTransaction transaction = getSupportFragmentManager()
+                            .beginTransaction()
+                            .replace(R.id.home_display_container, home)
+                            .addToBackStack("home");
+                    transaction.commit();
 
                     return true;
 
                 case R.id.butt_navigation_chats:
-                    ChatFragment chat = new ChatFragment();
-                    FragmentTransaction transaction = getSupportFragmentManager()
+                    ConversationListFragment convers = new ConversationListFragment();
+                    FragmentTransaction transaction2 = getSupportFragmentManager()
                             .beginTransaction()
-                            .replace(R.id.home_display_container, chat)
+                            .replace(R.id.home_display_container, convers)
                             .addToBackStack("conversationList");
-                    transaction.commit();
+                    transaction2.commit();
+
                     return true;
                 case R.id.butt_navigation_connections:
-                   //handle weather button
+                    ConnectionListFragment connects = new ConnectionListFragment();
+                    FragmentTransaction transaction3 = getSupportFragmentManager()
+                            .beginTransaction()
+                            .replace(R.id.home_display_container, connects)
+                            .addToBackStack("conversationList");
+                    transaction3.commit();
                     return true;
                 case R.id.butt_navigation_weather:
-                    //handle weather button
+                    WeatherFragment weather = new WeatherFragment();
+                    FragmentTransaction transaction4 = getSupportFragmentManager()
+                            .beginTransaction()
+                            .replace(R.id.home_display_container, weather)
+                            .addToBackStack("home");
+                    transaction4.commit();
                     return true;
                 case R.id.butt_navigation_account:
                     AccountFragment accountFragment = new AccountFragment();
-                    FragmentTransaction transaction2 = getSupportFragmentManager()
+                    FragmentTransaction transaction5 = getSupportFragmentManager()
                             .beginTransaction()
                             .replace(R.id.home_display_container, accountFragment)
-                            .addToBackStack(null);
-                    transaction2.commit();
+                            .addToBackStack("account");
+                    transaction5.commit();
                     return true;
             }
             return false;
@@ -58,9 +78,19 @@ public class HomeActivity extends AppCompatActivity implements ConversationListF
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
 
+
+
         mTextMessage = (TextView) findViewById(R.id.message);
         BottomNavigationView navigation = (BottomNavigationView) findViewById(R.id.home_navigation_bar);
         navigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
+
+        if(savedInstanceState == null) {
+            if (findViewById(R.id.home_display_container) != null) {
+                //lf = new LoginFragment();
+                getSupportFragmentManager().beginTransaction()
+                        .add(R.id.home_display_container, new HomeFragment())
+                        .commit();
+            } }
 
     }
 
@@ -85,7 +115,22 @@ public class HomeActivity extends AppCompatActivity implements ConversationListF
     }
 
     @Override
-    public void onListFragmentInteraction(ConversationListFragment item) {
+    public void onConversationListFragmentInteraction(ConversationListContent.Conversation item) {
+        ChatFragment one = new ChatFragment();
+        FragmentTransaction transaction = getSupportFragmentManager()
+                .beginTransaction()
+                .replace(R.id.home_display_container, one)
+                .addToBackStack("conversation");
+        transaction.commit();
+    }
 
+    @Override
+    public void onConnectionListFragmentInteraction(ConnectionListContent.Connection item) {
+        ProfileFragment one = new ProfileFragment();
+        FragmentTransaction transaction = getSupportFragmentManager()
+                .beginTransaction()
+                .replace(R.id.home_display_container, one)
+                .addToBackStack("profile");
+        transaction.commit();
     }
 }
