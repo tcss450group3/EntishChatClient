@@ -6,22 +6,22 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
-import com.example.blw13.chatclient.OneConversationFragment.OnListFragmentInteractionListener;
-import com.example.blw13.chatclient.Content.OneConversation.Message;
+import com.example.blw13.chatclient.ConnectionListFragment.OnListFragmentInteractionListener;
+import com.example.blw13.chatclient.dummy.ConnectionListContent.Connection;
 
 import java.util.List;
 
 /**
- * {@link RecyclerView.Adapter} that can display a {@link Message} and makes a call to the
+ * {@link RecyclerView.Adapter} that can display a {@link Connection} and makes a call to the
  * specified {@link OnListFragmentInteractionListener}.
  * TODO: Replace the implementation with code for your data type.
  */
-public class MyOneConversationRecyclerViewAdapter extends RecyclerView.Adapter<MyOneConversationRecyclerViewAdapter.ViewHolder> {
+public class MyConnectionListRecyclerViewAdapter extends RecyclerView.Adapter<MyConnectionListRecyclerViewAdapter.ViewHolder> {
 
-    private final List<Message> mValues;
+    private final List<Connection> mValues;
     private final OnListFragmentInteractionListener mListener;
 
-    public MyOneConversationRecyclerViewAdapter(List<Message> items, OnListFragmentInteractionListener listener) {
+    public MyConnectionListRecyclerViewAdapter(List<Connection> items, OnListFragmentInteractionListener listener) {
         mValues = items;
         mListener = listener;
     }
@@ -29,7 +29,7 @@ public class MyOneConversationRecyclerViewAdapter extends RecyclerView.Adapter<M
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext())
-                .inflate(R.layout.fragment_oneconversation, parent, false);
+                .inflate(R.layout.fragment_connectionlist, parent, false);
         return new ViewHolder(view);
     }
 
@@ -37,7 +37,7 @@ public class MyOneConversationRecyclerViewAdapter extends RecyclerView.Adapter<M
     public void onBindViewHolder(final ViewHolder holder, int position) {
         holder.mItem = mValues.get(position);
         holder.mIdView.setText(mValues.get(position).id);
-        holder.mContentView.setText(mValues.get(position).content);
+        holder.mContentView.setText(mValues.get(position).name);
 
         holder.mView.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -45,7 +45,7 @@ public class MyOneConversationRecyclerViewAdapter extends RecyclerView.Adapter<M
                 if (null != mListener) {
                     // Notify the active callbacks interface (the activity, if the
                     // fragment is attached to one) that an item has been selected.
-                    mListener.onListFragmentInteraction(holder.mItem);
+                    mListener.onConnectionListFragmentInteraction(holder.mItem);
                 }
             }
         });
@@ -60,13 +60,13 @@ public class MyOneConversationRecyclerViewAdapter extends RecyclerView.Adapter<M
         public final View mView;
         public final TextView mIdView;
         public final TextView mContentView;
-        public Message mItem;
+        public Connection mItem;
 
         public ViewHolder(View view) {
             super(view);
             mView = view;
-            mIdView = (TextView) view.findViewById(R.id.item_number);
-            mContentView = (TextView) view.findViewById(R.id.content);
+            mIdView = (TextView) view.findViewById(R.id.connection_item_number);
+            mContentView = (TextView) view.findViewById(R.id.connection_name);
         }
 
         @Override

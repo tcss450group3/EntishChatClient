@@ -4,7 +4,7 @@
 
     <string name="title_activity_home">HomeActivity</string>
 
-    <!-- MENU BAR ITEMS-->
+    <!-- MENU BAR CHAT_ROOMS-->
     <string name="nav_button_home">Home</string>
     <string name="nav_button_chats">Chats</string>
     <string name="nav_button_connections">Connections</string>
