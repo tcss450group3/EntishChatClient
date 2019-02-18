@@ -57,6 +57,22 @@ public class  MainActivity extends AppCompatActivity implements LoginFragment.On
     }
 
     @Override
+    public void onVerifyClicked() {
+        /**
+         * Create a new verify fragment and add it to the replace the current
+         * fragment in the container.
+         */
+        VerifyFragment verifyFragment;
+        verifyFragment = new VerifyFragment();
+        FragmentTransaction transaction = getSupportFragmentManager()
+                .beginTransaction()
+                .replace(R.id.frame_main_container, verifyFragment)
+                .addToBackStack("login");
+        transaction.commit();
+
+    }
+
+    @Override
     public void onWaitFragmentInteractionShow() {
         //create and add wait fragment to activity, while an asynchronous task is running
         getSupportFragmentManager()

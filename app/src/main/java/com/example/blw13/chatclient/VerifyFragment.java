@@ -13,7 +13,6 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 import com.example.blw13.chatclient.Model.Credentials;
-import com.example.blw13.chatclient.utils.GetAsyncTask;
 import com.example.blw13.chatclient.utils.SendPostAsyncTask;
 
 import org.json.JSONException;
@@ -34,6 +33,10 @@ public class VerifyFragment extends Fragment implements View.OnClickListener {
 
     private Credentials mCredentials;
 
+    private EditText mUsernameEt;
+    private EditText mResendEmailEt;
+    private EditText mVerifyEmailEt;
+
     private EditText mVerifyCodeEt;
 
     public VerifyFragment() {
@@ -48,6 +51,9 @@ public class VerifyFragment extends Fragment implements View.OnClickListener {
         View v = inflater.inflate(R.layout.fragment_verify, container, false);
 
         mVerifyCodeEt = v.findViewById(R.id.verify_code_editText);
+        mUsernameEt = v.findViewById(R.id.verify_username_editText);
+        mResendEmailEt = v.findViewById(R.id.verify_email_editText);
+        mVerifyEmailEt = v.findViewById(R.id.verify_email_enter_verification);
 
         //sets the fragment as a click listener for login button
         v.findViewById(R.id.verify_confirm_btn).setOnClickListener(this);
@@ -55,10 +61,16 @@ public class VerifyFragment extends Fragment implements View.OnClickListener {
         Button b = (Button) v.findViewById(R.id.verify_confirm_btn);
         b.setOnClickListener(this::setVerify);
 
+        b = (Button) v.findViewById(R.id.resend_confirmation_btn);
+        b.setOnClickListener(this::setResend);
+
+
+
         //gets arguments from Bundle and retrieves email to display.
         Bundle args = getArguments();
         if(args != null) {
             mCredentials = (Credentials) getArguments().get(getString(R.string.keys_verify_credentials));
+            mVerifyEmailEt.setText(mCredentials.getEmail());
             ((TextView)v.findViewById(R.id.verify_textView_notice)).setText("A confirmation email has been sent to "
                     + args.getCharSequence(getString(R.string.keys_verify_email))
                     + " please check your email and enter the code to activate your account");
@@ -66,8 +78,90 @@ public class VerifyFragment extends Fragment implements View.OnClickListener {
         return v;
     }
 
-    private void setVerify(View view) {
+    private void setResend(View view) {
+        String emailInput = mResendEmailEt.getText().toString();
+        String usernameInput = mUsernameEt.getText().toString();
+        //build the web service URL
+        Uri uri = new Uri.Builder()
+                .scheme("https")
+                .appendPath(getString(R.string.ep_base_url))
+                .appendPath(getString(R.string.ep_register))
+                .appendPath(getString(R.string.ep_resend))
+                .build();
+        boolean hasInput = true;
+        if (emailInput.isEmpty()){
+            mResendEmailEt.setError("Email must not be blank");
+            hasInput = false;
+        }
+        if (usernameInput.isEmpty()){
+            mResendEmailEt.setError("Username must not be blank");
+            hasInput = false;
+        }
+        if (hasInput){
+            //build the JSONObject
+            JSONObject msg = new JSONObject();
+            try {
+                msg.put("email", emailInput);
+                msg.put("username", usernameInput);
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+            new SendPostAsyncTask.Builder(uri.toString(), msg)
+                    .onPreExecute(this::handleResendOnPre)
+                    .onPostExecute(this::handleResendOnPost)
+                    .onCancelled(this::handleErrorsInTask)
+                    .build().execute();
+        }
 
+    }
+
+
+    private void handleResendOnPre() {
+        mListener.onWaitFragmentInteractionShow();
+    }
+
+    private void handleResendOnPost(String result) {
+        try {
+            JSONObject resultsJSON = new JSONObject(result);
+            boolean success =
+                    resultsJSON.getBoolean(
+                            getString(R.string.keys_json_login_success));
+            if (success) {
+                //Resend was successful.
+                mListener.onWaitFragmentInteractionHide();
+                return;
+            } else {
+                //register was unsuccessful. Inform the user
+                if(resultsJSON.has("field")) {
+                    EditText errorField;
+                    String field = resultsJSON.getString(getString(R.string.keys_json_incorrect_field));
+                    switch(field) {
+                        case "email":
+                            errorField = mResendEmailEt;
+                            errorField.setError(resultsJSON.getString(getString(R.string.keys_json_error)));
+                            break;
+                        case "username":
+                            errorField = mUsernameEt;
+                            errorField.setError(resultsJSON.getString(getString(R.string.keys_json_error)));
+                            break;
+                    }
+                }
+            }
+            mListener.onWaitFragmentInteractionHide();
+
+        } catch (JSONException e) {
+            //It appears that the web service did not return a JSON formatted
+            //String or it did not have what we expected in it.
+            Log.e("JSON_PARSE_ERROR", result
+                    + System.lineSeparator()
+                    + e.getMessage());
+            mListener.onWaitFragmentInteractionHide();
+            mVerifyCodeEt.setError("something better ");
+        }
+    }
+
+
+    private void setVerify(View view) {
         EditText codeInput = getActivity().findViewById(R.id.verify_code_editText);
         //build the web service URL
         Uri uri = new Uri.Builder()
@@ -76,28 +170,25 @@ public class VerifyFragment extends Fragment implements View.OnClickListener {
                 .appendPath(getString(R.string.ep_register))
                 .appendPath(getString(R.string.ep_confirm))
                 .build();
-
         //build the JSONObject
         JSONObject msg = new JSONObject();
         try {
-            msg.put("email", mCredentials.getEmail());
+            msg.put("email", mVerifyEmailEt.getText());
             msg.put("verification", codeInput.getText());
         } catch (JSONException e) {
             e.printStackTrace();
         }
-
-
         //instantiate and execute the AsyncTask.
         new SendPostAsyncTask.Builder(uri.toString(), msg)
                 .onPreExecute(this::handleVerifyOnPre)
                 .onPostExecute(this::handleVerifyOnPost)
                 .onCancelled(this::handleErrorsInTask)
                 .build().execute();
-
     }
 
     private void handleErrorsInTask(String result) {
         Log.e("ASYNC_TASK_ERROR", result);
+        mListener.onWaitFragmentInteractionHide();
     }
 
     private void handleVerifyOnPost(String result) {
@@ -107,6 +198,10 @@ public class VerifyFragment extends Fragment implements View.OnClickListener {
                     resultsJSON.getBoolean(
                             getString(R.string.keys_json_login_success));
             if (success) {
+                if (mCredentials == null){
+                    mCredentials = new Credentials.Builder(
+                            mVerifyEmailEt.getText().toString(), "").build();
+                }
                 //register was successful. Switch to the login fragment.
                 mListener.onVerifySuccess(mCredentials);
                 return;

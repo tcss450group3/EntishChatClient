@@ -3,8 +3,15 @@
     <string name="ep_base_url">chat-client-backend.herokuapp.com</string>
     <string name="ep_login">login</string>
     <string name="ep_register">register</string>
+
+    <!--This is the endpoint to resend a 4 digit code for confirmation -->
+    <string name="ep_resend">resend</string>
+
+    <!--This is the endpoint to send the 4 digit code in for confirmation-->
     <string name="ep_confirm">confirm</string>
-    <string name="ep_phish">phish</string>
-    <string name="ep_blog">blog</string>
-    <string name="ep_get">get</string>
+
+
+    <string name="ep_send">send</string>
+    <string name="ep_get_all_messages">getAll</string>
+
 </resources>

@@ -13,6 +13,7 @@
 
     <!--LOGIN / REGISTER -->
     <string name="text_login_btn">Login</string>
+    <string name="text_login_verify_btn">Verify Account</string>
     <string name="text_register_btn">Register</string>
     <string name="text_first_name">First Name</string>
     <string name="text_last_name">Last Name</string>
@@ -23,8 +24,11 @@
 
 
     <!--VERIFY-->
-    <string name="text_verify_message">Enter the 4 Digit Code From Your Email</string>
+    <string name="text_verify_message">Enter your Username and the 4 Digit Code From Your Email</string>
+    <string name="text_resend_message">Didn\'t receive your email?
+        Enter your username and the email you want the code to be sent to and we will send a new one</string>
     <string name="text_verify_btn">Verify</string>
+    <string name="text_resend_btn">Resend Email</string>
     <string name="text_verify_editText_Hint">4 Digit Code</string>
 
     <!--ACCOUNT-->

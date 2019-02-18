@@ -44,6 +44,7 @@ public class LoginFragment extends Fragment implements View.OnClickListener {
 
         v.findViewById(R.id.login_login_btn).setOnClickListener(this);
         v.findViewById(R.id.login_register_btn).setOnClickListener(this);
+        v.findViewById(R.id.login_verify_btn).setOnClickListener(this);
 
         mEmailEntry = (EditText) v.findViewById(R.id.login_editText_email);
         mPassEntry = (EditText) v.findViewById(R.id.login_editText_pw);
@@ -51,10 +52,11 @@ public class LoginFragment extends Fragment implements View.OnClickListener {
         //check to see if credentials were passed in. If they were, set the email and password to them
         if (getArguments() != null && getArguments().containsKey(getString(R.string.keys_verify_credentials))){
             Credentials c = (Credentials) getArguments().get(getString(R.string.keys_verify_credentials));
-            mEmailEntry.setText(c.getEmail());
-            mPassEntry.setText(c.getPassword());
+            if (c!= null) {
+                mEmailEntry.setText(c.getEmail());
+                mPassEntry.setText(c.getPassword());
+            }
         }
-
         return v;
     }
 
@@ -112,6 +114,8 @@ public class LoginFragment extends Fragment implements View.OnClickListener {
         if (mListener != null) {
             switch (v.getId()) {
                 case R.id.login_register_btn: mListener.onRegisterClicked();
+                    break;
+                case R.id.login_verify_btn: mListener.onVerifyClicked();
                     break;
                 default:
                     Log.wtf("", "Didn't expect to see me...");
@@ -275,5 +279,7 @@ public class LoginFragment extends Fragment implements View.OnClickListener {
         void onLoginSuccess(Credentials id, String jwt);
 
         void onRegisterClicked();
+
+        void onVerifyClicked();
     }
 }
