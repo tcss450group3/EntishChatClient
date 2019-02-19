@@ -24,7 +24,7 @@
 
 
     <!--VERIFY-->
-    <string name="text_verify_message">Enter your Username and the 4 Digit Code From Your Email</string>
+    <string name="text_verify_message">Enter your Email and the 4 Digit Code From Your Email</string>
     <string name="text_resend_message">Didn\'t receive your email?
         Enter your username and the email you want the code to be sent to and we will send a new one</string>
     <string name="text_verify_btn">Verify</string>

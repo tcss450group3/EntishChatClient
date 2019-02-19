@@ -38,6 +38,8 @@ public class VerifyFragment extends Fragment implements View.OnClickListener {
     private EditText mVerifyEmailEt;
 
     private EditText mVerifyCodeEt;
+    private EditText mResendUsernameET;
+    private TextView mVerifyTextViewNotice;
 
     public VerifyFragment() {
         // Required empty public constructor
@@ -53,7 +55,9 @@ public class VerifyFragment extends Fragment implements View.OnClickListener {
         mVerifyCodeEt = v.findViewById(R.id.verify_code_editText);
         mUsernameEt = v.findViewById(R.id.verify_username_editText);
         mResendEmailEt = v.findViewById(R.id.verify_email_editText);
+        mResendUsernameET = v.findViewById(R.id.verify_username_editText);
         mVerifyEmailEt = v.findViewById(R.id.verify_email_enter_verification);
+        mVerifyTextViewNotice = v.findViewById(R.id.verify_textView_notice);
 
         //sets the fragment as a click listener for login button
         v.findViewById(R.id.verify_confirm_btn).setOnClickListener(this);
@@ -71,9 +75,10 @@ public class VerifyFragment extends Fragment implements View.OnClickListener {
         if(args != null) {
             mCredentials = (Credentials) getArguments().get(getString(R.string.keys_verify_credentials));
             mVerifyEmailEt.setText(mCredentials.getEmail());
-            ((TextView)v.findViewById(R.id.verify_textView_notice)).setText("A confirmation email has been sent to "
+            String toDisplay = "A confirmation email has been sent to "
                     + args.getCharSequence(getString(R.string.keys_verify_email))
-                    + " please check your email and enter the code to activate your account");
+                    + " please check your email and enter the code to activate your account";
+            mVerifyTextViewNotice.setText(toDisplay);
         }
         return v;
     }
@@ -129,22 +134,19 @@ public class VerifyFragment extends Fragment implements View.OnClickListener {
             if (success) {
                 //Resend was successful.
                 mListener.onWaitFragmentInteractionHide();
+                mVerifyEmailEt.setText(mResendEmailEt.getText());
+                String inputEmail = mResendEmailEt.getText().toString();
+                String toDisplay = "A confirmation email has been sent to "
+                        + inputEmail
+                        + " please check your email and enter the code to activate your account";
+                mVerifyTextViewNotice.setText(toDisplay);
+                mResendEmailEt.setText("");
+                mResendUsernameET.setText("");
                 return;
             } else {
-                //register was unsuccessful. Inform the user
-                if(resultsJSON.has("field")) {
-                    EditText errorField;
-                    String field = resultsJSON.getString(getString(R.string.keys_json_incorrect_field));
-                    switch(field) {
-                        case "email":
-                            errorField = mResendEmailEt;
-                            errorField.setError(resultsJSON.getString(getString(R.string.keys_json_error)));
-                            break;
-                        case "username":
-                            errorField = mUsernameEt;
-                            errorField.setError(resultsJSON.getString(getString(R.string.keys_json_error)));
-                            break;
-                    }
+                //Resend was unsuccessful. Inform the user
+                if(resultsJSON.has("error")){
+                    mResendUsernameET.setError(resultsJSON.getString(getString(R.string.keys_json_error)));
                 }
             }
             mListener.onWaitFragmentInteractionHide();
@@ -156,7 +158,7 @@ public class VerifyFragment extends Fragment implements View.OnClickListener {
                     + System.lineSeparator()
                     + e.getMessage());
             mListener.onWaitFragmentInteractionHide();
-            mVerifyCodeEt.setError("something better ");
+            mVerifyCodeEt.setError("Application Error");
         }
     }
 
@@ -206,9 +208,16 @@ public class VerifyFragment extends Fragment implements View.OnClickListener {
                 mListener.onVerifySuccess(mCredentials);
                 return;
             } else {
-                //register was unsuccessful. Don’t switch fragments and
+                //Verify was unsuccessful. Don’t switch fragments and
                 // inform the user
-                mVerifyCodeEt.setError("Code does not match");
+                if(resultsJSON.has("error")){
+                    String errorMessage = resultsJSON.getString(getString(R.string.keys_json_error));
+                    if (errorMessage.contains("email")){
+                        mVerifyEmailEt.setError(resultsJSON.getString(getString(R.string.keys_json_error)));
+                    } else
+                        mVerifyCodeEt.setError("Code does not match");
+                }
+
             }
             mListener.onWaitFragmentInteractionHide();
         } catch (JSONException e) {

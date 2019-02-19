@@ -154,26 +154,6 @@ public class LoginFragment extends Fragment implements View.OnClickListener {
             doLogin(new Credentials.Builder(email.getText().toString(),
                     password.getText().toString())
                     .build());
-
-//            Credentials credentials = new Credentials.Builder(
-//                    email.getText().toString(),
-//                    password.getText().toString())
-//                    .build();
-//
-//            //build the web service URL
-//            Uri uri = new Uri.Builder()
-//                    .scheme("https")
-//                    .appendPath(getString(R.string.ep_base_url)) .appendPath(getString(R.string.ep_login)) .build();
-//
-//            //build the JSONObject
-//            JSONObject msg = credentials.asJSONObject();
-//            mCredentials = credentials;
-//            //instantiate and execute the AsyncTask.
-//            new SendPostAsyncTask.Builder(uri.toString(), msg)
-//                    .onPreExecute(this::handleLoginOnPre)
-//                    .onPostExecute(this::handleLoginOnPost)
-//                    .onCancelled(this::handleErrorsInTask)
-//                    .build().execute();
         }
         return result;
     }
@@ -211,9 +191,14 @@ public class LoginFragment extends Fragment implements View.OnClickListener {
 
                 //Login was unsuccessful. Don’t switch fragments and
                 // inform the user
-                ((TextView) getView().findViewById(R.id.login_editText_email))
-                        .setError("Login Unsuccessful");
+                // get JSON result to extract error message to pass to user
+                if(resultsJSON.has("message")){
+                    String errorMessage = resultsJSON.getString("error");
+                    ((TextView) getView().findViewById(R.id.login_editText_email))
+                            .setError(resultsJSON.getString("error"));
+                }
             }
+
             mListener.onWaitFragmentInteractionHide();
         } catch (JSONException e) {
             //It appears that the web service did not return a JSON formatted
@@ -223,7 +208,7 @@ public class LoginFragment extends Fragment implements View.OnClickListener {
                     + e.getMessage());
             mListener.onWaitFragmentInteractionHide();
             ((TextView) getView().findViewById(R.id.login_editText_email))
-                    .setError("Login Unsuccessful");
+                    .setError("Login Unsuccessful (uknown reason)");
         }
     }
 
