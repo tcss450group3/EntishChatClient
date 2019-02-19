@@ -13,7 +13,7 @@ import android.util.Log;
 import android.view.MenuItem;
 import android.widget.TextView;
 
-import com.example.blw13.chatclient.dummy.ConnectionListContent;
+import com.example.blw13.chatclient.Content.Connection;
 import com.example.blw13.chatclient.dummy.ConversationListContent;
 import com.example.blw13.chatclient.utils.GetAsyncTask;
 import com.example.blw13.chatclient.utils.SendPostAsyncTask;
@@ -154,7 +154,7 @@ public class HomeActivity extends AppCompatActivity implements
     }
 
     @Override
-    public void onConnectionListFragmentInteraction(ConnectionListContent.Connection item) {
+    public void onConnectionListFragmentInteraction(Connection item) {
         ProfileFragment one = new ProfileFragment();
         FragmentTransaction transaction = getSupportFragmentManager()
                 .beginTransaction()

@@ -10,8 +10,10 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.example.blw13.chatclient.dummy.ConnectionListContent;
-import com.example.blw13.chatclient.dummy.ConnectionListContent.Connection;
+import com.example.blw13.chatclient.Content.Connection;
+
+import java.util.Arrays;
+import java.util.List;
 
 /**
  * A fragment representing a list of Items.
@@ -23,9 +25,11 @@ public class ConnectionListFragment extends Fragment {
 
     // TODO: Customize parameter argument names
     private static final String ARG_COLUMN_COUNT = "column-count";
+    public static final String ARGCONNECTIONS = "MYCONNECTTIONS";
     // TODO: Customize parameters
     private int mColumnCount = 1;
     private OnListFragmentInteractionListener mListener;
+    private List<Connection> mConnections;
 
     /**
      * Mandatory empty constructor for the fragment manager to instantiate the
@@ -49,7 +53,7 @@ public class ConnectionListFragment extends Fragment {
         super.onCreate(savedInstanceState);
 
         if (getArguments() != null) {
-            mColumnCount = getArguments().getInt(ARG_COLUMN_COUNT);
+            mConnections = Arrays.asList((Connection[]) getArguments().getSerializable(ARGCONNECTIONS));
         }
     }
 
@@ -67,7 +71,7 @@ public class ConnectionListFragment extends Fragment {
             } else {
                 recyclerView.setLayoutManager(new GridLayoutManager(context, mColumnCount));
             }
-            recyclerView.setAdapter(new MyConnectionListRecyclerViewAdapter(ConnectionListContent.CONNECTIONS, mListener));
+            recyclerView.setAdapter(new MyConnectionListRecyclerViewAdapter(mConnections, mListener));
         }
         return view;
     }
