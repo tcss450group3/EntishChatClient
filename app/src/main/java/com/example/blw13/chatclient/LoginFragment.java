@@ -88,8 +88,10 @@ public class LoginFragment extends Fragment implements View.OnClickListener {
             final String password = prefs.getString(getString(R.string.keys_prefs_password), "");
 
             //Load the two login EditTexts with the credentials found in SharedPrefs
-            EditText emailEdit = getActivity().findViewById(R.id.login_editText_email); emailEdit.setText(email);
-            EditText passwordEdit = getActivity().findViewById(R.id.login_editText_pw); passwordEdit.setText(password);
+            EditText emailEdit = getActivity().findViewById(R.id.login_editText_email);
+            emailEdit.setText(email);
+            EditText passwordEdit = getActivity().findViewById(R.id.login_editText_pw);
+            passwordEdit.setText(password);
 
             doLogin(new Credentials.Builder(
                     emailEdit.getText().toString(),
@@ -151,7 +153,8 @@ public class LoginFragment extends Fragment implements View.OnClickListener {
 
         if (result) {
 
-            doLogin(new Credentials.Builder(email.getText().toString(),
+            doLogin(new Credentials.Builder(
+                    email.getText().toString(),
                     password.getText().toString())
                     .build());
         }
@@ -175,6 +178,7 @@ public class LoginFragment extends Fragment implements View.OnClickListener {
     private void handleLoginOnPost(String result) {
         try {
             JSONObject resultsJSON = new JSONObject(result);
+
             boolean success =
                     resultsJSON.getBoolean(
                             getString(R.string.keys_json_login_success));
@@ -183,6 +187,15 @@ public class LoginFragment extends Fragment implements View.OnClickListener {
                 //Login was successful. Switch to the loadSuccessFragment.
                 mJwt = resultsJSON.getString(
                         getString(R.string.keys_json_login_jwt));
+                Log.e("CREDENTIALS 11111", mCredentials.asJSONObject().toString());
+
+                mCredentials = new Credentials.Builder(
+                        mCredentials.getEmail(),
+                        mCredentials.getPassword())
+                        .addUsername(resultsJSON.getString(getString(R.string.keys_json_login_username)))
+                        .build();
+
+                Log.e("CREDENTIALS 33333", mCredentials.asJSONObject().toString());
                 saveCredentials(mCredentials);
                 mListener.onLoginSuccess(mCredentials, mJwt);
                 return;
@@ -208,7 +221,7 @@ public class LoginFragment extends Fragment implements View.OnClickListener {
                     + e.getMessage());
             mListener.onWaitFragmentInteractionHide();
             ((TextView) getView().findViewById(R.id.login_editText_email))
-                    .setError("Login Unsuccessful (uknown reason)");
+                    .setError("Login Unsuccessful (unknown reason)");
         }
     }
 
@@ -221,8 +234,13 @@ public class LoginFragment extends Fragment implements View.OnClickListener {
         //Store the credentials in SharedPrefs
         prefs.edit().putString(getString(R.string.keys_prefs_email),
                 credentials.getEmail()).apply();
+
+        prefs.edit().putString(getString(R.string.keys_prefs_username),
+                credentials.getUsername()).apply();
+
         prefs.edit().putString(getString(R.string.keys_prefs_password),
                 credentials.getPassword()).apply();
+        Log.e("PREFS---------","" + prefs.getAll() );
     }
 
     private void doLogin(Credentials credentials) { //build the web service URL
@@ -234,7 +252,7 @@ public class LoginFragment extends Fragment implements View.OnClickListener {
 
         //build the JSONObject
         JSONObject msg = credentials.asJSONObject();
-
+        Log.e("CREDS--------", msg.toString());
         mCredentials = credentials;
 
         Log.d("JSON Credentials", msg.toString());

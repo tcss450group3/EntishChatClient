@@ -14,7 +14,7 @@
         android:layout_marginStart="8dp"
         android:layout_marginBottom="64dp"
         android:checked="false"
-        android:showText="true"
+        android:showText="false"
         android:text="@string/switch_account_stay_logged_in"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toStartOf="@+id/button_logout"

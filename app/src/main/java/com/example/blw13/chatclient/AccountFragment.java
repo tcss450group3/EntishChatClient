@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -40,10 +41,9 @@ public class AccountFragment extends Fragment implements View.OnClickListener {
                 getActivity().getSharedPreferences(
                         getString(R.string.keys_shared_prefs),
                         Context.MODE_PRIVATE);
-
         String email = prefs.getString(getString(R.string.keys_prefs_email), "MISSING EMAIL");
-        // Need to pass in username to prefs or access username another way
-        String username = "GET USERNAME HERE";
+
+        String username = prefs.getString(getString(R.string.keys_prefs_username), "MISSING USERNAME");
 
         TextView tv = getActivity().findViewById(R.id.text_account_username);
         tv.setText(tv.getText().toString() + " " + username);

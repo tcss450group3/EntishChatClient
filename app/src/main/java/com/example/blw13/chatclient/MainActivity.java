@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 
 import com.example.blw13.chatclient.Model.Credentials;
 
@@ -34,6 +35,7 @@ public class  MainActivity extends AppCompatActivity implements LoginFragment.On
          * Start a new activity.
          */
         Intent intent = new Intent(MainActivity.this, HomeActivity.class);
+        intent.putExtra(getString(R.string.keys_json_field_username), id.getUsername());
         intent.putExtra("info",id.getEmail().toString() );
         intent.putExtra(getString(R.string.keys_intent_jwt), jwt);
         startActivity(intent);

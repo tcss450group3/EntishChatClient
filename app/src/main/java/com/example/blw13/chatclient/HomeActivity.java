@@ -25,6 +25,9 @@ public class HomeActivity extends AppCompatActivity implements
     private TextView mTextMessage;
 
     private String mJwToken;
+    private String mNameFirst;
+    private String mNameLast;
+    private String mUsername;
 
 //    private BottomNavigationView.OnNavigationItemSelectedListener mOnNavigationItemSelectedListener
 //            = new BottomNavigationView.OnNavigationItemSelectedListener() {
@@ -124,7 +127,7 @@ public class HomeActivity extends AppCompatActivity implements
         //remove the saved credentials from StoredPrefs
         prefs.edit().remove(getString(R.string.keys_prefs_password)).apply();
         prefs.edit().remove(getString(R.string.keys_prefs_email)).apply();
-
+        prefs.edit().remove(getString(R.string.keys_prefs_username)).apply();
         //close the app
         //finishAndRemoveTask();
 
