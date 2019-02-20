@@ -74,7 +74,7 @@
             android:layout_marginLeft="10dp"
             android:layout_marginRight="10dp"
             android:ems="10"
-            android:hint="@string/text_pasword"
+            android:hint="@string/text_password"
             android:inputType="textPassword" />
 
         <EditText
@@ -84,7 +84,7 @@
             android:layout_marginLeft="10dp"
             android:layout_marginRight="10dp"
             android:ems="10"
-            android:hint="@string/text_pasword2"
+            android:hint="@string/text_password2"
             android:inputType="textPassword" />
 
         <Button
