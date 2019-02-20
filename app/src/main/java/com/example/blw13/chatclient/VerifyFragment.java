@@ -136,6 +136,9 @@ public class VerifyFragment extends Fragment implements View.OnClickListener {
                 mListener.onWaitFragmentInteractionHide();
                 mVerifyEmailEt.setText(mResendEmailEt.getText());
                 String inputEmail = mResendEmailEt.getText().toString();
+                String password = mCredentials.getPassword();
+                mCredentials = new Credentials.Builder(
+                        inputEmail, password).build();
                 String toDisplay = "A confirmation email has been sent to "
                         + inputEmail
                         + " please check your email and enter the code to activate your account";
