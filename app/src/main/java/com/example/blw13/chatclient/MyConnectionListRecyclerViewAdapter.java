@@ -63,7 +63,7 @@ public class MyConnectionListRecyclerViewAdapter extends RecyclerView.Adapter<My
         public ViewHolder(View view) {
             super(view);
             mView = view;
-            mContentView = (TextView) view.findViewById(R.id.connection_name);
+            mContentView = view.findViewById(R.id.connection_name);
         }
 
         @Override

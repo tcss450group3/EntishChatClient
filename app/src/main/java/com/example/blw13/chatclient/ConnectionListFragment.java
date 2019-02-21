@@ -25,7 +25,7 @@ public class ConnectionListFragment extends Fragment {
 
     // TODO: Customize parameter argument names
     private static final String ARG_COLUMN_COUNT = "column-count";
-    public static final String ARGCONNECTIONS = "MYCONNECTTIONS";
+    public static final String ARG_CONNECTIONS = "MYCONNECTTIONS";
     // TODO: Customize parameters
     private int mColumnCount = 1;
     private OnListFragmentInteractionListener mListener;
@@ -53,7 +53,7 @@ public class ConnectionListFragment extends Fragment {
         super.onCreate(savedInstanceState);
 
         if (getArguments() != null) {
-            mConnections = Arrays.asList((Connection[]) getArguments().getSerializable(ARGCONNECTIONS));
+            mConnections = Arrays.asList((Connection[]) getArguments().getSerializable(ARG_CONNECTIONS));
         }
     }
 

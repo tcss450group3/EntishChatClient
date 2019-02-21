@@ -7,6 +7,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.BottomNavigationView;
+import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
@@ -20,6 +21,9 @@ import com.example.blw13.chatclient.utils.SendPostAsyncTask;
 
 import org.json.JSONException;
 import org.json.JSONObject;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class HomeActivity extends AppCompatActivity implements
         ConversationListFragment.OnListFragmentInteractionListener,
@@ -155,7 +159,10 @@ public class HomeActivity extends AppCompatActivity implements
 
     @Override
     public void onConnectionListFragmentInteraction(Connection item) {
-        ProfileFragment one = new ProfileFragment();
+        Bundle args = new Bundle();
+        args.putSerializable(OneConnectionFragment.ARG_CONNECTION, item);
+        OneConnectionFragment one = new OneConnectionFragment();
+        one.setArguments(args);
         FragmentTransaction transaction = getSupportFragmentManager()
                 .beginTransaction()
                 .replace(R.id.home_display_container, one)
@@ -249,6 +256,59 @@ public class HomeActivity extends AppCompatActivity implements
         transaction.commit();
     }
 
+    private void handleConnectionListGetOnPostExecute(final String result){
+//        try {
+//            JSONObject root = new JSONObject(result);
+//            if (root.has(getString(R.string.keys_json_connections_response))) {
+//                JSONObject response = root.getJSONObject(
+//                        getString(R.string.keys_json_connections_response));
+//                if (response.has(getString(R.string.keys_json_connections_data))) {
+//                    JSONArray data = response.getJSONArray(
+//                            getString(R.string.keys_json_connections_data));
+//                    List<Connection> connections = new ArrayList<>();
+//                    for(int i = 0; i < data.length(); i++) {
+//                        JSONObject jsonSetList = data.getJSONObject(i);
+//                        connections.add(new Connection.Builder(
+//                                jsonSetList.getString(getString(R.string.keys_json_connections_username))
+//                        ).build());
+//                    }
+//                    Connection[] connectionsAsArray = new Connection[connections.size()];
+//                    connectionsAsArray = connections.toArray(connectionsAsArray);
+//                    Bundle args = new Bundle();
+//                    args.putSerializable(ConnectionListFragment.ARG_CONNECTIONS, connectionsAsArray);
+//                    Fragment frag = new ConnectionListFragment();
+//                    frag.setArguments(args);
+//                    onWaitFragmentInteractionHide();
+//                    loadFragment(frag);
+//                } else {
+//                    Log.e("ERROR!", "No data array");
+//                    //notify user
+//                    onWaitFragmentInteractionHide();
+//                }
+//            } else {
+//                Log.e("ERROR!", "No response");
+//                //notify user
+//                onWaitFragmentInteractionHide();
+//            }
+//        } catch (JSONException e) {
+//            e.printStackTrace();
+//            Log.e("ERROR!", e.getMessage());
+//            //notify user
+//            onWaitFragmentInteractionHide();
+//        }
+
+
+    }
+
+    private void loadFragment(Fragment frag) {
+        FragmentTransaction transaction = getSupportFragmentManager()
+                .beginTransaction()
+                .replace(R.id.home_display_container, frag)
+                .addToBackStack(null);
+        // Commit the transaction
+        transaction.commit();
+    }
+
     public class ButtomNaviListener implements BottomNavigationView.OnNavigationItemSelectedListener {
 
 
@@ -263,6 +323,7 @@ public class HomeActivity extends AppCompatActivity implements
         @Override
         public boolean onNavigationItemSelected(@NonNull MenuItem item) {
             Log.wtf("HomeAct", "buttom navi is cliked");
+            Uri uri;
             switch (item.getItemId()) {
                 case R.id.butt_navigation_home:
                     HomeFragment home = new HomeFragment();
@@ -273,9 +334,8 @@ public class HomeActivity extends AppCompatActivity implements
                     transaction.commit();
 
                     return true;
-
                 case R.id.butt_navigation_chats:
-                    Uri uri = new Uri.Builder()
+                    uri = new Uri.Builder()
                             .scheme("https")
                             .appendPath(getString(R.string.ep_base_url))
                             .appendPath("conversation")
@@ -288,7 +348,28 @@ public class HomeActivity extends AppCompatActivity implements
 
                     return true;
                 case R.id.butt_navigation_connections:
+//                    uri = new Uri.Builder()
+//                            .scheme("https")
+//                            .appendPath(getString(R.string.ep_base_url))
+//                            .appendPath("connection")
+//                            .appendPath("get")
+//                            .build();
+//                    new GetAsyncTask.Builder(uri.toString())
+//                            .onPreExecute(myActivity::onWaitFragmentInteractionShow)
+//                            .onPostExecute(myActivity::handleConnectionListGetOnPostExecute)
+//                            .addHeaderField("authorization", mJwToken) //add the JWT as a header
+//                            .build().execute();
                     ConnectionListFragment connects = new ConnectionListFragment();
+                    List<Connection> connections = new ArrayList<>();
+                    for(int i = 0; i < 10; i++){
+                        connections.add(new Connection.Builder("Connection"+i)
+                                    .build());
+                    }
+                    Bundle args = new Bundle();
+                    Connection[] connectionsAsArray = new Connection[connections.size()];
+                    connectionsAsArray = connections.toArray(connectionsAsArray);
+                    args.putSerializable(ConnectionListFragment.ARG_CONNECTIONS, connectionsAsArray);
+                    connects.setArguments(args);
                     FragmentTransaction transaction3 = getSupportFragmentManager()
                             .beginTransaction()
                             .replace(R.id.home_display_container, connects)
@@ -314,5 +395,6 @@ public class HomeActivity extends AppCompatActivity implements
             }
             return false;
         }
+
     }
 }
