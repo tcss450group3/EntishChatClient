@@ -20,7 +20,8 @@ import com.example.blw13.chatclient.utils.GetAsyncTask;
 public class HomeActivity extends AppCompatActivity implements
         ConversationListFragment.OnListFragmentInteractionListener,
         ConnectionListFragment.OnListFragmentInteractionListener,
-        WaitFragment.OnWaitFragmentInteractionListener{
+        WaitFragment.OnWaitFragmentInteractionListener,
+        ChatListFragment.OnChatListFragmentInteractionListener{
 
     private TextView mTextMessage;
 
@@ -184,6 +185,18 @@ public class HomeActivity extends AppCompatActivity implements
 
         // try to log the result of our conversation list respond
          Log.wtf("HomeAct", result);
+
+        Bundle args = new Bundle();
+        args.putSerializable("result" , result);
+
+
+        ChatListFragment convers = new ChatListFragment();
+        convers.setArguments(args);
+        FragmentTransaction trans = getSupportFragmentManager()
+                .beginTransaction()
+                .replace(R.id.home_display_container, convers)
+                .addToBackStack("conversationList");
+        trans.commit();
 //        try {
 //            JSONObject root = new JSONObject(result);
 //            if (root.has(getString(R.string.keys_json_blogs_response))) {
@@ -228,6 +241,11 @@ public class HomeActivity extends AppCompatActivity implements
 //        }
     }
 
+    @Override
+    public void onFragmentInteraction(Uri uri) {
+
+    }
+
     public class ButtomNaviListener implements BottomNavigationView.OnNavigationItemSelectedListener {
 
 
@@ -264,12 +282,6 @@ public class HomeActivity extends AppCompatActivity implements
                             .onPostExecute(myActivity::handleConversationListGetOnPostExecute)
                             .addHeaderField("authorization", mJwToken) //add the JWT as a header
                             .build().execute();
-//                    ConversationListFragment convers = new ConversationListFragment();
-//                    FragmentTransaction transaction2 = getSupportFragmentManager()
-//                            .beginTransaction()
-//                            .replace(R.id.home_display_container, convers)
-//                            .addToBackStack("conversationList");
-//                    transaction2.commit();
 
                     return true;
                 case R.id.butt_navigation_connections:
