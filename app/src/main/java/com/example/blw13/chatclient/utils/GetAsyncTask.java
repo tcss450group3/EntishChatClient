@@ -203,7 +203,7 @@ public class GetAsyncTask extends AsyncTask<Void, String, String> {
 
     @Override
     protected void onPostExecute(String result) {
-
+        mOnPost.accept(result);
     }
 }
 

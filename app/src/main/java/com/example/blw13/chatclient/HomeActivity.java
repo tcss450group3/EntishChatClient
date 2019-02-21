@@ -258,7 +258,6 @@ public class HomeActivity extends AppCompatActivity implements
                             .scheme("https")
                             .appendPath(getString(R.string.ep_base_url))
                             .appendPath("conversation")
-                            .appendPath("get")
                             .build();
                     new GetAsyncTask.Builder(uri.toString())
                             .onPreExecute(myActivity::onWaitFragmentInteractionShow)
