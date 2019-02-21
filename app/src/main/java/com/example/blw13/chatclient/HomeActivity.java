@@ -16,6 +16,10 @@ import android.widget.TextView;
 import com.example.blw13.chatclient.dummy.ConnectionListContent;
 import com.example.blw13.chatclient.dummy.ConversationListContent;
 import com.example.blw13.chatclient.utils.GetAsyncTask;
+import com.example.blw13.chatclient.utils.SendPostAsyncTask;
+
+import org.json.JSONException;
+import org.json.JSONObject;
 
 public class HomeActivity extends AppCompatActivity implements
         ConversationListFragment.OnListFragmentInteractionListener,
@@ -197,53 +201,52 @@ public class HomeActivity extends AppCompatActivity implements
                 .replace(R.id.home_display_container, convers)
                 .addToBackStack("conversationList");
         trans.commit();
-//        try {
-//            JSONObject root = new JSONObject(result);
-//            if (root.has(getString(R.string.keys_json_blogs_response))) {
-//                JSONObject response = root.getJSONObject(
-//                        getString(R.string.keys_json_blogs_response));
-//                if (response.has(getString(R.string.keys_json_blogs_data))) {
-//                    JSONArray data = response.getJSONArray(
-//                            getString(R.string.keys_json_blogs_data));
-//                    List<BlogPost> blogs = new ArrayList<>();
-//                    for(int i = 0; i < data.length(); i++) {
-//                        JSONObject jsonBlog = data.getJSONObject(i);
-//                        blogs.add(new BlogPost.Builder(
-//                                jsonBlog.getString(
-//                                        getString(R.string.keys_json_blogs_pubdate)),
-//                                jsonBlog.getString(
-//                                        getString(R.string.keys_json_blogs_title)))
-//                                .addTeaser(jsonBlog.getString(
-//                                        getString(R.string.keys_json_blogs_teaser)))
-//                                .addUrl(jsonBlog.getString(
-//                                        getString(R.string.keys_json_blogs_url)))
-//                                .build());
-//                    }
-//
-//                    BlogPost[] blogsAsArray = new BlogPost[blogs.size()];
-//                    blogsAsArray = blogs.toArray(blogsAsArray);
-//                    Bundle args = new Bundle();
-//                    args.putSerializable(BlogFragment.ARG_BLOG_LIST, blogsAsArray);
-//                    Fragment frag = new BlogFragment();
-//                    frag.setArguments(args);
-//                    onWaitFragmentInteractionHide();
-//                    loadFragment(frag);
-//                } else {
-//                    Log.e("ERROR!", "No data array");
-//                    //notify user
-//                    onWaitFragmentInteractionHide();
-//                }
-//            } else {
-//                Log.e("ERROR!", "No response"); //notify user onWaitFragmentInteractionHide();
-//            }
-//        } catch (JSONException e) {
-//            e.printStackTrace(); Log.e("ERROR!", e.getMessage()); //notify user onWaitFragmentInteractionHide();
-//        }
+
     }
 
-    @Override
-    public void onFragmentInteraction(Uri uri) {
+    public JSONObject createJSONObject(String chatid) {
+        //build the JSONObject
+        JSONObject msg = new JSONObject();
+        try {
+            msg.put("chatId", chatid);
+        } catch (JSONException e) {
+            Log.wtf("CREDENTIALS", "Error creating JSON: " + e.getMessage());
+        }
+        return msg;
+    }
 
+
+    @Override
+    public void onFragmentInteraction(String chatid) {
+
+        //JSONObject msg = chatid.asJSONObject();
+
+            Uri uri = new Uri.Builder()
+                    .scheme("https")
+                    .appendPath(getString(R.string.ep_base_url))
+                    .appendPath("messaging")
+                    .appendPath("getAll")
+                    .build();
+            new SendPostAsyncTask.Builder(uri.toString(),createJSONObject(chatid))
+                    .onPreExecute(this::onWaitFragmentInteractionShow)
+                    .onPostExecute(this::handleMsgGetOnPostExecute)
+                    .addHeaderField("authorization", mJwToken) //add the JWT as a header
+                    .build().execute();
+    }
+
+    private void handleMsgGetOnPostExecute(final String result) {
+        Bundle args = new Bundle();
+        args.putSerializable("result" , result);
+        Log.wtf("CHATLIST", result);
+        onWaitFragmentInteractionHide();
+        OneConversation conv = new OneConversation();
+
+        conv.setArguments(args);
+        FragmentTransaction transaction = getSupportFragmentManager()
+                .beginTransaction()
+                .replace(R.id.home_display_container, conv)
+                .addToBackStack("oneConv");
+        transaction.commit();
     }
 
     public class ButtomNaviListener implements BottomNavigationView.OnNavigationItemSelectedListener {

@@ -252,6 +252,7 @@ public class LoginFragment extends Fragment implements View.OnClickListener {
 
         //build the JSONObject
         JSONObject msg = credentials.asJSONObject();
+
         Log.e("CREDS--------", msg.toString());
         mCredentials = credentials;
 
