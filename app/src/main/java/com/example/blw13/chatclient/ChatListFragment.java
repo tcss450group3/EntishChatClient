@@ -78,8 +78,10 @@ public class ChatListFragment extends Fragment {
 
                 for (int i = 0; i < data.length(); i++) {
                     JSONObject jsonBlog = data.getJSONObject(i);
-                    TextView textView = new TextView(v.getContext());
-                    textView.setText(jsonBlog.getString("name") + ", chatid:" + jsonBlog.getString("chatid"));
+                    MyTextView textView = new MyTextView(v.getContext()
+                            ,jsonBlog.getString("chatid")
+                            ,jsonBlog.getString("name"));
+                    textView.setText( textView.getName()+ ", chatid:" + textView.getChatid());
                     textView.setHeight(100);
                     int color = Color.argb(255, rnd.nextInt(256), rnd.nextInt(256), rnd.nextInt(256));
                     textView.setBackgroundColor(color);
@@ -90,6 +92,7 @@ public class ChatListFragment extends Fragment {
                         @Override
                         public void onClick(View v) {
                             Log.wtf("CHATLIST", ((TextView) v).getText().toString());
+                            mListener.onFragmentInteraction(((MyTextView)v).getChatid());
                         }
                     });
                     mlayout.addView(textView);
@@ -108,12 +111,12 @@ public class ChatListFragment extends Fragment {
         return v;
     }
 
-    // TODO: Rename method, update argument and hook method into UI event
-    public void onButtonPressed(Uri uri) {
-        if (mListener != null) {
-            mListener.onFragmentInteraction(uri);
-        }
-    }
+//    // TODO: Rename method, update argument and hook method into UI event
+//    public void onButtonPressed(Uri uri) {
+//        if (mListener != null) {
+//            mListener.onFragmentInteraction();
+//        }
+//    }
 
     @Override
     public void onAttach(Context context) {
@@ -144,6 +147,31 @@ public class ChatListFragment extends Fragment {
      */
     public interface OnChatListFragmentInteractionListener {
         // TODO: Update argument type and name
-        void onFragmentInteraction(Uri uri);
+        void onFragmentInteraction(String charid);
+    }
+
+    public class MyTextView extends android.support.v7.widget.AppCompatTextView {
+
+
+        private String mChatid;
+        private String mName;
+
+
+        public MyTextView(Context context, String charid, String name ) {
+
+            super(context);
+            mChatid = charid;
+            mName = name;
+        }
+
+        public String getChatid() {
+            return mChatid;
+        }
+
+        public String getName() {
+            return mName;
+        }
+
+
     }
 }
