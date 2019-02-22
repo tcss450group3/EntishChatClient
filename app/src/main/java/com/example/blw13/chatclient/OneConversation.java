@@ -8,6 +8,7 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.text.Layout;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -84,58 +85,51 @@ public class OneConversation extends Fragment {
         v.findViewById(R.id.button_chat_send).setOnClickListener(this::handleSendClick);
         mMessageInputEditText = v.findViewById(R.id.editText_Conversation_input);
         mlayout = (LinearLayout) v.findViewById(R.id.oneconversation_scroll_view);
+        ScrollView sv = ((ScrollView)v.findViewById(R.id.scrollView_One_Conversation_Viewer));
+
         //gets arguments from Bundle and retrieves email to display.
         Bundle args = getArguments();
         if(args != null) {
-
-
-            // JSONObject result = (JSONObject) getArguments().get("result");
-
+            mCredentials = (Credentials) getArguments().get(getString(R.string.keys_intent_credentials));
+            mEmail = mCredentials.getEmail();
             try{
-
                 JSONObject root = new JSONObject((String) getArguments().get("result"));
 
                 if (root.has("messages")) {
                     JSONArray data = root.getJSONArray("messages");
 
 
-                    LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT
-                            , ViewGroup.LayoutParams.WRAP_CONTENT);
-                    params.setMargins(10, 10, 10, 50);
-//                    params.height = 200;
-//                    params.width = 600;
-
-                    //LinearLayout mlayout = v.findViewById(R.id.one_conv_scroll_layout);
-
-
-                    Random rnd = new Random();
-
-
                     for (int i = data.length()-1; i >=0; i--) {
                         JSONObject jsonBlog = data.getJSONObject(i);
                         TextView textView = new TextView(v.getContext());
                         textView.setText( jsonBlog.getString("email")+ ": " + jsonBlog.getString("message"));
-                        textView.setHeight(100);
-//                        int color = Color.rgb(227, 232, 227);
-                        textView.setBackground(getResources().getDrawable(R.drawable.rounded_corner));
+                        LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT
+                                , ViewGroup.LayoutParams.WRAP_CONTENT);
+
+                        if(mEmail.equals(jsonBlog.getString("email"))) {
+                            textView.setBackground(getResources().getDrawable(R.drawable.rounded_corner_orange));
+                            params.gravity = Gravity.RIGHT;
+                        } else {
+                            textView.setBackground(getResources().getDrawable(R.drawable.rounded_corner));
+                        }
+
+                       // textView.setGravity(Ori);
+
+
+                        params.setMargins(10, 10, 10, 50);
+                        params.height = ViewGroup.LayoutParams.WRAP_CONTENT;
 
                         textView.setTextSize(18);
                         textView.setLayoutParams(params);
                         mlayout.addView(textView);
                     }
-
-//                    ScrollView sv = (ScrollView)v.findViewById(R.id.scrollView_One_Conversation_Viewer);
-//                    sv.fullScroll(ScrollView.FOCUS_DOWN);
                     Runnable runnable= new Runnable() {
                         @Override
                         public void run() {
-                            ((ScrollView)v.findViewById(R.id.scrollView_One_Conversation_Viewer)).fullScroll(ScrollView.FOCUS_DOWN);
+                            sv.fullScroll(ScrollView.FOCUS_DOWN);
                         }
                     };
-                    ((ScrollView)v.findViewById(R.id.scrollView_One_Conversation_Viewer)).post(runnable);
-
-                    
-
+                    sv.post(runnable);
                 }
 
             }   catch (JSONException e) {
