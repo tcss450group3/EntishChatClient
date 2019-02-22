@@ -13,6 +13,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.LinearLayout;
+import android.widget.ScrollView;
 import android.widget.TableRow;
 import android.widget.TextView;
 
@@ -110,7 +111,7 @@ public class OneConversation extends Fragment {
                     Random rnd = new Random();
 
 
-                    for (int i = 0; i < data.length(); i++) {
+                    for (int i = data.length()-1; i >=0; i--) {
                         JSONObject jsonBlog = data.getJSONObject(i);
                         TextView textView = new TextView(v.getContext());
                         textView.setText( jsonBlog.getString("email")+ ": " + jsonBlog.getString("message"));
@@ -122,6 +123,16 @@ public class OneConversation extends Fragment {
                         textView.setLayoutParams(params);
                         mlayout.addView(textView);
                     }
+
+//                    ScrollView sv = (ScrollView)v.findViewById(R.id.scrollView_One_Conversation_Viewer);
+//                    sv.fullScroll(ScrollView.FOCUS_DOWN);
+                    Runnable runnable= new Runnable() {
+                        @Override
+                        public void run() {
+                            ((ScrollView)v.findViewById(R.id.scrollView_One_Conversation_Viewer)).fullScroll(ScrollView.FOCUS_DOWN);
+                        }
+                    };
+                    ((ScrollView)v.findViewById(R.id.scrollView_One_Conversation_Viewer)).post(runnable);
 
                 }
 
