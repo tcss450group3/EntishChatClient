@@ -59,8 +59,8 @@ public class OneConversation extends Fragment {
                     LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT
                             , ViewGroup.LayoutParams.WRAP_CONTENT);
                     params.setMargins(10, 10, 10, 50);
-                    params.height = 200;
-                    params.width = 1200;
+//                    params.height = 200;
+//                    params.width = 600;
 
                     //LinearLayout mlayout = v.findViewById(R.id.one_conv_scroll_layout);
                     LinearLayout mlayout = (LinearLayout) v.findViewById(R.id.oneconversation_scroll_view);
@@ -73,8 +73,8 @@ public class OneConversation extends Fragment {
                         TextView textView = new TextView(v.getContext());
                         textView.setText( jsonBlog.getString("email")+ ": " + jsonBlog.getString("message"));
                         textView.setHeight(100);
-                        int color = Color.argb(255, rnd.nextInt(256), rnd.nextInt(256), rnd.nextInt(256));
-                        textView.setBackgroundColor(color);
+//                        int color = Color.rgb(227, 232, 227);
+                        textView.setBackground(getResources().getDrawable(R.drawable.rounded_corner));
 
                         textView.setTextSize(18);
                         textView.setLayoutParams(params);
@@ -90,6 +90,8 @@ public class OneConversation extends Fragment {
                         }
                     };
                     ((ScrollView)v.findViewById(R.id.scrollView_One_Conversation_Viewer)).post(runnable);
+
+                    
 
                 }
 
