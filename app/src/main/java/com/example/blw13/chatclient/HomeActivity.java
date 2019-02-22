@@ -40,72 +40,6 @@ public class HomeActivity extends AppCompatActivity implements
     private String mUsername;
     private Credentials mCredentials;
 
-//    private BottomNavigationView.OnNavigationItemSelectedListener mOnNavigationItemSelectedListener
-//            = new BottomNavigationView.OnNavigationItemSelectedListener() {
-//
-//
-//        @Override
-//        public boolean onNavigationItemSelected(@NonNull MenuItem item) {
-//            switch (item.getItemId()) {
-//                case R.id.butt_navigation_home:
-//                    HomeFragment home = new HomeFragment();
-//                    FragmentTransaction transaction = getSupportFragmentManager()
-//                            .beginTransaction()
-//                            .replace(R.id.home_display_container, home)
-//                            .addToBackStack("home");
-//                    transaction.commit();
-//
-//                    return true;
-//
-//                case R.id.butt_navigation_chats:
-//                    Uri uri = new Uri.Builder()
-//                            .scheme("https")
-//                            .appendPath(getString(R.string.ep_base_url))
-//                            .appendPath(getString(R.string.ep_phish))
-//                            .appendPath(getString(R.string.ep_blog))
-//                            .appendPath(getString(R.string.ep_get))
-//                            .build();
-//                    new GetAsyncTask.Builder(uri.toString())
-//                            .onPreExecute(this::onWaitFragmentInteractionShow)
-//                            .onPostExecute(this::handleConversationListGetOnPostExecute)
-//                            .addHeaderField("authorization", mJwToken) //add the JWT as a header
-//                            .build().execute();
-////                    ConversationListFragment convers = new ConversationListFragment();
-////                    FragmentTransaction transaction2 = getSupportFragmentManager()
-////                            .beginTransaction()
-////                            .replace(R.id.home_display_container, convers)
-////                            .addToBackStack("conversationList");
-////                    transaction2.commit();
-////
-////                    return true;
-//                case R.id.butt_navigation_connections:
-//                    ConnectionListFragment connects = new ConnectionListFragment();
-//                    FragmentTransaction transaction3 = getSupportFragmentManager()
-//                            .beginTransaction()
-//                            .replace(R.id.home_display_container, connects)
-//                            .addToBackStack("conversationList");
-//                    transaction3.commit();
-//                    return true;
-//                case R.id.butt_navigation_weather:
-//                    WeatherFragment weather = new WeatherFragment();
-//                    FragmentTransaction transaction4 = getSupportFragmentManager()
-//                            .beginTransaction()
-//                            .replace(R.id.home_display_container, weather)
-//                            .addToBackStack("home");
-//                    transaction4.commit();
-//                    return true;
-//                case R.id.butt_navigation_account:
-//                    AccountFragment accountFragment = new AccountFragment();
-//                    FragmentTransaction transaction5 = getSupportFragmentManager()
-//                            .beginTransaction()
-//                            .replace(R.id.home_display_container, accountFragment)
-//                            .addToBackStack("account");
-//                    transaction5.commit();
-//                    return true;
-//            }
-//            return false;
-//        }
-//    };
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -122,7 +56,7 @@ public class HomeActivity extends AppCompatActivity implements
 
         if (intent.getExtras().containsKey(getString(R.string.keys_intent_credentials))) {
             mCredentials = (Credentials) intent.getExtras().getSerializable(getString(R.string.keys_intent_credentials));
-            args.putSerializable(getString(R.string.keys_intent_credentials), mCredentials);
+            args.putSerializable(getString(R.string.keys_json_field_username), mCredentials.getUsername());
         }
 
         Fragment fragment;
@@ -133,9 +67,6 @@ public class HomeActivity extends AppCompatActivity implements
             fragment.setArguments(args);
         }
 
-
-
-        mEmail = getIntent().getStringExtra(getString(R.string.keys_json_field_email));
 
         mTextMessage = (TextView) findViewById(R.id.message);
         BottomNavigationView navigation = (BottomNavigationView) findViewById(R.id.home_navigation_bar);
@@ -322,7 +253,12 @@ public class HomeActivity extends AppCompatActivity implements
             Log.wtf("HomeAct", "buttom navi is cliked");
             switch (item.getItemId()) {
                 case R.id.butt_navigation_home:
+
+                    Bundle args = new Bundle();
+                    args.putSerializable(getString(R.string.keys_json_field_username), mCredentials.getUsername());
+
                     HomeFragment home = new HomeFragment();
+                    home.setArguments(args);
                     FragmentTransaction transaction = getSupportFragmentManager()
                             .beginTransaction()
                             .replace(R.id.home_display_container, home)
