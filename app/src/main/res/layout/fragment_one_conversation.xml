@@ -8,20 +8,22 @@
 
     <ScrollView
         android:id="@+id/scrollView_One_Conversation_Viewer"
-        android:layout_width="393dp"
-        android:layout_height="581dp"
+        android:layout_width="394dp"
+        android:layout_height="0dp"
         android:layout_marginStart="8dp"
         android:layout_marginTop="25dp"
         android:layout_marginEnd="8dp"
+        android:layout_marginBottom="8dp"
+        app:layout_constraintBottom_toTopOf="@+id/editText_Conversation_input"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textView_conversation_participants">
+        app:layout_constraintTop_toBottomOf="@+id/textView_conversation_participants_list">
 
         <LinearLayout
+            android:id="@+id/oneconversation_scroll_view"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:id="@+id/oneconversation_scroll_view">
+            android:orientation="vertical">
 
         </LinearLayout>
     </ScrollView>
@@ -31,30 +33,14 @@
         android:layout_width="328dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
-        android:layout_marginTop="8dp"
-        android:layout_marginBottom="8dp"
+        android:layout_marginBottom="80dp"
         android:ems="10"
         android:inputType="textPersonName"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/scrollView_One_Conversation_Viewer" />
-
-    <ImageButton
-        android:id="@+id/imageButton_Send_message"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="10dp"
-        android:layout_marginTop="8dp"
-        android:layout_marginEnd="8dp"
-        android:layout_marginBottom="8dp"
-        android:src="@android:drawable/ic_menu_send"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/editText_Conversation_input"
-        app:layout_constraintTop_toBottomOf="@+id/scrollView_One_Conversation_Viewer" />
+        app:layout_constraintStart_toStartOf="parent" />
 
     <TextView
-        android:id="@+id/textView_conversation_participants"
+        android:id="@+id/textView_conversation_participants_list"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
@@ -71,6 +57,22 @@
         android:layout_marginEnd="8dp"
         android:text="Add Participants"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/textView_conversation_participants"
+        app:layout_constraintStart_toEndOf="@+id/textView_conversation_participants_list"
         app:layout_constraintTop_toTopOf="parent" />
+
+    <ImageButton
+        android:id="@+id/button_chat_send"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginBottom="80dp"
+        android:src="@android:drawable/ic_menu_send"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/editText_Conversation_input"
+        app:layout_constraintTop_toBottomOf="@+id/scrollView_One_Conversation_Viewer" />
+
+
 </android.support.constraint.ConstraintLayout>

@@ -59,11 +59,6 @@ public class ChatListFragment extends Fragment {
 
             if (root.has("conversation")) {
                 JSONArray data = root.getJSONArray("conversation");
-//            String toDisplay = "A confirmation email has been sent to "
-//                    + args.getCharSequence(getString(R.string.keys_verify_email))
-//                    + " please check your email and enter the code to activate your account";
-//            mVerifyTextViewNotice.setText(toDisplay);
-
 
                 LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT
                         , ViewGroup.LayoutParams.WRAP_CONTENT);

@@ -4,15 +4,18 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.BottomNavigationView;
+import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.MenuItem;
 import android.widget.TextView;
 
+import com.example.blw13.chatclient.Model.Credentials;
 import com.example.blw13.chatclient.dummy.ConnectionListContent;
 import com.example.blw13.chatclient.dummy.ConversationListContent;
 import com.example.blw13.chatclient.utils.GetAsyncTask;
@@ -20,6 +23,8 @@ import com.example.blw13.chatclient.utils.SendPostAsyncTask;
 
 import org.json.JSONException;
 import org.json.JSONObject;
+
+import me.pushy.sdk.Pushy;
 
 public class HomeActivity extends AppCompatActivity implements
         ConversationListFragment.OnListFragmentInteractionListener,
@@ -33,6 +38,7 @@ public class HomeActivity extends AppCompatActivity implements
     private String mNameFirst;
     private String mNameLast;
     private String mUsername;
+    private Credentials mCredentials;
 
 //    private BottomNavigationView.OnNavigationItemSelectedListener mOnNavigationItemSelectedListener
 //            = new BottomNavigationView.OnNavigationItemSelectedListener() {
@@ -106,33 +112,46 @@ public class HomeActivity extends AppCompatActivity implements
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
 
+        Intent intent = getIntent();
+        Bundle args = new Bundle();
 
-        mJwToken = getIntent().getStringExtra(getString(R.string.keys_intent_jwt));
+        if (intent.getExtras().containsKey(getString(R.string.keys_intent_jwt))) {
+            mJwToken = getIntent().getStringExtra(getString(R.string.keys_intent_jwt));
+            args.putSerializable(getString(R.string.keys_intent_jwt), mJwToken);
+        }
+
+        if (intent.getExtras().containsKey(getString(R.string.keys_intent_credentials))) {
+            mCredentials = (Credentials) intent.getExtras().getSerializable(getString(R.string.keys_intent_credentials));
+            args.putSerializable(getString(R.string.keys_intent_credentials), mCredentials);
+        }
+
+        Fragment fragment;
+        if (getIntent().getBooleanExtra(getString(R.string.keys_intent_notification_msg), false)) {
+            fragment = new ChatFragment();
+        } else {
+            fragment = new HomeFragment();
+            fragment.setArguments(args);
+        }
+
+
 
         mTextMessage = (TextView) findViewById(R.id.message);
         BottomNavigationView navigation = (BottomNavigationView) findViewById(R.id.home_navigation_bar);
         navigation.setOnNavigationItemSelectedListener(new ButtomNaviListener(this));
 
-        if(savedInstanceState == null) {
-            if (findViewById(R.id.home_display_container) != null) {
-                //lf = new LoginFragment();
-                getSupportFragmentManager().beginTransaction()
-                        .add(R.id.home_display_container, new HomeFragment())
-                        .commit();
-            } }
-
+        FragmentTransaction transaction = getSupportFragmentManager()
+                .beginTransaction()
+                .replace(R.id.home_display_container, fragment)
+                .addToBackStack(null);
+        // Commit the transaction
+        transaction.commit();
     }
 
     protected void logout() {
-        SharedPreferences prefs =
-                getSharedPreferences(
-                        getString(R.string.keys_shared_prefs),
-                        Context.MODE_PRIVATE);
 
-        //remove the saved credentials from StoredPrefs
-        prefs.edit().remove(getString(R.string.keys_prefs_password)).apply();
-        prefs.edit().remove(getString(R.string.keys_prefs_email)).apply();
-        prefs.edit().remove(getString(R.string.keys_prefs_username)).apply();
+        new DeleteTokenAsyncTask().execute();
+
+
         //close the app
         //finishAndRemoveTask();
 
@@ -192,6 +211,8 @@ public class HomeActivity extends AppCompatActivity implements
 
         Bundle args = new Bundle();
         args.putSerializable("result" , result);
+        args.putSerializable(getString(R.string.keys_intent_jwt), mJwToken);
+        args.putSerializable(getString(R.string.keys_intent_credentials), mCredentials.getEmail());
 
 
         ChatListFragment convers = new ChatListFragment();
@@ -236,8 +257,10 @@ public class HomeActivity extends AppCompatActivity implements
 
     private void handleMsgGetOnPostExecute(final String result) {
         Bundle args = new Bundle();
-        args.putSerializable("result" , result);
         Log.wtf("CHATLIST", result);
+        args.putSerializable("result" , result);
+        args.putSerializable(getString(R.string.keys_intent_jwt), mJwToken);
+        args.putSerializable(getString(R.string.keys_intent_credentials), mCredentials);
         onWaitFragmentInteractionHide();
         OneConversation conv = new OneConversation();
 
@@ -249,16 +272,48 @@ public class HomeActivity extends AppCompatActivity implements
         transaction.commit();
     }
 
-    public class ButtomNaviListener implements BottomNavigationView.OnNavigationItemSelectedListener {
+    // Deleting the Pushy device token must be done asynchronously. Good thing
+    // we have something that allows us to do that.
+    class DeleteTokenAsyncTask extends AsyncTask<Void, Void, Void> {
 
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+            onWaitFragmentInteractionShow();
+        }
+
+        @Override
+        protected Void doInBackground(Void... voids) {
+            //since we are already doing stuff in the background, go ahead
+            //and remove the credentials from shared prefs here.
+            SharedPreferences prefs =
+                    getSharedPreferences(
+                            getString(R.string.keys_shared_prefs),
+                            Context.MODE_PRIVATE);
+
+            prefs.edit().remove(getString(R.string.keys_prefs_password)).apply();
+            prefs.edit().remove(getString(R.string.keys_prefs_email)).apply();
+
+            //unregister the device from the Pushy servers
+            Pushy.unregister(HomeActivity.this);
+
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(Void aVoid) {
+            super.onPostExecute(aVoid);
+        }
+    }
+
+
+    public class ButtomNaviListener implements BottomNavigationView.OnNavigationItemSelectedListener {
 
         private HomeActivity myActivity;
 
         public ButtomNaviListener(HomeActivity theActivity) {
             myActivity = theActivity;
         }
-
-
 
         @Override
         public boolean onNavigationItemSelected(@NonNull MenuItem item) {
