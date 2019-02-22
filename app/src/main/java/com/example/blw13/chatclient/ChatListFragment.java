@@ -62,9 +62,9 @@ public class ChatListFragment extends Fragment {
 
                 LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT
                         , ViewGroup.LayoutParams.WRAP_CONTENT);
-                params.setMargins(10, 10, 10, 50);
+                params.setMargins(10, 10, 10, 10);
                 params.height = 200;
-                params.width = 1200;
+                params.width = ViewGroup.LayoutParams.MATCH_PARENT;
 
                 LinearLayout mlayout = (LinearLayout) v.findViewById(R.id.chatlist_scroll_layout);
 
@@ -77,8 +77,9 @@ public class ChatListFragment extends Fragment {
                             ,jsonBlog.getString("chatid")
                             ,jsonBlog.getString("name"));
                     textView.setText( textView.getName()+ ", chatid:" + textView.getChatid());
-                    textView.setHeight(100);
-                    int color = Color.argb(255, rnd.nextInt(256), rnd.nextInt(256), rnd.nextInt(256));
+                    //textView.setHeight(100);
+                    int color;
+                    color = Color.rgb(174, 174, 174);
                     textView.setBackgroundColor(color);
 
                     textView.setTextSize(36);
