@@ -36,7 +36,7 @@ public class OneConversation extends Fragment {
 
     private static final String TAG = "CHAT_FRAG";
 
-    private static final String CHAT_ID = "1";
+    //private static final String CHAT_ID = "1";
 
     private TextView mMessageOutputTextView;
     private EditText mMessageInputEditText;
@@ -46,6 +46,9 @@ public class OneConversation extends Fragment {
     private String mJwToken;
     private String mSendUrl;
     private LinearLayout mlayout;
+    private String mChatid;
+    private JSONObject mLastJSON;
+    private View mView;
 
     public OneConversation() {
         // Required empty public constructor
@@ -63,6 +66,9 @@ public class OneConversation extends Fragment {
             }
             if (getArguments().containsKey(getString(R.string.keys_intent_jwt))) {
                 mJwToken = getArguments().getString(getString(R.string.keys_intent_jwt));
+            }
+            if (getArguments().containsKey("chatid")) {
+                mChatid = getArguments().getString("chatid");
             }
 
         }
@@ -82,6 +88,7 @@ public class OneConversation extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View v = inflater.inflate(R.layout.fragment_one_conversation, container, false);
+        mView = v;
         v.findViewById(R.id.button_chat_send).setOnClickListener(this::handleSendClick);
         mMessageInputEditText = v.findViewById(R.id.editText_Conversation_input);
         mlayout = (LinearLayout) v.findViewById(R.id.oneconversation_scroll_view);
@@ -143,12 +150,12 @@ public class OneConversation extends Fragment {
 
     private void handleSendClick(final View theButton) {
         String msg = mMessageInputEditText.getText().toString();
-Log.e("ERROR!", "should happen. Email " + mEmail + " msg = "+msg+" chat id "+ CHAT_ID);
+        Log.e("ERROR!", "should happen. Email " + mEmail + " msg = "+msg+" chat id "+ mChatid);
         JSONObject messageJson = new JSONObject();
         try {
             messageJson.put("email", mEmail);
             messageJson.put("message", msg);
-            messageJson.put("chatId", CHAT_ID);
+            messageJson.put("chatId", mChatid);
         } catch (JSONException e) {
             e.printStackTrace();
             Log.e("ERROR! ", e.getMessage());
@@ -159,6 +166,7 @@ Log.e("ERROR!", "should happen. Email " + mEmail + " msg = "+msg+" chat id "+ CH
                 .onCancelled(error -> Log.e(TAG, error))
                 .addHeaderField("authorization", mJwToken)
                 .build().execute();
+        mLastJSON = messageJson;
     }
 
     private void endOfSendMsgTask(final String result) {
@@ -171,8 +179,40 @@ Log.e("ERROR!", "should happen. Email " + mEmail + " msg = "+msg+" chat id "+ CH
                 //The web service got our message. Time to clear out the input EditText
                 mMessageInputEditText.setText("");
 
+                ScrollView sv = ((ScrollView)mView.findViewById(R.id.scrollView_One_Conversation_Viewer));
                 //its up to you to decide if you want to send the message to the output here
                 //or wait for the message to come back from the web service.
+                JSONObject jsonBlog = mLastJSON;
+                TextView textView = new TextView(mView.getContext());
+                textView.setText( jsonBlog.getString("email")+ ": " + jsonBlog.getString("message"));
+                LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT
+                        , ViewGroup.LayoutParams.WRAP_CONTENT);
+
+                if(mEmail.equals(jsonBlog.getString("email"))) {
+                    textView.setBackground(getResources().getDrawable(R.drawable.rounded_corner_orange));
+                    params.gravity = Gravity.RIGHT;
+                } else {
+                    textView.setBackground(getResources().getDrawable(R.drawable.rounded_corner));
+                }
+
+                // textView.setGravity(Ori);
+
+
+                params.setMargins(10, 10, 10, 50);
+                params.height = ViewGroup.LayoutParams.WRAP_CONTENT;
+
+                textView.setTextSize(18);
+                textView.setLayoutParams(params);
+                mlayout.addView(textView);
+
+                Runnable runnable= new Runnable() {
+                    @Override
+                    public void run() {
+                        sv.fullScroll(ScrollView.FOCUS_DOWN);
+                    }
+                };
+                sv.post(runnable);
+
             }
         } catch (JSONException e) {
             Log.e("ERROR!", e.getMessage());

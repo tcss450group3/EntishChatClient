@@ -17,7 +17,6 @@ import android.widget.TextView;
 
 import com.example.blw13.chatclient.Model.Credentials;
 import com.example.blw13.chatclient.dummy.ConnectionListContent;
-import com.example.blw13.chatclient.dummy.ConversationListContent;
 import com.example.blw13.chatclient.utils.GetAsyncTask;
 import com.example.blw13.chatclient.utils.SendPostAsyncTask;
 
@@ -39,6 +38,7 @@ public class HomeActivity extends AppCompatActivity implements
     private String mNameLast;
     private String mUsername;
     private Credentials mCredentials;
+    private String mcurrentchatid;
 
 
     @Override
@@ -163,6 +163,7 @@ public class HomeActivity extends AppCompatActivity implements
         JSONObject msg = new JSONObject();
         try {
             msg.put("chatId", chatid);
+            mcurrentchatid = chatid;
         } catch (JSONException e) {
             Log.wtf("CREDENTIALS", "Error creating JSON: " + e.getMessage());
         }
@@ -172,8 +173,6 @@ public class HomeActivity extends AppCompatActivity implements
 
     @Override
     public void onFragmentInteraction(String chatid) {
-
-        //JSONObject msg = chatid.asJSONObject();
 
             Uri uri = new Uri.Builder()
                     .scheme("https")
@@ -194,6 +193,7 @@ public class HomeActivity extends AppCompatActivity implements
         args.putSerializable("result" , result);
         args.putSerializable(getString(R.string.keys_intent_jwt), mJwToken);
         args.putSerializable(getString(R.string.keys_intent_credentials), mCredentials);
+        args.putSerializable("chatid", mcurrentchatid);
         onWaitFragmentInteractionHide();
         OneConversation conv = new OneConversation();
 

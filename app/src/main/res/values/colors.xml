@@ -4,6 +4,7 @@
     <color name="colorPrimaryDark">#849E73</color>
     <color name="colorPrimaryDarkTrans">#55849e73</color>
     <color name="colorAccent">#FF7034</color>
+    <color name="colorAccentLight">#e29473</color>
     <color name="colorExtra1">#E3E8E3</color>
     <color name="colorExtra2">#4E5735</color>
     <color name="colorExtra3">#4D3725</color>
