@@ -27,7 +27,6 @@ import org.json.JSONObject;
 import me.pushy.sdk.Pushy;
 
 public class HomeActivity extends AppCompatActivity implements
-        ConversationListFragment.OnListFragmentInteractionListener,
         ConnectionListFragment.OnListFragmentInteractionListener,
         WaitFragment.OnWaitFragmentInteractionListener,
         ChatListFragment.OnChatListFragmentInteractionListener{
@@ -35,6 +34,7 @@ public class HomeActivity extends AppCompatActivity implements
     private TextView mTextMessage;
 
     private String mJwToken;
+    private String mEmail;
     private String mNameFirst;
     private String mNameLast;
     private String mUsername;
@@ -135,6 +135,8 @@ public class HomeActivity extends AppCompatActivity implements
 
 
 
+        mEmail = getIntent().getStringExtra(getString(R.string.keys_json_field_email));
+
         mTextMessage = (TextView) findViewById(R.id.message);
         BottomNavigationView navigation = (BottomNavigationView) findViewById(R.id.home_navigation_bar);
         navigation.setOnNavigationItemSelectedListener(new ButtomNaviListener(this));
@@ -162,15 +164,15 @@ public class HomeActivity extends AppCompatActivity implements
          finish();
     }
 
-    @Override
-    public void onConversationListFragmentInteraction(ConversationListContent.Conversation item) {
-        ChatFragment one = new ChatFragment();
-        FragmentTransaction transaction = getSupportFragmentManager()
-                .beginTransaction()
-                .replace(R.id.home_display_container, one)
-                .addToBackStack("conversation");
-        transaction.commit();
-    }
+//    @Override
+//    public void onConversationListFragmentInteraction(ConversationListContent.Conversation item) {
+//        ChatFragment one = new ChatFragment();
+//        FragmentTransaction transaction = getSupportFragmentManager()
+//                .beginTransaction()
+//                .replace(R.id.home_display_container, one)
+//                .addToBackStack("conversation");
+//        transaction.commit();
+//    }
 
     @Override
     public void onConnectionListFragmentInteraction(ConnectionListContent.Connection item) {
