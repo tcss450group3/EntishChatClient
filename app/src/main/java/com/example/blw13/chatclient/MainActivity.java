@@ -8,14 +8,15 @@ import android.util.Log;
 
 import com.example.blw13.chatclient.Model.Credentials;
 
+import me.pushy.sdk.Pushy;
+
 public class  MainActivity extends AppCompatActivity implements LoginFragment.OnLoginFragmentInteractionListener,
         RegisterFragment.OnRegisterFragmentInteractionListener, VerifyFragment.OnVerifyFragmentInteractionListener {
-//testcommit ROB
-    // test2
-//test2
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        Pushy.listen(this);
         setContentView(R.layout.activity_main);
 
 
@@ -38,6 +39,7 @@ public class  MainActivity extends AppCompatActivity implements LoginFragment.On
         intent.putExtra(getString(R.string.keys_json_field_username), id.getUsername());
         intent.putExtra("info",id.getEmail().toString() );
         intent.putExtra(getString(R.string.keys_intent_jwt), jwt);
+        intent.putExtra(getString(R.string.keys_intent_credentials), id);
         startActivity(intent);
         finish();
     }

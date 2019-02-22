@@ -10,7 +10,11 @@
     <!--This is the endpoint to send the 4 digit code in for confirmation-->
     <string name="ep_confirm">confirm</string>
 
+    <!--Pushy endpoints-->
+    <string name="ep_pushy">pushy</string>
+    <string name="ep_token">token</string>
 
+    <string name="ep_messaging_base">messaging</string>
     <string name="ep_send">send</string>
     <string name="ep_get_all_messages">getAll</string>
 
