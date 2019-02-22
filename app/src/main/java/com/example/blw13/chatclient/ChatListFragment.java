@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.text.Layout;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -63,7 +64,7 @@ public class ChatListFragment extends Fragment {
                 LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT
                         , ViewGroup.LayoutParams.WRAP_CONTENT);
                 params.setMargins(10, 10, 10, 10);
-                params.height = 200;
+                params.height =ViewGroup.LayoutParams.WRAP_CONTENT;
                 params.width = ViewGroup.LayoutParams.MATCH_PARENT;
 
                 LinearLayout mlayout = (LinearLayout) v.findViewById(R.id.chatlist_scroll_layout);
@@ -76,11 +77,14 @@ public class ChatListFragment extends Fragment {
                     MyTextView textView = new MyTextView(v.getContext()
                             ,jsonBlog.getString("chatid")
                             ,jsonBlog.getString("name"));
-                    textView.setText( textView.getName()+ ", chatid:" + textView.getChatid());
+                    textView.setText( textView.getName());
+                    textView.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_launcher_foreground, 0, 0, 0);
+                   // textView.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
+                    textView.setGravity(Gravity.CENTER_VERTICAL | Gravity.CENTER_HORIZONTAL);
                     //textView.setHeight(100);
                     int color;
-                    color = Color.rgb(174, 174, 174);
-                    textView.setBackgroundColor(color);
+                    color = Color.rgb(227, 232, 227);
+                    textView.setBackground(getResources().getDrawable(R.drawable.rounded_corner_for_conversation_list));
 
                     textView.setTextSize(36);
                     textView.setLayoutParams(params);
