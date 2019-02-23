@@ -1,86 +1,128 @@
 package com.example.blw13.chatclient;
 
 import android.content.Context;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.support.v7.widget.GridLayoutManager;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
+import android.util.Log;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.LinearLayout;
+import android.widget.TextView;
 
-import com.example.blw13.chatclient.dummy.ConversationListContent;
-import com.example.blw13.chatclient.dummy.ConversationListContent.Conversation;
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.util.Random;
+
 
 /**
- * A fragment representing a list of Items.
- * <p/>
- * Activities containing this fragment MUST implement the {@link OnListFragmentInteractionListener}
- * interface.
+ * A simple {@link Fragment} subclass.
+ * Activities that contain this fragment must implement the
+ * {@link ConversationListFragment.OnChatListFragmentInteractionListener} interface
+ * to handle interaction events.
  */
 public class ConversationListFragment extends Fragment {
 
-    // TODO: Customize parameter argument names
-    private static final String ARG_COLUMN_COUNT = "column-count";
-    // TODO: Customize parameters
-    private int mColumnCount = 1;
-    private OnListFragmentInteractionListener mListener;
+    private OnChatListFragmentInteractionListener mListener;
 
-    /**
-     * Mandatory empty constructor for the fragment manager to instantiate the
-     * fragment (e.g. upon screen orientation changes).
-     */
     public ConversationListFragment() {
+        // Required empty public constructor
     }
 
-    // TODO: Customize parameter initialization
-    @SuppressWarnings("unused")
-    public static ConversationListFragment newInstance(int columnCount) {
-        ConversationListFragment fragment = new ConversationListFragment();
-        Bundle args = new Bundle();
-        args.putInt(ARG_COLUMN_COUNT, columnCount);
-        fragment.setArguments(args);
-        return fragment;
-    }
-
-    @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-
-        if (getArguments() != null) {
-            mColumnCount = getArguments().getInt(ARG_COLUMN_COUNT);
-        }
-    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_conversationlist_list, container, false);
+        // Inflate the layout for this fragment
 
-        // Set the adapter
-        if (view instanceof RecyclerView) {
-            Context context = view.getContext();
-            RecyclerView recyclerView = (RecyclerView) view;
-            if (mColumnCount <= 1) {
-                recyclerView.setLayoutManager(new LinearLayoutManager(context));
-            } else {
-                recyclerView.setLayoutManager(new GridLayoutManager(context, mColumnCount));
+
+
+        View v = inflater.inflate(R.layout.fragment_chat_list, container, false);
+
+
+        //gets arguments from Bundle and retrieves email to display.
+        Bundle args = getArguments();
+        if(args != null) {
+
+
+           // JSONObject result = (JSONObject) getArguments().get("result");
+
+        try{
+
+            JSONObject root = new JSONObject((String) getArguments().get("result"));
+
+            if (root.has("conversation")) {
+                JSONArray data = root.getJSONArray("conversation");
+
+                LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT
+                        , ViewGroup.LayoutParams.WRAP_CONTENT);
+                params.setMargins(10, 10, 10, 10);
+                params.height =ViewGroup.LayoutParams.WRAP_CONTENT;
+                params.width = ViewGroup.LayoutParams.MATCH_PARENT;
+
+                LinearLayout mlayout = (LinearLayout) v.findViewById(R.id.chatlist_scroll_layout);
+
+                Random rnd = new Random();
+
+
+                for (int i = 0; i < data.length(); i++) {
+                    JSONObject jsonBlog = data.getJSONObject(i);
+                    MyTextView textView = new MyTextView(v.getContext()
+                            ,jsonBlog.getString("chatid")
+                            ,jsonBlog.getString("name"));
+                    textView.setText( textView.getName());
+                    textView.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_launcher_foreground, 0, 0, 0);
+                   // textView.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
+                    textView.setGravity(Gravity.CENTER_VERTICAL | Gravity.CENTER_HORIZONTAL);
+                    //textView.setHeight(100);
+                    int color;
+                    color = Color.rgb(227, 232, 227);
+                    textView.setBackground(getResources().getDrawable(R.drawable.rounded_corner_for_conversation_list));
+
+                    textView.setTextSize(36);
+                    textView.setLayoutParams(params);
+                    textView.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            Log.wtf("CHATLIST", ((TextView) v).getText().toString());
+                            mListener.onFragmentInteraction(((MyTextView)v).getChatid());
+                        }
+                    });
+                    mlayout.addView(textView);
+                }
+
             }
-            recyclerView.setAdapter(new MyConversationListRecyclerViewAdapter(ConversationListContent.CONVERSATIONS, mListener));
+
+        }   catch (JSONException e) {
+            e.printStackTrace(); Log.e("ERROR!", e.getMessage()); //notify user onWaitFragmentInteractionHide();
         }
-        return view;
+
+        }
+
+
+
+        return v;
     }
 
+//    // TODO: Rename method, update argument and hook method into UI event
+//    public void onButtonPressed(Uri uri) {
+//        if (mListener != null) {
+//            mListener.onFragmentInteraction();
+//        }
+//    }
 
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
-        if (context instanceof OnListFragmentInteractionListener) {
-            mListener = (OnListFragmentInteractionListener) context;
+        if (context instanceof OnChatListFragmentInteractionListener) {
+            mListener = (OnChatListFragmentInteractionListener) context;
         } else {
             throw new RuntimeException(context.toString()
-                    + " must implement OnListFragmentInteractionListener");
+                    + " must implement OnFragmentInteractionListener");
         }
     }
 
@@ -95,13 +137,38 @@ public class ConversationListFragment extends Fragment {
      * fragment to allow an interaction in this fragment to be communicated
      * to the activity and potentially other fragments contained in that
      * activity.
-     * <p/>
+     * <p>
      * See the Android Training lesson <a href=
      * "http://developer.android.com/training/basics/fragments/communicating.html"
      * >Communicating with Other Fragments</a> for more information.
      */
-    public interface OnListFragmentInteractionListener {
+    public interface OnChatListFragmentInteractionListener {
         // TODO: Update argument type and name
-        void onConversationListFragmentInteraction(Conversation item);
+        void onFragmentInteraction(String charid);
+    }
+
+    public class MyTextView extends android.support.v7.widget.AppCompatTextView {
+
+
+        private String mChatid;
+        private String mName;
+
+
+        public MyTextView(Context context, String charid, String name ) {
+
+            super(context);
+            mChatid = charid;
+            mName = name;
+        }
+
+        public String getChatid() {
+            return mChatid;
+        }
+
+        public String getName() {
+            return mName;
+        }
+
+
     }
 }

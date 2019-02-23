@@ -13,12 +13,19 @@ import me.pushy.sdk.Pushy;
 public class  MainActivity extends AppCompatActivity implements LoginFragment.OnLoginFragmentInteractionListener,
         RegisterFragment.OnRegisterFragmentInteractionListener, VerifyFragment.OnVerifyFragmentInteractionListener {
 
+    private boolean mLoadFromChatNotification = false;
+    private static final String TAG = MainActivity.class.getSimpleName();
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         Pushy.listen(this);
         setContentView(R.layout.activity_main);
 
+        if (getIntent().getExtras() != null) {
+            if (getIntent().getExtras().containsKey("type")) {
+                mLoadFromChatNotification = getIntent().getExtras().getString("type").equals("msg"); }
+        }
 
         if(savedInstanceState == null) {
             if (findViewById(R.id.frame_main_container) != null) {
@@ -40,6 +47,7 @@ public class  MainActivity extends AppCompatActivity implements LoginFragment.On
         intent.putExtra("info",id.getEmail().toString() );
         intent.putExtra(getString(R.string.keys_intent_jwt), jwt);
         intent.putExtra(getString(R.string.keys_intent_credentials), id);
+        intent.putExtra(getString(R.string.keys_intent_notification_msg), mLoadFromChatNotification);
         startActivity(intent);
         finish();
     }
