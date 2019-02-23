@@ -11,11 +11,16 @@ import java.util.Map;
  */
 public class Connection implements Serializable {
 
+    //username of the person you are connected with
     private final String username;
+
+    //checks if the person you are connected with has accepted your request
+    private final int accepted;
     //private final String details;
 
     private Connection(Builder builder) {
         this.username = builder.username;
+        this.accepted = builder.accepted;
         //this.details = builder.details;
     }
 
@@ -23,19 +28,23 @@ public class Connection implements Serializable {
         return username;
     }
 
-//    public String getDetails() {
-//        return details;
-//    }
+    //gets the
+    public int getAccepted() {
+        return accepted;
+    }
+
 
     /**
      * Connection builder
      */
     public static class Builder {
         private final String username;
+        private final int accepted;
         //private final String details;
 
-        public Builder(String username) {
+        public Builder(String username, int accepted) {
             this.username = username;
+            this.accepted = accepted;
             //this.details = details;
         }
 

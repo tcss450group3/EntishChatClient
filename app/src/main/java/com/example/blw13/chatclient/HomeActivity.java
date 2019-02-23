@@ -19,6 +19,7 @@ import com.example.blw13.chatclient.dummy.ConversationListContent;
 import com.example.blw13.chatclient.utils.GetAsyncTask;
 import com.example.blw13.chatclient.utils.SendPostAsyncTask;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -37,6 +38,7 @@ public class HomeActivity extends AppCompatActivity implements
     private String mNameFirst;
     private String mNameLast;
     private String mUsername;
+    private int mID = 208;
 
 //    private BottomNavigationView.OnNavigationItemSelectedListener mOnNavigationItemSelectedListener
 //            = new BottomNavigationView.OnNavigationItemSelectedListener() {
@@ -163,6 +165,7 @@ public class HomeActivity extends AppCompatActivity implements
         args.putSerializable(OneConnectionFragment.ARG_CONNECTION, item);
         OneConnectionFragment one = new OneConnectionFragment();
         one.setArguments(args);
+        Log.e("INEEDTOLOOKHERE", "ohno!");
         FragmentTransaction transaction = getSupportFragmentManager()
                 .beginTransaction()
                 .replace(R.id.home_display_container, one)
@@ -256,46 +259,40 @@ public class HomeActivity extends AppCompatActivity implements
         transaction.commit();
     }
 
-    private void handleConnectionListGetOnPostExecute(final String result){
-//        try {
-//            JSONObject root = new JSONObject(result);
-//            if (root.has(getString(R.string.keys_json_connections_response))) {
-//                JSONObject response = root.getJSONObject(
-//                        getString(R.string.keys_json_connections_response));
-//                if (response.has(getString(R.string.keys_json_connections_data))) {
-//                    JSONArray data = response.getJSONArray(
-//                            getString(R.string.keys_json_connections_data));
-//                    List<Connection> connections = new ArrayList<>();
-//                    for(int i = 0; i < data.length(); i++) {
-//                        JSONObject jsonSetList = data.getJSONObject(i);
-//                        connections.add(new Connection.Builder(
-//                                jsonSetList.getString(getString(R.string.keys_json_connections_username))
-//                        ).build());
-//                    }
-//                    Connection[] connectionsAsArray = new Connection[connections.size()];
-//                    connectionsAsArray = connections.toArray(connectionsAsArray);
-//                    Bundle args = new Bundle();
-//                    args.putSerializable(ConnectionListFragment.ARG_CONNECTIONS, connectionsAsArray);
-//                    Fragment frag = new ConnectionListFragment();
-//                    frag.setArguments(args);
-//                    onWaitFragmentInteractionHide();
-//                    loadFragment(frag);
-//                } else {
-//                    Log.e("ERROR!", "No data array");
-//                    //notify user
-//                    onWaitFragmentInteractionHide();
-//                }
-//            } else {
-//                Log.e("ERROR!", "No response");
-//                //notify user
-//                onWaitFragmentInteractionHide();
-//            }
-//        } catch (JSONException e) {
-//            e.printStackTrace();
-//            Log.e("ERROR!", e.getMessage());
-//            //notify user
-//            onWaitFragmentInteractionHide();
-//        }
+    private void handleConnectionListGetOnPostExecute(final String result) {
+        try {
+            JSONObject root = new JSONObject(result);
+            if (root.has(getString(R.string.keys_json_connections_response))) {
+                JSONArray response = root.getJSONArray(
+                        getString(R.string.keys_json_connections_response));
+                List<Connection> connections = new ArrayList<>();
+                for (int i = 0; i < response.length(); i++) {
+                    JSONObject jsonConnection = response.getJSONObject(i);
+                    connections.add(new Connection.Builder(
+                            jsonConnection.getString(getString(R.string.keys_json_connections_username)),
+                            jsonConnection.getInt(getString(R.string.keys_json_connections_verified))
+                    ).build());
+                }
+                Connection[] connectionsAsArray = new Connection[connections.size()];
+                connectionsAsArray = connections.toArray(connectionsAsArray);
+                Bundle args = new Bundle();
+                args.putSerializable(ConnectionListFragment.ARG_CONNECTIONS, connectionsAsArray);
+                Fragment frag = new ConnectionListFragment();
+                frag.setArguments(args);
+                onWaitFragmentInteractionHide();
+                loadFragment(frag);
+
+            } else {
+                Log.e("ERROR!", "No response");
+                //notify user
+                onWaitFragmentInteractionHide();
+            }
+        } catch (JSONException e) {
+            e.printStackTrace();
+            Log.e("ERROR!", e.getMessage());
+            //notify user
+            onWaitFragmentInteractionHide();
+        }
 
 
     }
@@ -318,8 +315,6 @@ public class HomeActivity extends AppCompatActivity implements
             myActivity = theActivity;
         }
 
-
-
         @Override
         public boolean onNavigationItemSelected(@NonNull MenuItem item) {
             Log.wtf("HomeAct", "buttom navi is cliked");
@@ -332,7 +327,6 @@ public class HomeActivity extends AppCompatActivity implements
                             .replace(R.id.home_display_container, home)
                             .addToBackStack("home");
                     transaction.commit();
-
                     return true;
                 case R.id.butt_navigation_chats:
                     uri = new Uri.Builder()
@@ -348,33 +342,37 @@ public class HomeActivity extends AppCompatActivity implements
 
                     return true;
                 case R.id.butt_navigation_connections:
-//                    uri = new Uri.Builder()
-//                            .scheme("https")
-//                            .appendPath(getString(R.string.ep_base_url))
-//                            .appendPath("connection")
-//                            .appendPath("get")
-//                            .build();
-//                    new GetAsyncTask.Builder(uri.toString())
-//                            .onPreExecute(myActivity::onWaitFragmentInteractionShow)
-//                            .onPostExecute(myActivity::handleConnectionListGetOnPostExecute)
-//                            .addHeaderField("authorization", mJwToken) //add the JWT as a header
-//                            .build().execute();
-                    ConnectionListFragment connects = new ConnectionListFragment();
-                    List<Connection> connections = new ArrayList<>();
-                    for(int i = 0; i < 10; i++){
-                        connections.add(new Connection.Builder("Connection"+i)
-                                    .build());
+                    JSONObject json = new JSONObject();
+                    try {
+                        json.put("id", mID);
+                    } catch (Exception e){
                     }
-                    Bundle args = new Bundle();
-                    Connection[] connectionsAsArray = new Connection[connections.size()];
-                    connectionsAsArray = connections.toArray(connectionsAsArray);
-                    args.putSerializable(ConnectionListFragment.ARG_CONNECTIONS, connectionsAsArray);
-                    connects.setArguments(args);
-                    FragmentTransaction transaction3 = getSupportFragmentManager()
-                            .beginTransaction()
-                            .replace(R.id.home_display_container, connects)
-                            .addToBackStack("conversationList");
-                    transaction3.commit();
+                    uri = new Uri.Builder()
+                            .scheme("https")
+                            .appendPath(getString(R.string.ep_base_url))
+                            .appendPath("connection")
+                            .build();
+                    new SendPostAsyncTask.Builder(uri.toString(), json)
+                            .onPreExecute(myActivity::onWaitFragmentInteractionShow)
+                            .onPostExecute(myActivity::handleConnectionListGetOnPostExecute)
+                            .addHeaderField("authorization", mJwToken) //add the JWT as a header
+                            .build().execute();
+//                    ConnectionListFragment connects = new ConnectionListFragment();
+//                    List<Connection> connections = new ArrayList<>();
+//                    for(int i = 0; i < 10; i++){
+//                        connections.add(new Connection.Builder("Connection"+i, -1)
+//                                    .build());
+//                    }
+//                    Bundle args = new Bundle();
+//                    Connection[] connectionsAsArray = new Connection[connections.size()];
+//                    connectionsAsArray = connections.toArray(connectionsAsArray);
+//                    args.putSerializable(ConnectionListFragment.ARG_CONNECTIONS, connectionsAsArray);
+//                    connects.setArguments(args);
+//                    FragmentTransaction transaction3 = getSupportFragmentManager()
+//                            .beginTransaction()
+//                            .replace(R.id.home_display_container, connects)
+//                            .addToBackStack("conversationList");
+//                    transaction3.commit();
                     return true;
                 case R.id.butt_navigation_weather:
                     WeatherFragment weather = new WeatherFragment();

@@ -24,8 +24,8 @@
     <string name="keys_prefs_username">some phish lyrics I guess</string>
     <string name="keys_prefs_password">see_the_city_see_the_zoo</string>
 
-    <string name="keys_json_connections_response">response</string>
-    <string name="keys_json_connections_data">data</string>
+    <string name="keys_json_connections_response">connections</string>s
     <string name="keys_json_connections_username">username</string>
+    <string name="keys_json_connections_verified">verified</string>
 
 </resources>

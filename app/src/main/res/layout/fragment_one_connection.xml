@@ -6,27 +6,118 @@
     android:layout_height="match_parent"
     tools:context=".OneConnectionFragment">
 
-    <!-- TODO: Update blank fragment layout -->
-
     <TextView
-        android:id="@+id/text_connection_profile"
+        android:id="@+id/textView_view_connection"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
-        android:text="This is an empty profile"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="28dp"
+        android:layout_marginEnd="8dp"
+        android:fontFamily="sans-serif-medium"
+        android:text="@string/text_connection"
+        android:textSize="30sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <Button
-        android:id="@+id/butt_profile_chat"
+    <TextView
+        android:id="@+id/textView_one_connection_status_static"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
-        android:layout_marginEnd="16dp"
-        android:layout_marginBottom="16dp"
-        android:text="Start Chat"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent" />
+        android:layout_marginTop="20dp"
+        android:text="@string/text_account_username"
+        android:textSize="18sp"
+        android:textStyle="bold"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/textView_view_connection" />
+
+    <TextView
+        android:id="@+id/textView_one_connection_display_username"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="20dp"
+        android:text="username "
+        android:textSize="18sp"
+        app:layout_constraintStart_toEndOf="@+id/textView_one_connection_status_static"
+        app:layout_constraintTop_toBottomOf="@+id/textView_view_connection" />
+
+    <TextView
+        android:id="@+id/textView_"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="16dp"
+        android:text="@string/text_Status"
+        android:textSize="18sp"
+        android:textStyle="bold"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/textView_one_connection_status_static" />
+
+    <TextView
+        android:id="@+id/textView_one_connection_status_display"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="16dp"
+        android:text="status"
+        android:textSize="18sp"
+        app:layout_constraintStart_toEndOf="@+id/textView_"
+        app:layout_constraintTop_toBottomOf="@+id/textView_one_connection_display_username" />
+
+    <Button
+        android:id="@+id/button_one_connection_accept"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="16dp"
+        android:text="@string/ep_confirm"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/textView_accept_invitation" />
+
+    <Button
+        android:id="@+id/button_one_connection_reject"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="32dp"
+        android:layout_marginTop="16dp"
+        android:text="@string/text_reject"
+        app:layout_constraintStart_toEndOf="@+id/button_one_connection_accept"
+        app:layout_constraintTop_toBottomOf="@+id/textView_accept_invitation" />
+
+    <TextView
+        android:id="@+id/textView_accept_invitation"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="32dp"
+        android:text="@string/text_confirm_new_connection"
+        android:textSize="18sp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/textView_" />
+
+    <Button
+        android:id="@+id/button_one_connection_starNewConvo"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="32dp"
+        android:text="@string/text_start_conversation"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/button_one_connection_accept" />
+
+    <Button
+        android:id="@+id/button_one_connection_delete"
+        style="@style/Widget.AppCompat.Button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="16dp"
+        android:backgroundTint="@color/colorAccent"
+        android:elevation="0dp"
+        android:text="@string/text_delete_contact"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/button_one_connection_starNewConvo" />
+
 </android.support.constraint.ConstraintLayout>

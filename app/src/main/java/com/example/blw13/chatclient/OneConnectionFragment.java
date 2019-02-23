@@ -4,6 +4,7 @@ package com.example.blw13.chatclient;
 import android.content.Context;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -32,14 +33,22 @@ public class OneConnectionFragment extends Fragment implements View.OnClickListe
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
+
+        Log.e("INEEDTOLOOKHERE", "ohno!why!");
         View v = inflater.inflate(R.layout.fragment_one_connection, container, false);
 
         if(getArguments() != null){
             mConn = (Connection) getArguments().getSerializable(ARG_CONNECTION);
-            ((TextView) v.findViewById(R.id.text_connection_profile)).setText(mConn.getName());
+            ((TextView) v.findViewById(R.id.textView_view_connection)).setText(mConn.getName());
+            TextView tv = v.findViewById(R.id.textView_one_connection_status_display);
+            if(mConn.getAccepted() == -1){
+                tv.setText("accepted");
+            } else {
+                tv.setText("pending");
+            }
         }
 
-        v.findViewById(R.id.butt_profile_chat).setOnClickListener(this);
+        v.findViewById(R.id.button_one_connection_starNewConvo).setOnClickListener(this);
 
         return v;
     }
