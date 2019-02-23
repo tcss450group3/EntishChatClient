@@ -33,13 +33,11 @@ public class OneConnectionFragment extends Fragment implements View.OnClickListe
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-
-        Log.e("INEEDTOLOOKHERE", "ohno!why!");
         View v = inflater.inflate(R.layout.fragment_one_connection, container, false);
 
         if(getArguments() != null){
             mConn = (Connection) getArguments().getSerializable(ARG_CONNECTION);
-            ((TextView) v.findViewById(R.id.textView_view_connection)).setText(mConn.getName());
+            ((TextView) v.findViewById(R.id.textView_one_connection_display_username)).setText(mConn.getName());
             TextView tv = v.findViewById(R.id.textView_one_connection_status_display);
             if(mConn.getAccepted() == -1){
                 tv.setText("accepted");
@@ -56,7 +54,7 @@ public class OneConnectionFragment extends Fragment implements View.OnClickListe
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
-        if (context instanceof ConnectionListFragment.OnListFragmentInteractionListener) {
+        if (context instanceof OneConnectionFragment.OnProfileFragmentInteractionListener) {
             mListener = (OneConnectionFragment.OnProfileFragmentInteractionListener) context;
         } else {
             throw new RuntimeException(context.toString()

@@ -30,7 +30,8 @@ public class HomeActivity extends AppCompatActivity implements
         ConversationListFragment.OnListFragmentInteractionListener,
         ConnectionListFragment.OnListFragmentInteractionListener,
         WaitFragment.OnWaitFragmentInteractionListener,
-        ChatListFragment.OnChatListFragmentInteractionListener{
+        ChatListFragment.OnChatListFragmentInteractionListener,
+        OneConnectionFragment.OnProfileFragmentInteractionListener{
 
     private TextView mTextMessage;
 
@@ -38,7 +39,7 @@ public class HomeActivity extends AppCompatActivity implements
     private String mNameFirst;
     private String mNameLast;
     private String mUsername;
-    private int mID = 208;
+    private int mID;
 
 //    private BottomNavigationView.OnNavigationItemSelectedListener mOnNavigationItemSelectedListener
 //            = new BottomNavigationView.OnNavigationItemSelectedListener() {
@@ -114,6 +115,7 @@ public class HomeActivity extends AppCompatActivity implements
 
 
         mJwToken = getIntent().getStringExtra(getString(R.string.keys_intent_jwt));
+        mID = getIntent().getIntExtra("id", 0);
 
         mTextMessage = (TextView) findViewById(R.id.message);
         BottomNavigationView navigation = (BottomNavigationView) findViewById(R.id.home_navigation_bar);
@@ -165,7 +167,6 @@ public class HomeActivity extends AppCompatActivity implements
         args.putSerializable(OneConnectionFragment.ARG_CONNECTION, item);
         OneConnectionFragment one = new OneConnectionFragment();
         one.setArguments(args);
-        Log.e("INEEDTOLOOKHERE", "ohno!");
         FragmentTransaction transaction = getSupportFragmentManager()
                 .beginTransaction()
                 .replace(R.id.home_display_container, one)
@@ -304,6 +305,12 @@ public class HomeActivity extends AppCompatActivity implements
                 .addToBackStack(null);
         // Commit the transaction
         transaction.commit();
+    }
+
+    @Override
+    public void onProfileFragmentInteraction(Connection item) {
+
+
     }
 
     public class ButtomNaviListener implements BottomNavigationView.OnNavigationItemSelectedListener {
