@@ -178,6 +178,7 @@ public class OneConversation extends Fragment {
     private void endOfSendMsgTask(final String result) {
                 ScrollView sv = ((ScrollView)mView.findViewById(R.id.scrollView_One_Conversation_Viewer));
 
+
                 Runnable runnable= new Runnable() {
                     @Override
                     public void run() {
@@ -190,7 +191,6 @@ public class OneConversation extends Fragment {
     @Override
     public void onResume() {
         super.onResume();
-
         if (mPushMessageReciever == null) {
             mPushMessageReciever = new PushMessageReceiver();
         }
@@ -200,7 +200,6 @@ public class OneConversation extends Fragment {
     @Override
     public void onPause() {
         super.onPause();
-
         if (mPushMessageReciever != null){
             getActivity().unregisterReceiver(mPushMessageReciever);
         }
@@ -217,6 +216,7 @@ public class OneConversation extends Fragment {
                 String messageText = intent.getStringExtra("MESSAGE");
                 Log.e("PushMessageReceiver", sender+ messageText);
 
+                mMessageInputEditText.setText("");
 
                 ScrollView sv = ((ScrollView)mView.findViewById(R.id.scrollView_One_Conversation_Viewer));
                 //its up to you to decide if you want to send the message to the output here

@@ -4,7 +4,7 @@
         android:width="1dp"
         android:color="@color/colorPrimary" />
 
-    <solid android:color="@color/colorPrimary" />
+    <solid android:color="@color/colorWhiteTran" />
 
     <padding
         android:left="10dp"
@@ -12,6 +12,7 @@
         android:bottom="5dp"
         android:top="5dp" />
 
-    <corners android:topLeftRadius="15dp" android:topRightRadius="15dp"
-        android:bottomLeftRadius="0.1dp" android:bottomRightRadius="15dp"/>
+
+    <corners android:topLeftRadius="0.1dp" android:topRightRadius="0.1dp"
+        android:bottomLeftRadius="10dp" android:bottomRightRadius="10dp"/>
 </shape>
