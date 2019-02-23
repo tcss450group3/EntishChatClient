@@ -109,7 +109,7 @@ public class OneConversation extends Fragment {
                     for (int i = data.length()-1; i >=0; i--) {
                         JSONObject jsonBlog = data.getJSONObject(i);
                         TextView textView = new TextView(v.getContext());
-                        textView.setText( jsonBlog.getString("email")+ ": " + jsonBlog.getString("message"));
+                        textView.setText( jsonBlog.getString("username")+ ": " + jsonBlog.getString("message"));
                         LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT
                                 , ViewGroup.LayoutParams.WRAP_CONTENT);
 
@@ -184,7 +184,7 @@ public class OneConversation extends Fragment {
                 //or wait for the message to come back from the web service.
                 JSONObject jsonBlog = mLastJSON;
                 TextView textView = new TextView(mView.getContext());
-                textView.setText( jsonBlog.getString("email")+ ": " + jsonBlog.getString("message"));
+                textView.setText( jsonBlog.getString("username")+ ": " + jsonBlog.getString("message"));
                 LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT
                         , ViewGroup.LayoutParams.WRAP_CONTENT);
 

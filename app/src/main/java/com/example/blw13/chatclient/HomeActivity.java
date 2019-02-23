@@ -273,7 +273,14 @@ public class HomeActivity extends AppCompatActivity implements
                             .appendPath(getString(R.string.ep_base_url))
                             .appendPath("conversation")
                             .build();
-                    new GetAsyncTask.Builder(uri.toString())
+                    JSONObject messageJson = new JSONObject();
+                    try {
+                        messageJson.put("email", mCredentials.getEmail());
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                        Log.e("ERROR! ", e.getMessage());
+                    }
+                    new SendPostAsyncTask.Builder(uri.toString(), messageJson)
                             .onPreExecute(myActivity::onWaitFragmentInteractionShow)
                             .onPostExecute(myActivity::handleConversationListGetOnPostExecute)
                             .addHeaderField("authorization", mJwToken) //add the JWT as a header
