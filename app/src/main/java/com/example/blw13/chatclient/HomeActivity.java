@@ -17,7 +17,6 @@ import android.widget.TextView;
 
 import com.example.blw13.chatclient.Model.Credentials;
 import com.example.blw13.chatclient.dummy.ConnectionListContent;
-import com.example.blw13.chatclient.utils.GetAsyncTask;
 import com.example.blw13.chatclient.utils.SendPostAsyncTask;
 
 import org.json.JSONException;
@@ -28,7 +27,7 @@ import me.pushy.sdk.Pushy;
 public class HomeActivity extends AppCompatActivity implements
         ConnectionListFragment.OnListFragmentInteractionListener,
         WaitFragment.OnWaitFragmentInteractionListener,
-        ChatListFragment.OnChatListFragmentInteractionListener{
+        ConversationListFragment.OnChatListFragmentInteractionListener{
 
     private TextView mTextMessage;
 
@@ -60,18 +59,20 @@ public class HomeActivity extends AppCompatActivity implements
         }
 
         Fragment fragment;
+
+
+
+        //mTextMessage = (TextView) findViewById(R.id.message);
+        BottomNavigationView navigation = (BottomNavigationView) findViewById(R.id.home_navigation_bar);
+        navigation.setOnNavigationItemSelectedListener(new ButtomNaviListener(this));
+
         if (getIntent().getBooleanExtra(getString(R.string.keys_intent_notification_msg), false)) {
-            fragment = new ChatFragment();
+            onFragmentInteraction("1");
+            return;
         } else {
             fragment = new HomeFragment();
             fragment.setArguments(args);
         }
-
-
-        mTextMessage = (TextView) findViewById(R.id.message);
-        BottomNavigationView navigation = (BottomNavigationView) findViewById(R.id.home_navigation_bar);
-        navigation.setOnNavigationItemSelectedListener(new ButtomNaviListener(this));
-
         FragmentTransaction transaction = getSupportFragmentManager()
                 .beginTransaction()
                 .replace(R.id.home_display_container, fragment)
@@ -148,7 +149,7 @@ public class HomeActivity extends AppCompatActivity implements
         args.putSerializable(getString(R.string.keys_intent_credentials), mCredentials.getEmail());
 
 
-        ChatListFragment convers = new ChatListFragment();
+        ConversationListFragment convers = new ConversationListFragment();
         convers.setArguments(args);
         FragmentTransaction trans = getSupportFragmentManager()
                 .beginTransaction()

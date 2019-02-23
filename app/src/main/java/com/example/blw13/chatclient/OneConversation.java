@@ -1,7 +1,10 @@
 package com.example.blw13.chatclient;
 
 
+import android.content.BroadcastReceiver;
 import android.content.Context;
+import android.content.Intent;
+import android.content.IntentFilter;
 import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
@@ -19,6 +22,7 @@ import android.widget.TableRow;
 import android.widget.TextView;
 
 import com.example.blw13.chatclient.Model.Credentials;
+import com.example.blw13.chatclient.utils.PushReceiver;
 import com.example.blw13.chatclient.utils.SendPostAsyncTask;
 
 import org.json.JSONArray;
@@ -49,6 +53,8 @@ public class OneConversation extends Fragment {
     private String mChatid;
     private JSONObject mLastJSON;
     private View mView;
+
+    private PushMessageReceiver mPushMessageReciever;
 
     public OneConversation() {
         // Required empty public constructor
@@ -170,33 +176,62 @@ public class OneConversation extends Fragment {
     }
 
     private void endOfSendMsgTask(final String result) {
+                ScrollView sv = ((ScrollView)mView.findViewById(R.id.scrollView_One_Conversation_Viewer));
 
-        try {
-            //This is the result from the web service
-            JSONObject res = new JSONObject(result);
-            Log.e("ERROR!", res.toString());
-            if(res.has("success")  && res.getBoolean("success")) {
-                //The web service got our message. Time to clear out the input EditText
-                mMessageInputEditText.setText("");
+                Runnable runnable= new Runnable() {
+                    @Override
+                    public void run() {
+                        sv.fullScroll(ScrollView.FOCUS_DOWN);
+                    }
+                };
+                sv.post(runnable);
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+
+        if (mPushMessageReciever == null) {
+            mPushMessageReciever = new PushMessageReceiver();
+        }
+        IntentFilter iFilter = new IntentFilter(PushReceiver.RECEIVED_NEW_MESSAGE);
+        getActivity().registerReceiver(mPushMessageReciever, iFilter);
+    }
+    @Override
+    public void onPause() {
+        super.onPause();
+
+        if (mPushMessageReciever != null){
+            getActivity().unregisterReceiver(mPushMessageReciever);
+        }
+    }
+
+    /**
+     * A BroadcastReceiver that listens for messages sent from PushReceiver
+     */
+    private class PushMessageReceiver extends BroadcastReceiver {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            if(intent.hasExtra("SENDER") && intent.hasExtra("MESSAGE")) {
+                String sender = intent.getStringExtra("SENDER");
+                String messageText = intent.getStringExtra("MESSAGE");
+                Log.e("PushMessageReceiver", sender+ messageText);
+
 
                 ScrollView sv = ((ScrollView)mView.findViewById(R.id.scrollView_One_Conversation_Viewer));
                 //its up to you to decide if you want to send the message to the output here
                 //or wait for the message to come back from the web service.
-                JSONObject jsonBlog = mLastJSON;
+                //JSONObject jsonBlog = mLastJSON;
                 TextView textView = new TextView(mView.getContext());
-                textView.setText( jsonBlog.getString("username")+ ": " + jsonBlog.getString("message"));
+                textView.setText( sender+ ": " + messageText);
                 LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT
                         , ViewGroup.LayoutParams.WRAP_CONTENT);
-
-                if(mEmail.equals(jsonBlog.getString("email"))) {
+                if(mEmail.equals(sender)) {
                     textView.setBackground(getResources().getDrawable(R.drawable.rounded_corner_orange));
                     params.gravity = Gravity.RIGHT;
                 } else {
                     textView.setBackground(getResources().getDrawable(R.drawable.rounded_corner));
                 }
-
-                // textView.setGravity(Ori);
-
 
                 params.setMargins(10, 10, 10, 50);
                 params.height = ViewGroup.LayoutParams.WRAP_CONTENT;
@@ -212,13 +247,10 @@ public class OneConversation extends Fragment {
                     }
                 };
                 sv.post(runnable);
-
             }
-        } catch (JSONException e) {
-            Log.e("ERROR!", e.getMessage());
-            e.printStackTrace();
-        }
-    }
+        } }
 
 
 }
+
+
