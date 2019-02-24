@@ -5,7 +5,6 @@
     <string name="keys_verify_credentials">verifyCredentials</string>
     <string name="keys_json_login_jwt">token</string>
     <string name="keys_json_login_username">username</string>
-
     <string name="keys_json_login_id">id</string>
 
     <string name="keys_intent_jwt">intent key for jwt</string>
@@ -31,7 +30,7 @@
     <string name="keys_json_connections_username">username</string>
     <string name="keys_json_connections_verified">verified</string>
 
-
     <string name="keys_intent_notification_msg">was app started from message notification?</string>
 
 </resources>
+

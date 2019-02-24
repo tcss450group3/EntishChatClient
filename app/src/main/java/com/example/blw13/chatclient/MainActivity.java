@@ -45,6 +45,7 @@ public class  MainActivity extends AppCompatActivity implements LoginFragment.On
         Intent intent = new Intent(MainActivity.this, HomeActivity.class);
         intent.putExtra(getString(R.string.keys_json_field_username), id.getUsername());
         intent.putExtra("info",id.getEmail().toString() );
+        intent.putExtra("id", id.getID());
         intent.putExtra(getString(R.string.keys_intent_jwt), jwt);
         intent.putExtra(getString(R.string.keys_intent_credentials), id);
         intent.putExtra(getString(R.string.keys_intent_notification_msg), mLoadFromChatNotification);
