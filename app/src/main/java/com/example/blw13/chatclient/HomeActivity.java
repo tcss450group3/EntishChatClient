@@ -16,19 +16,33 @@ import android.util.Log;
 import android.view.MenuItem;
 import android.widget.TextView;
 
+
 import com.example.blw13.chatclient.Model.Credentials;
 import com.example.blw13.chatclient.dummy.ConnectionListContent;
+
+import com.example.blw13.chatclient.Content.Connection;
+import com.example.blw13.chatclient.dummy.ConversationListContent;
+import com.example.blw13.chatclient.utils.GetAsyncTask;
+
 import com.example.blw13.chatclient.utils.SendPostAsyncTask;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+
 import me.pushy.sdk.Pushy;
+
+import java.util.ArrayList;
+import java.util.List;
+
 
 public class HomeActivity extends AppCompatActivity implements
         ConnectionListFragment.OnListFragmentInteractionListener,
         WaitFragment.OnWaitFragmentInteractionListener,
-        ConversationListFragment.OnChatListFragmentInteractionListener{
+        ConversationListFragment.OnChatListFragmentInteractionListener,
+        OneConnectionFragment.OnProfileFragmentInteractionListener{
+
 
     private TextView mTextMessage;
 
@@ -39,6 +53,8 @@ public class HomeActivity extends AppCompatActivity implements
     private String mUsername;
     private Credentials mCredentials;
     private String mcurrentchatid;
+
+    private int mID;
 
 
     @Override
@@ -65,6 +81,10 @@ public class HomeActivity extends AppCompatActivity implements
 
         Fragment fragment;
 
+
+
+        mJwToken = getIntent().getStringExtra(getString(R.string.keys_intent_jwt));
+        mID = getIntent().getIntExtra("id", 0);
 
 
         //mTextMessage = (TextView) findViewById(R.id.message);
@@ -112,8 +132,11 @@ public class HomeActivity extends AppCompatActivity implements
 //    }
 
     @Override
-    public void onConnectionListFragmentInteraction(ConnectionListContent.Connection item) {
-        ProfileFragment one = new ProfileFragment();
+    public void onConnectionListFragmentInteraction(Connection item) {
+        Bundle args = new Bundle();
+        args.putSerializable(OneConnectionFragment.ARG_CONNECTION, item);
+        OneConnectionFragment one = new OneConnectionFragment();
+        one.setArguments(args);
         FragmentTransaction transaction = getSupportFragmentManager()
                 .beginTransaction()
                 .replace(R.id.home_display_container, one)
@@ -211,40 +234,97 @@ public class HomeActivity extends AppCompatActivity implements
         transaction.commit();
     }
 
+
     // Deleting the Pushy device token must be done asynchronously. Good thing
     // we have something that allows us to do that.
     class DeleteTokenAsyncTask extends AsyncTask<Void, Void, Void> {
 
-        @Override
-        protected void onPreExecute() {
-            super.onPreExecute();
-            onWaitFragmentInteractionShow();
-        }
 
-        @Override
-        protected Void doInBackground(Void... voids) {
-            //since we are already doing stuff in the background, go ahead
-            //and remove the credentials from shared prefs here.
-            SharedPreferences prefs =
-                    getSharedPreferences(
-                            getString(R.string.keys_shared_prefs),
-                            Context.MODE_PRIVATE);
 
-            prefs.edit().remove(getString(R.string.keys_prefs_password)).apply();
-            prefs.edit().remove(getString(R.string.keys_prefs_email)).apply();
+       @Override
+       protected void onPreExecute() {
+           super.onPreExecute();
+           onWaitFragmentInteractionShow();
+       }
 
-            //unregister the device from the Pushy servers
-            Pushy.unregister(HomeActivity.this);
+       @Override
+       protected Void doInBackground(Void... voids) {
+           //since we are already doing stuff in the background, go ahead
+           //and remove the credentials from shared prefs here.
+           SharedPreferences prefs =
+                   getSharedPreferences(
+                           getString(R.string.keys_shared_prefs),
+                           Context.MODE_PRIVATE);
 
-            return null;
-        }
+           prefs.edit().remove(getString(R.string.keys_prefs_password)).apply();
+           prefs.edit().remove(getString(R.string.keys_prefs_email)).apply();
 
-        @Override
-        protected void onPostExecute(Void aVoid) {
-            super.onPostExecute(aVoid);
-        }
+           //unregister the device from the Pushy servers
+           Pushy.unregister(HomeActivity.this);
+
+           return null;
+       }
+
+       @Override
+       protected void onPostExecute(Void aVoid) {
+           super.onPostExecute(aVoid);
+       }
+
+
     }
 
+    private void handleConnectionListGetOnPostExecute(final String result) {
+        try {
+            JSONObject root = new JSONObject(result);
+            if (root.has(getString(R.string.keys_json_connections_response))) {
+                JSONArray response = root.getJSONArray(
+                        getString(R.string.keys_json_connections_response));
+                List<Connection> connections = new ArrayList<>();
+                for (int i = 0; i < response.length(); i++) {
+                    JSONObject jsonConnection = response.getJSONObject(i);
+                    connections.add(new Connection.Builder(
+                            jsonConnection.getString(getString(R.string.keys_json_connections_username)),
+                            jsonConnection.getInt(getString(R.string.keys_json_connections_verified))
+                    ).build());
+                }
+                Connection[] connectionsAsArray = new Connection[connections.size()];
+                connectionsAsArray = connections.toArray(connectionsAsArray);
+                Bundle args = new Bundle();
+                args.putSerializable(ConnectionListFragment.ARG_CONNECTIONS, connectionsAsArray);
+                Fragment frag = new ConnectionListFragment();
+                frag.setArguments(args);
+                onWaitFragmentInteractionHide();
+                loadFragment(frag);
+
+            } else {
+                Log.e("ERROR!", "No response");
+                //notify user
+                onWaitFragmentInteractionHide();
+            }
+        } catch (JSONException e) {
+            e.printStackTrace();
+            Log.e("ERROR!", e.getMessage());
+            //notify user
+            onWaitFragmentInteractionHide();
+        }
+
+
+    }
+
+    private void loadFragment(Fragment frag) {
+        FragmentTransaction transaction = getSupportFragmentManager()
+                .beginTransaction()
+                .replace(R.id.home_display_container, frag)
+                .addToBackStack(null);
+        // Commit the transaction
+        transaction.commit();
+    }
+
+    @Override
+    public void onProfileFragmentInteraction(Connection item) {
+
+
+    }
 
     public class ButtomNaviListener implements BottomNavigationView.OnNavigationItemSelectedListener {
 
@@ -257,6 +337,7 @@ public class HomeActivity extends AppCompatActivity implements
         @Override
         public boolean onNavigationItemSelected(@NonNull MenuItem item) {
             Log.wtf("HomeAct", "buttom navi is cliked");
+            Uri uri;
             switch (item.getItemId()) {
                 case R.id.butt_navigation_home:
 
@@ -270,11 +351,9 @@ public class HomeActivity extends AppCompatActivity implements
                             .replace(R.id.home_display_container, home)
                             .addToBackStack("home");
                     transaction.commit();
-
                     return true;
-
                 case R.id.butt_navigation_chats:
-                    Uri uri = new Uri.Builder()
+                    uri = new Uri.Builder()
                             .scheme("https")
                             .appendPath(getString(R.string.ep_base_url))
                             .appendPath("conversation")
@@ -294,12 +373,37 @@ public class HomeActivity extends AppCompatActivity implements
 
                     return true;
                 case R.id.butt_navigation_connections:
-                    ConnectionListFragment connects = new ConnectionListFragment();
-                    FragmentTransaction transaction3 = getSupportFragmentManager()
-                            .beginTransaction()
-                            .replace(R.id.home_display_container, connects)
-                            .addToBackStack("conversationList");
-                    transaction3.commit();
+                    JSONObject json = new JSONObject();
+                    try {
+                        json.put("id", mID);
+                    } catch (Exception e){
+                    }
+                    uri = new Uri.Builder()
+                            .scheme("https")
+                            .appendPath(getString(R.string.ep_base_url))
+                            .appendPath("connection")
+                            .build();
+                    new SendPostAsyncTask.Builder(uri.toString(), json)
+                            .onPreExecute(myActivity::onWaitFragmentInteractionShow)
+                            .onPostExecute(myActivity::handleConnectionListGetOnPostExecute)
+                            .addHeaderField("authorization", mJwToken) //add the JWT as a header
+                            .build().execute();
+//                    ConnectionListFragment connects = new ConnectionListFragment();
+//                    List<Connection> connections = new ArrayList<>();
+//                    for(int i = 0; i < 10; i++){
+//                        connections.add(new Connection.Builder("Connection"+i, -1)
+//                                    .build());
+//                    }
+//                    Bundle args = new Bundle();
+//                    Connection[] connectionsAsArray = new Connection[connections.size()];
+//                    connectionsAsArray = connections.toArray(connectionsAsArray);
+//                    args.putSerializable(ConnectionListFragment.ARG_CONNECTIONS, connectionsAsArray);
+//                    connects.setArguments(args);
+//                    FragmentTransaction transaction3 = getSupportFragmentManager()
+//                            .beginTransaction()
+//                            .replace(R.id.home_display_container, connects)
+//                            .addToBackStack("conversationList");
+//                    transaction3.commit();
                     return true;
                 case R.id.butt_navigation_weather:
                     WeatherFragment weather = new WeatherFragment();
@@ -320,5 +424,6 @@ public class HomeActivity extends AppCompatActivity implements
             }
             return false;
         }
+
     }
 }

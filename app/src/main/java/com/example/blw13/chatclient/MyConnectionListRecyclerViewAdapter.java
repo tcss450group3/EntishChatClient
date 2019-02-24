@@ -7,7 +7,7 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.example.blw13.chatclient.ConnectionListFragment.OnListFragmentInteractionListener;
-import com.example.blw13.chatclient.dummy.ConnectionListContent.Connection;
+import com.example.blw13.chatclient.Content.Connection;
 
 import java.util.List;
 
@@ -36,8 +36,7 @@ public class MyConnectionListRecyclerViewAdapter extends RecyclerView.Adapter<My
     @Override
     public void onBindViewHolder(final ViewHolder holder, int position) {
         holder.mItem = mValues.get(position);
-        holder.mIdView.setText(mValues.get(position).id);
-        holder.mContentView.setText(mValues.get(position).name);
+        holder.mContentView.setText(mValues.get(position).getName());
 
         holder.mView.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -58,15 +57,13 @@ public class MyConnectionListRecyclerViewAdapter extends RecyclerView.Adapter<My
 
     public class ViewHolder extends RecyclerView.ViewHolder {
         public final View mView;
-        public final TextView mIdView;
         public final TextView mContentView;
         public Connection mItem;
 
         public ViewHolder(View view) {
             super(view);
             mView = view;
-            mIdView = (TextView) view.findViewById(R.id.connection_item_number);
-            mContentView = (TextView) view.findViewById(R.id.connection_name);
+            mContentView = view.findViewById(R.id.connection_name);
         }
 
         @Override
