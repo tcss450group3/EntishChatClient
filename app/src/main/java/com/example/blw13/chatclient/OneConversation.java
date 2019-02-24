@@ -129,7 +129,7 @@ public class OneConversation extends Fragment {
                        // textView.setGravity(Ori);
 
 
-                        params.setMargins(10, 10, 10, 50);
+                        params.setMargins(10, 10, 10, 30);
                         params.height = ViewGroup.LayoutParams.WRAP_CONTENT;
 
                         textView.setTextSize(18);
@@ -233,7 +233,7 @@ public class OneConversation extends Fragment {
                     textView.setBackground(getResources().getDrawable(R.drawable.rounded_corner));
                 }
 
-                params.setMargins(10, 10, 10, 50);
+                params.setMargins(10, 10, 10, 30);
                 params.height = ViewGroup.LayoutParams.WRAP_CONTENT;
 
                 textView.setTextSize(18);
