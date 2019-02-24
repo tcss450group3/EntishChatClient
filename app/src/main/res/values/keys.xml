@@ -6,11 +6,10 @@
     <string name="keys_json_login_jwt">token</string>
     <string name="keys_json_login_username">username</string>
 
+    <string name="keys_json_login_id">id</string>
 
     <string name="keys_intent_jwt">intent key for jwt</string>
     <string name="keys_intent_credentials">intent key for creds</string>
-
-  
     <string name="keys_json_incorrect_field">field</string>
     <string name="keys_json_field_email">email</string>
     <string name="keys_json_field_first_name">first</string>
@@ -27,6 +26,11 @@
     <string name="keys_prefs_email">traffic_light_wont_let_me_through</string>
     <string name="keys_prefs_username">some phish lyrics I guess</string>
     <string name="keys_prefs_password">see_the_city_see_the_zoo</string>
+
+    <string name="keys_json_connections_response">connections</string>s
+    <string name="keys_json_connections_username">username</string>
+    <string name="keys_json_connections_verified">verified</string>
+
 
     <string name="keys_intent_notification_msg">was app started from message notification?</string>
 
