@@ -15,6 +15,7 @@ import android.view.MenuItem;
 import android.widget.TextView;
 
 import com.example.blw13.chatclient.Content.Connection;
+import com.example.blw13.chatclient.Model.Credentials;
 import com.example.blw13.chatclient.dummy.ConversationListContent;
 import com.example.blw13.chatclient.utils.GetAsyncTask;
 import com.example.blw13.chatclient.utils.SendPostAsyncTask;
@@ -31,7 +32,8 @@ public class HomeActivity extends AppCompatActivity implements
         ConnectionListFragment.OnListFragmentInteractionListener,
         WaitFragment.OnWaitFragmentInteractionListener,
         ChatListFragment.OnChatListFragmentInteractionListener,
-        OneConnectionFragment.OnProfileFragmentInteractionListener{
+        OneConnectionFragment.OnProfileFragmentInteractionListener,
+        NewConnection.OnNewConnectionFragmentInteractionListener{
 
     private TextView mTextMessage;
 
@@ -310,6 +312,11 @@ public class HomeActivity extends AppCompatActivity implements
     @Override
     public void onProfileFragmentInteraction(Connection item) {
 
+
+    }
+
+    @Override
+    public void onNewConnectionFragmentInteraction(Credentials item) {
 
     }
 
