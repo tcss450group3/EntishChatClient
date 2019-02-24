@@ -16,11 +16,15 @@ public class Connection implements Serializable {
 
     //checks if the person you are connected with has accepted your request
     private final int accepted;
+
+    //id of the connection
+    private final int id;
     //private final String details;
 
     private Connection(Builder builder) {
         this.username = builder.username;
         this.accepted = builder.accepted;
+        this.id = builder.id;
         //this.details = builder.details;
     }
 
@@ -33,6 +37,8 @@ public class Connection implements Serializable {
         return accepted;
     }
 
+    public int getID(){return id;}
+
 
     /**
      * Connection builder
@@ -40,11 +46,13 @@ public class Connection implements Serializable {
     public static class Builder {
         private final String username;
         private final int accepted;
+        private final int id;
         //private final String details;
 
-        public Builder(String username, int accepted) {
+        public Builder(String username, int accepted, int id) {
             this.username = username;
             this.accepted = accepted;
+            this.id = id;
             //this.details = details;
         }
 
