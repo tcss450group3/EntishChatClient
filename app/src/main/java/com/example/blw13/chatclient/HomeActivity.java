@@ -273,7 +273,8 @@ public class HomeActivity extends AppCompatActivity implements
                     JSONObject jsonConnection = response.getJSONObject(i);
                     connections.add(new Connection.Builder(
                             jsonConnection.getString(getString(R.string.keys_json_connections_username)),
-                            jsonConnection.getInt(getString(R.string.keys_json_connections_verified))
+                            jsonConnection.getInt(getString(R.string.keys_json_connections_verified)),
+                            jsonConnection.getInt("id")
                     ).build());
                 }
                 Connection[] connectionsAsArray = new Connection[connections.size()];
@@ -316,8 +317,82 @@ public class HomeActivity extends AppCompatActivity implements
     }
 
     @Override
-    public void onNewConnectionFragmentInteraction(Credentials item) {
+    public void onAcceptProfileFragment(Connection conn) {
+        JSONObject json = new JSONObject();
+        try{
+            json.put("id", conn.getID());
+        } catch (Exception e) {
 
+        }
+
+        Uri uri = new Uri.Builder()
+                .scheme("https")
+                .appendPath(getString(R.string.ep_base_url))
+                .appendPath(getString(R.string.ep_connection))
+                .appendPath("accept")
+                .build();
+        new SendPostAsyncTask.Builder(uri.toString(), json)
+                .onPreExecute(this::onWaitFragmentInteractionShow)
+                .onPostExecute(this::handleAcceptConnetionOnPost)
+                .addHeaderField("authorization", mJwToken) //add the JWT as a header
+                .build().execute();
+    }
+
+    private void handleAcceptConnetionOnPost(final String result) {
+        try {
+            JSONObject root = new JSONObject(result);
+            if (root.has("success")) {
+                if(root.getBoolean("success")){
+
+                }
+            }
+        } catch (JSONException e) {
+            e.printStackTrace();
+            Log.e("ERROR!", e.getMessage());
+            //notify user
+            onWaitFragmentInteractionHide();
+        }
+
+    }
+
+    private void handleNewConnectionOnPostExecute(final String result){
+        try {
+            JSONObject root = new JSONObject(result);
+            if (root.has("success")) {
+                if(root.getBoolean("success")){
+
+                }
+            }
+        } catch (JSONException e) {
+            e.printStackTrace();
+            Log.e("ERROR!", e.getMessage());
+            //notify user
+            onWaitFragmentInteractionHide();
+        }
+    }
+
+    @Override
+    public boolean onNewConnectionFragmentInteraction(Credentials item) {
+        JSONObject json = new JSONObject();
+        try {
+            json.put("email", item.getEmail());
+            json.put("username", item.getUsername());
+            json.put("id", mID);
+        } catch (Exception e){
+
+        }
+        Uri uri = new Uri.Builder()
+                .scheme("https")
+                .appendPath(getString(R.string.ep_base_url))
+                .appendPath(getString(R.string.ep_connection))
+                .appendPath("new")
+                .build();
+        new SendPostAsyncTask.Builder(uri.toString(), json)
+                .onPreExecute(this::onWaitFragmentInteractionShow)
+                .onPostExecute(this::handleNewConnectionOnPostExecute)
+                .addHeaderField("authorization", mJwToken) //add the JWT as a header
+                .build().execute();
+        return true;
     }
 
     public class ButtomNaviListener implements BottomNavigationView.OnNavigationItemSelectedListener {

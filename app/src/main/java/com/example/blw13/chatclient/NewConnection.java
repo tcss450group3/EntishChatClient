@@ -8,6 +8,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
+import android.widget.Toast;
 
 import com.example.blw13.chatclient.Content.Connection;
 import com.example.blw13.chatclient.Model.Credentials;
@@ -67,7 +68,12 @@ public class NewConnection extends Fragment implements View.OnClickListener {
         cred = new Credentials.Builder(mEmail.getText().toString(), "")
                     .addUsername(mUsername.getText().toString())
                     .build();
-        mListener.onNewConnectionFragmentInteraction(cred);
+        if(mListener.onNewConnectionFragmentInteraction(cred)){
+            Toast.makeText(getActivity(), "Request Sent",
+                    Toast.LENGTH_SHORT).show();
+        } else {
+
+        }
 
     }
 
@@ -83,7 +89,7 @@ public class NewConnection extends Fragment implements View.OnClickListener {
      */
     public interface OnNewConnectionFragmentInteractionListener {
         // TODO: Update argument type and name
-        void onNewConnectionFragmentInteraction(Credentials item);
+        boolean onNewConnectionFragmentInteraction(Credentials item);
     }
 
 }
