@@ -193,6 +193,7 @@ public class LoginFragment extends Fragment implements View.OnClickListener {
                         mCredentials.getEmail(),
                         mCredentials.getPassword())
                         .addUsername(resultsJSON.getString(getString(R.string.keys_json_login_username)))
+                        .addID(resultsJSON.getInt(getString(R.string.keys_json_login_id)))
                         .build();
 Log.e("CREDENTIALS 33333", mCredentials.asJSONObject().toString());
 //                saveCredentials(mCredentials);

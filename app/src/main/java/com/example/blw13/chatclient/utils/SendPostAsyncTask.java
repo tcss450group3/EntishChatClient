@@ -1,6 +1,7 @@
 package com.example.blw13.chatclient.utils;
 
 import android.os.AsyncTask;
+import android.util.Log;
 
 import org.json.JSONObject;
 
@@ -172,6 +173,8 @@ public class SendPostAsyncTask extends AsyncTask<Void, String, String> {
 
         StringBuilder response = new StringBuilder();
         HttpURLConnection urlConnection = null;
+
+        Log.e("Sendpost", mUrl);
 
         try {
             URL urlObject = new URL(mUrl);
