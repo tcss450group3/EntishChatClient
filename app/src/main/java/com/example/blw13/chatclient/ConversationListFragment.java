@@ -66,9 +66,6 @@ public class ConversationListFragment extends Fragment {
 
                 LinearLayout mlayout = (LinearLayout) v.findViewById(R.id.chatlist_scroll_layout);
 
-                Random rnd = new Random();
-
-
                 for (int i = 0; i < data.length(); i++) {
                     JSONObject jsonBlog = data.getJSONObject(i);
                     MyTextView textView = new MyTextView(v.getContext()
