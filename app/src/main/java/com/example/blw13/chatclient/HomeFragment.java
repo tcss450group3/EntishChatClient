@@ -1,6 +1,8 @@
 package com.example.blw13.chatclient;
 
 
+import android.content.Context;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.util.Log;
@@ -15,6 +17,7 @@ import android.widget.TextView;
  */
 public class HomeFragment extends Fragment {
 
+    private TextView mUserNameDisplay;
 
     public HomeFragment() {
         // Required empty public constructor
@@ -28,11 +31,14 @@ public class HomeFragment extends Fragment {
 
         View v = inflater.inflate(R.layout.fragment_home, container, false);
         Bundle args = getArguments();
-        if(args != null) {
-            Log.wtf("HOME", "it is not null");
-            ((TextView)v.findViewById(R.id.frag_home_username_textview))
-                    .setText(args.getString(getString(R.string.keys_json_field_username)));
-        }
+        mUserNameDisplay = (TextView)v.findViewById(R.id.frag_home_username_textview);
+        SharedPreferences prefs =
+                getActivity().getSharedPreferences(
+                        getString(R.string.keys_shared_prefs),
+                        Context.MODE_PRIVATE);
+
+        String username = prefs.getString(getString(R.string.keys_prefs_username), "MISSING USERNAME");
+        mUserNameDisplay.setText(username);
 
         return v;
     }

@@ -65,9 +65,8 @@ public class HomeActivity extends AppCompatActivity implements
         if (intent.getExtras().containsKey(getString(R.string.keys_intent_credentials))) {
             mCredentials = (Credentials) intent.getExtras().getSerializable(getString(R.string.keys_intent_credentials));
             args.putSerializable(getString(R.string.keys_json_field_username), mCredentials.getUsername());
+            mID = mCredentials.getID();
         }
-
-        mID = getIntent().getIntExtra("id", 0);
 
         mTextMessage = (TextView) findViewById(R.id.message);
         BottomNavigationView navigation = (BottomNavigationView) findViewById(R.id.home_navigation_bar);
