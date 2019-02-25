@@ -9,6 +9,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 
 import com.example.blw13.chatclient.Content.Connection;
 
@@ -21,7 +22,7 @@ import java.util.List;
  * Activities containing this fragment MUST implement the {@link OnListFragmentInteractionListener}
  * interface.
  */
-public class ConnectionListFragment extends Fragment {
+public class ConnectionListFragment extends Fragment implements View.OnClickListener {
 
     // TODO: Customize parameter argument names
     private static final String ARG_COLUMN_COUNT = "column-count";
@@ -62,9 +63,9 @@ public class ConnectionListFragment extends Fragment {
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_connectionlist_list, container, false);
         // Set the adapter
-        if (view instanceof RecyclerView) {
-            Context context = view.getContext();
-            RecyclerView recyclerView = (RecyclerView) view;
+        if (view.findViewById(R.id.list) instanceof RecyclerView) {
+            Context context = view.findViewById(R.id.list).getContext();
+            RecyclerView recyclerView = (RecyclerView) view.findViewById(R.id.list);
             if (mColumnCount <= 1) {
                 recyclerView.setLayoutManager(new LinearLayoutManager(context));
             } else {
@@ -72,6 +73,8 @@ public class ConnectionListFragment extends Fragment {
             }
             recyclerView.setAdapter(new MyConnectionListRecyclerViewAdapter(mConnections, mListener));
         }
+        Button b = view.findViewById(R.id.button_connection_list_new);
+        b.setOnClickListener(this);
         return view;
     }
 
@@ -93,6 +96,11 @@ public class ConnectionListFragment extends Fragment {
         mListener = null;
     }
 
+    @Override
+    public void onClick(View v) {
+        mListener.onConnectionListFragmentNewConnection();
+    }
+
     /**
      * This interface must be implemented by activities that contain this
      * fragment to allow an interaction in this fragment to be communicated
@@ -106,5 +114,6 @@ public class ConnectionListFragment extends Fragment {
     public interface OnListFragmentInteractionListener {
         // TODO: Update argument type and name
         void onConnectionListFragmentInteraction(Connection item);
+        void onConnectionListFragmentNewConnection();
     }
 }

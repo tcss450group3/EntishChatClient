@@ -131,6 +131,11 @@ public class HomeActivity extends AppCompatActivity implements
     }
 
     @Override
+    public void onConnectionListFragmentNewConnection() {
+        loadFragment(new NewConnection());
+    }
+
+    @Override
     public void onWaitFragmentInteractionShow() {
         //create and add wait fragment to activity, while an asynchronous task is running
         Log.wtf("HomeAct", "inside show");
