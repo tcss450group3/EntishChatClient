@@ -16,6 +16,7 @@ import android.widget.TextView;
 
 import com.example.blw13.chatclient.Content.Connection;
 import com.example.blw13.chatclient.Model.Credentials;
+import com.example.blw13.chatclient.dummy.ConversationListContent;
 import com.example.blw13.chatclient.utils.GetAsyncTask;
 import com.example.blw13.chatclient.utils.SendPostAsyncTask;
 
@@ -29,9 +30,9 @@ import java.util.List;
 public class HomeActivity extends AppCompatActivity implements
         ConnectionListFragment.OnListFragmentInteractionListener,
         WaitFragment.OnWaitFragmentInteractionListener,
+        ChatListFragment.OnChatListFragmentInteractionListener,
         OneConnectionFragment.OnProfileFragmentInteractionListener,
-        NewConnection.OnNewConnectionFragmentInteractionListener,
-        ConversationListFragment.OnChatListFragmentInteractionListener {
+        NewConnection.OnNewConnectionFragmentInteractionListener{
 
     private TextView mTextMessage;
 
