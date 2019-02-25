@@ -5,6 +5,7 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
@@ -55,6 +56,7 @@ public class OneConversation extends Fragment {
     private View mView;
 
     private PushMessageReceiver mPushMessageReciever;
+    private String mUsername;
 
     public OneConversation() {
         // Required empty public constructor
@@ -76,6 +78,13 @@ public class OneConversation extends Fragment {
             if (getArguments().containsKey("chatid")) {
                 mChatid = getArguments().getString("chatid");
             }
+            SharedPreferences prefs =
+                    getActivity().getSharedPreferences(
+                            getString(R.string.keys_shared_prefs),
+                            Context.MODE_PRIVATE);
+            mEmail = prefs.getString(getString(R.string.keys_prefs_email), "MISSING EMAIL");
+
+            mUsername = prefs.getString(getString(R.string.keys_prefs_username), "MISSING USERNAME");
 
         }
 
@@ -110,7 +119,6 @@ public class OneConversation extends Fragment {
 
                 if (root.has("messages")) {
                     JSONArray data = root.getJSONArray("messages");
-
 
                     for (int i = data.length()-1; i >=0; i--) {
                         JSONObject jsonBlog = data.getJSONObject(i);
@@ -156,10 +164,10 @@ public class OneConversation extends Fragment {
 
     private void handleSendClick(final View theButton) {
         String msg = mMessageInputEditText.getText().toString();
-        Log.e("ERROR!", "should happen. Email " + mEmail + " msg = "+msg+" chat id "+ mChatid);
+        Log.e("ERROR!", "should happen. Email " + mUsername + " msg = "+msg+" chat id "+ mChatid);
         JSONObject messageJson = new JSONObject();
         try {
-            messageJson.put("email", mEmail);
+            messageJson.put("username", mUsername);
             messageJson.put("message", msg);
             messageJson.put("chatId", mChatid);
         } catch (JSONException e) {
@@ -226,7 +234,7 @@ public class OneConversation extends Fragment {
                 textView.setText( sender+ ": " + messageText);
                 LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT
                         , ViewGroup.LayoutParams.WRAP_CONTENT);
-                if(mEmail.equals(sender)) {
+                if(mUsername.equals(sender)) {
                     textView.setBackground(getResources().getDrawable(R.drawable.rounded_corner_orange));
                     params.gravity = Gravity.RIGHT;
                 } else {
