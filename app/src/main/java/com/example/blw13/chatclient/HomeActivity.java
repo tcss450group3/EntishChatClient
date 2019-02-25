@@ -16,7 +16,6 @@ import android.widget.TextView;
 
 import com.example.blw13.chatclient.Content.Connection;
 import com.example.blw13.chatclient.Model.Credentials;
-import com.example.blw13.chatclient.dummy.ConversationListContent;
 import com.example.blw13.chatclient.utils.GetAsyncTask;
 import com.example.blw13.chatclient.utils.SendPostAsyncTask;
 
@@ -31,10 +30,8 @@ public class HomeActivity extends AppCompatActivity implements
         ConnectionListFragment.OnListFragmentInteractionListener,
         WaitFragment.OnWaitFragmentInteractionListener,
         OneConnectionFragment.OnProfileFragmentInteractionListener,
-        NewConnection.OnNewConnectionFragmentInteractionListener{
-        ConversationListFragment.OnChatListFragmentInteractionListener,
-        OneConnectionFragment.OnProfileFragmentInteractionListener,
-        NewConnection.OnNewConnectionFragmentInteractionListener{
+        NewConnection.OnNewConnectionFragmentInteractionListener,
+        ConversationListFragment.OnChatListFragmentInteractionListener {
 
     private TextView mTextMessage;
 
@@ -255,6 +252,7 @@ public class HomeActivity extends AppCompatActivity implements
     }
 
     private void handleConnectionListGetOnPostExecute(final String result) {
+        Log.wtf("LOOKHERE", result);
         try {
             JSONObject root = new JSONObject(result);
             if (root.has(getString(R.string.keys_json_connections_response))) {
@@ -266,7 +264,7 @@ public class HomeActivity extends AppCompatActivity implements
                     connections.add(new Connection.Builder(
                             jsonConnection.getString(getString(R.string.keys_json_connections_username)),
                             jsonConnection.getInt(getString(R.string.keys_json_connections_verified)),
-                            jsonConnection.getInt("id")
+                            jsonConnection.getInt("primarykey")
                     ).build());
                 }
                 Connection[] connectionsAsArray = new Connection[connections.size()];
@@ -316,7 +314,6 @@ public class HomeActivity extends AppCompatActivity implements
         } catch (Exception e) {
 
         }
-
         Uri uri = new Uri.Builder()
                 .scheme("https")
                 .appendPath(getString(R.string.ep_base_url))
@@ -325,12 +322,12 @@ public class HomeActivity extends AppCompatActivity implements
                 .build();
         new SendPostAsyncTask.Builder(uri.toString(), json)
                 .onPreExecute(this::onWaitFragmentInteractionShow)
-                .onPostExecute(this::handleAcceptConnetionOnPost)
+                .onPostExecute(this::handleAcceptConnectionOnPost)
                 .addHeaderField("authorization", mJwToken) //add the JWT as a header
                 .build().execute();
     }
 
-    private void handleAcceptConnetionOnPost(final String result) {
+    private void handleAcceptConnectionOnPost(final String result) {
         try {
             JSONObject root = new JSONObject(result);
             if (root.has("success")) {
@@ -338,6 +335,7 @@ public class HomeActivity extends AppCompatActivity implements
 
                 }
             }
+            onWaitFragmentInteractionHide();
         } catch (JSONException e) {
             e.printStackTrace();
             Log.e("ERROR!", e.getMessage());
@@ -355,6 +353,7 @@ public class HomeActivity extends AppCompatActivity implements
 
                 }
             }
+            onWaitFragmentInteractionHide();
         } catch (JSONException e) {
             e.printStackTrace();
             Log.e("ERROR!", e.getMessage());
@@ -432,28 +431,13 @@ public class HomeActivity extends AppCompatActivity implements
                             .scheme("https")
                             .appendPath(getString(R.string.ep_base_url))
                             .appendPath("connection")
+                            .appendPath("get")
                             .build();
                     new SendPostAsyncTask.Builder(uri.toString(), json)
                             .onPreExecute(myActivity::onWaitFragmentInteractionShow)
                             .onPostExecute(myActivity::handleConnectionListGetOnPostExecute)
                             .addHeaderField("authorization", mJwToken) //add the JWT as a header
                             .build().execute();
-//                    ConnectionListFragment connects = new ConnectionListFragment();
-//                    List<Connection> connections = new ArrayList<>();
-//                    for(int i = 0; i < 10; i++){
-//                        connections.add(new Connection.Builder("Connection"+i, -1)
-//                                    .build());
-//                    }
-//                    Bundle args = new Bundle();
-//                    Connection[] connectionsAsArray = new Connection[connections.size()];
-//                    connectionsAsArray = connections.toArray(connectionsAsArray);
-//                    args.putSerializable(ConnectionListFragment.ARG_CONNECTIONS, connectionsAsArray);
-//                    connects.setArguments(args);
-//                    FragmentTransaction transaction3 = getSupportFragmentManager()
-//                            .beginTransaction()
-//                            .replace(R.id.home_display_container, connects)
-//                            .addToBackStack("conversationList");
-//                    transaction3.commit();
                     return true;
                 case R.id.butt_navigation_weather:
                     WeatherFragment weather = new WeatherFragment();

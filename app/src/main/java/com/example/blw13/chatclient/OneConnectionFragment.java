@@ -1,6 +1,7 @@
 package com.example.blw13.chatclient;
 
 
+import android.app.Activity;
 import android.content.Context;
 import android.net.Uri;
 import android.os.Bundle;
@@ -10,6 +11,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.blw13.chatclient.Content.Connection;
 import com.example.blw13.chatclient.utils.SendPostAsyncTask;
@@ -63,7 +65,12 @@ public class OneConnectionFragment extends Fragment implements View.OnClickListe
 
     private void onAccept(View v){
         mListener.onAcceptProfileFragment(mConn);
-
+        Activity activity = getActivity();
+        activity.findViewById(R.id.button_one_connection_accept).setVisibility(View.GONE);
+        activity.findViewById(R.id.button_one_connection_reject).setVisibility(View.GONE);
+        activity.findViewById(R.id.textView_accept_invitation).setVisibility(View.GONE);
+        Toast.makeText(getActivity(), "Connection accepted",
+                Toast.LENGTH_SHORT).show();
     }
 
     private void onReject(View v){
