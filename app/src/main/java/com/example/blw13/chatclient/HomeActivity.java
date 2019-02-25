@@ -30,7 +30,7 @@ import java.util.List;
 public class HomeActivity extends AppCompatActivity implements
         ConnectionListFragment.OnListFragmentInteractionListener,
         WaitFragment.OnWaitFragmentInteractionListener,
-        ChatListFragment.OnChatListFragmentInteractionListener,
+        ConversationListFragment.OnChatListFragmentInteractionListener,
         OneConnectionFragment.OnProfileFragmentInteractionListener,
         NewConnection.OnNewConnectionFragmentInteractionListener{
 
@@ -41,6 +41,8 @@ public class HomeActivity extends AppCompatActivity implements
     private String mNameLast;
     private String mUsername;
     private int mID;
+    private Credentials mCredentials;
+    private String mcurrentchatid;
 
 //    private BottomNavigationView.OnNavigationItemSelectedListener mOnNavigationItemSelectedListener
 //            = new BottomNavigationView.OnNavigationItemSelectedListener() {
@@ -114,21 +116,44 @@ public class HomeActivity extends AppCompatActivity implements
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
 
+        Intent intent = getIntent();
+        Bundle args = new Bundle();
 
-        mJwToken = getIntent().getStringExtra(getString(R.string.keys_intent_jwt));
+        if (intent.getExtras().containsKey(getString(R.string.keys_intent_jwt))) {
+            mJwToken = getIntent().getStringExtra(getString(R.string.keys_intent_jwt));
+            args.putSerializable(getString(R.string.keys_intent_jwt), mJwToken);
+        }
+
+        if (intent.getExtras().containsKey(getString(R.string.keys_intent_credentials))) {
+            mCredentials = (Credentials) intent.getExtras().getSerializable(getString(R.string.keys_intent_credentials));
+            args.putSerializable(getString(R.string.keys_json_field_username), mCredentials.getUsername());
+        }
+
         mID = getIntent().getIntExtra("id", 0);
 
         mTextMessage = (TextView) findViewById(R.id.message);
         BottomNavigationView navigation = (BottomNavigationView) findViewById(R.id.home_navigation_bar);
         navigation.setOnNavigationItemSelectedListener(new ButtomNaviListener(this));
 
-        if(savedInstanceState == null) {
-            if (findViewById(R.id.home_display_container) != null) {
-                //lf = new LoginFragment();
-                getSupportFragmentManager().beginTransaction()
-                        .add(R.id.home_display_container, new HomeFragment())
-                        .commit();
-            } }
+
+
+
+        if (getIntent().getBooleanExtra(getString(R.string.keys_intent_notification_msg), false)) {
+            onFragmentInteraction("1");
+            return;
+        } else {
+            Fragment fragment;
+            fragment = new HomeFragment();
+            fragment.setArguments(args);
+            FragmentTransaction transaction = getSupportFragmentManager()
+                    .beginTransaction()
+                    .replace(R.id.home_display_container, fragment)
+                    .addToBackStack(null);
+            // Commit the transaction
+            transaction.commit();
+        }
+
+
 
     }
 
@@ -238,10 +263,16 @@ public class HomeActivity extends AppCompatActivity implements
     }
 
     private void handleMsgGetOnPostExecute(final String result) {
+        Log.wtf("CHATLIST", result);
+
         Bundle args = new Bundle();
         args.putSerializable("result" , result);
-        Log.wtf("CHATLIST", result);
+        args.putSerializable(getString(R.string.keys_intent_jwt), mJwToken);
+        args.putSerializable(getString(R.string.keys_intent_credentials), mCredentials);
+        args.putSerializable("chatid", mcurrentchatid);
+
         onWaitFragmentInteractionHide();
+
         OneConversation conv = new OneConversation();
 
         conv.setArguments(args);
@@ -402,6 +433,9 @@ public class HomeActivity extends AppCompatActivity implements
             Uri uri;
             switch (item.getItemId()) {
                 case R.id.butt_navigation_home:
+                    Bundle args = new Bundle();
+                    args.putSerializable(getString(R.string.keys_json_field_username), mCredentials.getUsername());
+
                     HomeFragment home = new HomeFragment();
                     FragmentTransaction transaction = getSupportFragmentManager()
                             .beginTransaction()
@@ -415,12 +449,18 @@ public class HomeActivity extends AppCompatActivity implements
                             .appendPath(getString(R.string.ep_base_url))
                             .appendPath("conversation")
                             .build();
-                    new GetAsyncTask.Builder(uri.toString())
+                    JSONObject messageJson = new JSONObject();
+                    try {
+                        messageJson.put("email", mCredentials.getEmail());
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                        Log.e("ERROR! ", e.getMessage());
+                    }
+                    new SendPostAsyncTask.Builder(uri.toString(), messageJson)
                             .onPreExecute(myActivity::onWaitFragmentInteractionShow)
                             .onPostExecute(myActivity::handleConversationListGetOnPostExecute)
                             .addHeaderField("authorization", mJwToken) //add the JWT as a header
                             .build().execute();
-
                     return true;
                 case R.id.butt_navigation_connections:
                     JSONObject json = new JSONObject();
