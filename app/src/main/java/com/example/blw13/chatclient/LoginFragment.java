@@ -299,6 +299,7 @@ Log.e("CREDENTIALS 33333", mCredentials.asJSONObject().toString());
                     .setError("Login Unsuccessful, server error");
 
         }
+
     }
 
 
@@ -311,6 +312,7 @@ Log.e("CREDENTIALS 33333", mCredentials.asJSONObject().toString());
                 deviceToken = Pushy.register(getActivity().getApplicationContext());
                 //subscribe to a topic (this is a Blocking call)
                 Pushy.subscribe("all", getActivity().getApplicationContext());
+                Log.d("pushy registered", "doInBackground: Registered for pushy " + deviceToken);
             }
             catch (Exception exc) {
                 cancel(true);
