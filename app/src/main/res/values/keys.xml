@@ -8,6 +8,7 @@
     <string name="keys_json_login_id">id</string>
 
     <string name="keys_intent_jwt">intent key for jwt</string>
+    <string name="keys_intent_chatID">intent key for chatID</string>
     <string name="keys_intent_credentials">intent key for creds</string>
     <string name="keys_json_incorrect_field">field</string>
     <string name="keys_json_field_email">email</string>

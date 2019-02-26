@@ -77,8 +77,13 @@ public class HomeActivity extends AppCompatActivity implements
 
 
 
-        if (getIntent().getBooleanExtra(getString(R.string.keys_intent_notification_msg), false)) {
-            onFragmentInteraction("1");
+        if (getIntent().hasExtra(getString(R.string.keys_intent_notification_msg)) &&
+                getIntent().getBooleanExtra(getString(R.string.keys_intent_notification_msg), false)) {
+            String chatID = "0"; //Default value
+            if(getIntent().hasExtra(getString(R.string.keys_intent_chatID))){
+                chatID = getIntent().getStringExtra(getString(R.string.keys_intent_chatID));
+            }
+            onFragmentInteraction(chatID);
             return;
         } else {
             Fragment fragment;
@@ -202,6 +207,7 @@ public class HomeActivity extends AppCompatActivity implements
                 .appendPath("messaging")
                 .appendPath("getAll")
                 .build();
+        Log.e("HOME ACTIVTY ", "onFragmentInteraction: starting async taks with chat id "+chatid );
         new SendPostAsyncTask.Builder(uri.toString(),createJSONObject(chatid))
                 .onPreExecute(this::onWaitFragmentInteractionShow)
                 .onPostExecute(this::handleMsgGetOnPostExecute)
