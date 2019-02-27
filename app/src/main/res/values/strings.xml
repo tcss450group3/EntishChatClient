@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">chatclient</string>
+    <string name="app_name">Entish</string>
 
 
     <string name="title_activity_home">HomeActivity</string>
@@ -55,6 +55,8 @@
     <string name="button_new_connection">New Connection</string>
 
 
+    <!--Weather-->
+    <string name="text_search_for_new_loacation_button">Change Location</string>
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
 
