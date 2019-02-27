@@ -1,7 +1,6 @@
 package com.example.blw13.chatclient;
 
 import android.content.Context;
-import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.util.Log;
@@ -9,6 +8,7 @@ import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
@@ -16,18 +16,16 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.util.Random;
-
 
 /**
  * A simple {@link Fragment} subclass.
  * Activities that contain this fragment must implement the
- * {@link ConversationListFragment.OnChatListFragmentInteractionListener} interface
+ * {@link OnConversationListFragmentInteractionListener} interface
  * to handle interaction events.
  */
 public class ConversationListFragment extends Fragment {
 
-    private OnChatListFragmentInteractionListener mListener;
+    private OnConversationListFragmentInteractionListener mListener;
 
     public ConversationListFragment() {
         // Required empty public constructor
@@ -37,70 +35,63 @@ public class ConversationListFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
-
-
-
         View v = inflater.inflate(R.layout.fragment_chat_list, container, false);
-
 
         //gets arguments from Bundle and retrieves email to display.
         Bundle args = getArguments();
         if(args != null) {
+            try{
 
+                JSONObject root = new JSONObject((String) getArguments().get("result"));
 
-           // JSONObject result = (JSONObject) getArguments().get("result");
+                if (root.has("conversation")) {
+                    JSONArray data = root.getJSONArray("conversation");
 
-        try{
+                    LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT
+                            , ViewGroup.LayoutParams.WRAP_CONTENT);
+                    params.setMargins(10, 10, 10, 10);
+                    params.height =150;
+                    params.width = ViewGroup.LayoutParams.MATCH_PARENT;
 
-            JSONObject root = new JSONObject((String) getArguments().get("result"));
+                    LinearLayout mlayout = (LinearLayout) v.findViewById(R.id.chatlist_scroll_layout);
 
-            if (root.has("conversation")) {
-                JSONArray data = root.getJSONArray("conversation");
+                    for (int i = 0; i < data.length(); i++) {
+                        JSONObject jsonBlog = data.getJSONObject(i);
+                        MyTextView textView = new MyTextView(v.getContext()
+                                ,jsonBlog.getString("chatid")
+                                ,jsonBlog.getString("name"));
+                        textView.setText( textView.getName());
+                        textView.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_launcher_foreground, 0, 0, 0);
+                       // textView.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
+                        textView.setGravity(Gravity.CENTER_VERTICAL | Gravity.CENTER_HORIZONTAL);
 
-                LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT
-                        , ViewGroup.LayoutParams.WRAP_CONTENT);
-                params.setMargins(10, 10, 10, 10);
-                params.height =ViewGroup.LayoutParams.WRAP_CONTENT;
-                params.width = ViewGroup.LayoutParams.MATCH_PARENT;
+                        textView.setBackground(getResources().getDrawable(R.drawable.rounded_corner_for_conversation_list));
 
-                LinearLayout mlayout = (LinearLayout) v.findViewById(R.id.chatlist_scroll_layout);
+                        textView.setTextSize(24);
+                        textView.setLayoutParams(params);
+                        textView.setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+                                mListener.onConversationListFragmentInteraction(((MyTextView)v).getChatid());
+                            }
+                        });
+                        mlayout.addView(textView);
+                    }
 
-                for (int i = 0; i < data.length(); i++) {
-                    JSONObject jsonBlog = data.getJSONObject(i);
-                    MyTextView textView = new MyTextView(v.getContext()
-                            ,jsonBlog.getString("chatid")
-                            ,jsonBlog.getString("name"));
-                    textView.setText( textView.getName());
-                    textView.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_launcher_foreground, 0, 0, 0);
-                   // textView.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
-                    textView.setGravity(Gravity.CENTER_VERTICAL | Gravity.CENTER_HORIZONTAL);
-                    //textView.setHeight(100);
-                    int color;
-                    color = Color.rgb(227, 232, 227);
-                    textView.setBackground(getResources().getDrawable(R.drawable.rounded_corner_for_conversation_list));
-
-                    textView.setTextSize(36);
-                    textView.setLayoutParams(params);
-                    textView.setOnClickListener(new View.OnClickListener() {
-                        @Override
-                        public void onClick(View v) {
-                            Log.wtf("CHATLIST", ((TextView) v).getText().toString());
-                            mListener.onFragmentInteraction(((MyTextView)v).getChatid());
-                        }
-                    });
-                    mlayout.addView(textView);
                 }
 
+            }   catch (JSONException e) {
+                e.printStackTrace(); Log.e("ERROR!", e.getMessage()); //notify user onWaitFragmentInteractionHide();
             }
 
-        }   catch (JSONException e) {
-            e.printStackTrace(); Log.e("ERROR!", e.getMessage()); //notify user onWaitFragmentInteractionHide();
         }
-
-        }
-
-
+        Button newBtn = (Button)v.findViewById(R.id.button_conversationList_Start_New_conversation2);
+        newBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mListener.onNewConversationClick();
+            }
+        });
 
         return v;
     }
@@ -108,18 +99,18 @@ public class ConversationListFragment extends Fragment {
 //    // TODO: Rename method, update argument and hook method into UI event
 //    public void onButtonPressed(Uri uri) {
 //        if (mListener != null) {
-//            mListener.onFragmentInteraction();
+//            mListener.onConversationListFragmentInteraction();
 //        }
 //    }
 
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
-        if (context instanceof OnChatListFragmentInteractionListener) {
-            mListener = (OnChatListFragmentInteractionListener) context;
+        if (context instanceof OnConversationListFragmentInteractionListener) {
+            mListener = (OnConversationListFragmentInteractionListener) context;
         } else {
             throw new RuntimeException(context.toString()
-                    + " must implement OnFragmentInteractionListener");
+                    + " must implement OnNewConversationFragmentInteractionListener");
         }
     }
 
@@ -139,9 +130,10 @@ public class ConversationListFragment extends Fragment {
      * "http://developer.android.com/training/basics/fragments/communicating.html"
      * >Communicating with Other Fragments</a> for more information.
      */
-    public interface OnChatListFragmentInteractionListener {
+    public interface OnConversationListFragmentInteractionListener {
         // TODO: Update argument type and name
-        void onFragmentInteraction(String charid);
+        void onConversationListFragmentInteraction(String charid);
+        void onNewConversationClick();
     }
 
     public class MyTextView extends android.support.v7.widget.AppCompatTextView {
