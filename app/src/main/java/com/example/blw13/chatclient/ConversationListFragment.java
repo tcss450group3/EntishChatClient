@@ -9,6 +9,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
@@ -61,6 +62,7 @@ public class ConversationListFragment extends Fragment {
                                 ,jsonBlog.getString("chatid")
                                 ,jsonBlog.getString("name"));
                         textView.setText( textView.getName());
+
                         textView.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_launcher_foreground, 0, 0, 0);
                        // textView.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
                         textView.setGravity(Gravity.CENTER_VERTICAL | Gravity.CENTER_HORIZONTAL);
