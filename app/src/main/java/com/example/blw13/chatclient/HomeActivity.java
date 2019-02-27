@@ -18,7 +18,6 @@ import android.widget.TextView;
 
 import com.example.blw13.chatclient.Content.Connection;
 import com.example.blw13.chatclient.Model.Credentials;
-import com.example.blw13.chatclient.utils.GetAsyncTask;
 import com.example.blw13.chatclient.utils.SendPostAsyncTask;
 
 import org.json.JSONArray;
@@ -35,9 +34,10 @@ import java.util.List;
 public class HomeActivity extends AppCompatActivity implements
         ConnectionListFragment.OnListFragmentInteractionListener,
         WaitFragment.OnWaitFragmentInteractionListener,
-        ConversationListFragment.OnChatListFragmentInteractionListener,
+        ConversationListFragment.OnConversationListFragmentInteractionListener,
         OneConnectionFragment.OnProfileFragmentInteractionListener,
-        NewConnection.OnNewConnectionFragmentInteractionListener{
+        NewConnection.OnNewConnectionFragmentInteractionListener,
+        NewConversationFragment.OnNewConversationFragmentInteractionListener{
 
     private TextView mTextMessage;
 
@@ -80,7 +80,7 @@ public class HomeActivity extends AppCompatActivity implements
             if(getIntent().hasExtra(getString(R.string.keys_intent_chatID))){
                 chatID = getIntent().getStringExtra(getString(R.string.keys_intent_chatID));
             }
-            onFragmentInteraction(chatID);
+            onConversationListFragmentInteraction(chatID);
             return;
         } else {
             Fragment fragment;
@@ -194,7 +194,7 @@ public class HomeActivity extends AppCompatActivity implements
 
 
     @Override
-    public void onFragmentInteraction(String chatid) {
+    public void onConversationListFragmentInteraction(String chatid) {
 
         //JSONObject msg = chatid.asJSONObject();
 
@@ -204,12 +204,17 @@ public class HomeActivity extends AppCompatActivity implements
                 .appendPath("messaging")
                 .appendPath("getAll")
                 .build();
-        Log.e("HOME ACTIVTY ", "onFragmentInteraction: starting async taks with chat id "+chatid );
+        Log.e("HOME ACTIVTY ", "onConversationListFragmentInteraction: starting async taks with chat id "+chatid );
         new SendPostAsyncTask.Builder(uri.toString(),createJSONObject(chatid))
                 .onPreExecute(this::onWaitFragmentInteractionShow)
                 .onPostExecute(this::handleMsgGetOnPostExecute)
                 .addHeaderField("authorization", mJwToken) //add the JWT as a header
                 .build().execute();
+    }
+
+    @Override
+    public void onNewConversationClick() {
+        Log.wtf("CHATLIST", "Creadting a new conversation");
     }
 
     private void handleMsgGetOnPostExecute(final String result) {
@@ -366,6 +371,16 @@ public class HomeActivity extends AppCompatActivity implements
                 .addHeaderField("authorization", mJwToken) //add the JWT as a header
                 .build().execute();
         return true;
+    }
+
+    @Override
+    public void onNewConversationFragmentInteraction(Uri uri) {
+
+    }
+
+    @Override
+    public void OnNewConversationConfirmClick() {
+
     }
 
     public class ButtomNaviListener implements BottomNavigationView.OnNavigationItemSelectedListener {
