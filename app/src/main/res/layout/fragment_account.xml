@@ -5,6 +5,7 @@
     android:id="@+id/account_layout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:theme="@style/AppTheme"
     tools:context=".AccountFragment">
 
     <Switch
@@ -48,6 +49,7 @@
         android:textColor="@color/colorExtra2"
         android:textSize="30sp"
         android:textStyle="bold"
+        android:theme="@style/AppTheme"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
