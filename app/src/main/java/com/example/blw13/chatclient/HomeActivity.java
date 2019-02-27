@@ -42,9 +42,6 @@ public class HomeActivity extends AppCompatActivity implements
     private TextView mTextMessage;
 
     private String mJwToken;
-    private String mNameFirst;
-    private String mNameLast;
-    private String mUsername;
     private int mID;
     private Credentials mCredentials;
     private String mcurrentchatid;
