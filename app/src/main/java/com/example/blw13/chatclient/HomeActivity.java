@@ -14,6 +14,7 @@ import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.MenuItem;
+import android.widget.CheckBox;
 import android.widget.TextView;
 
 import com.example.blw13.chatclient.Content.Connection;
@@ -214,8 +215,45 @@ public class HomeActivity extends AppCompatActivity implements
 
     @Override
     public void onNewConversationClick() {
-        Log.wtf("CHATLIST", "Creadting a new conversation");
+        JSONObject json = new JSONObject();
+        try {
+            json.put("id", mID);
+        } catch (Exception e){
+        }
+        Uri uri = new Uri.Builder()
+                .scheme("https")
+                .appendPath(getString(R.string.ep_base_url))
+                .appendPath("connection")
+                .appendPath("get")
+                .build();
+        new SendPostAsyncTask.Builder(uri.toString(), json)
+                .onPreExecute(this::onWaitFragmentInteractionShow)
+                .onPostExecute(this::handleNewConversationOnPostExecute)
+                .addHeaderField("authorization", mJwToken) //add the JWT as a header
+                .build().execute();
     }
+
+
+    private void handleNewConversationOnPostExecute(final String result) {
+        Log.wtf("CHATLIST", result);
+
+        Bundle args = new Bundle();
+        args.putSerializable("result" , result);
+        args.putSerializable(getString(R.string.keys_intent_jwt), mJwToken);
+        args.putSerializable(getString(R.string.keys_intent_credentials), mCredentials);
+
+        onWaitFragmentInteractionHide();
+
+        NewConversationFragment newC = new NewConversationFragment();
+
+        newC.setArguments(args);
+        FragmentTransaction transaction = getSupportFragmentManager()
+                .beginTransaction()
+                .replace(R.id.home_display_container, newC)
+                .addToBackStack("oneConv");
+        transaction.commit();
+    }
+
 
     private void handleMsgGetOnPostExecute(final String result) {
         Log.wtf("CHATLIST", result);
@@ -379,8 +417,16 @@ public class HomeActivity extends AppCompatActivity implements
     }
 
     @Override
-    public void OnNewConversationConfirmClick() {
+    public void OnNewConversationConfirmClick(ArrayList<CheckBox> list) {
+        StringBuffer buffer = new StringBuffer("I want to talk with");
+        for (int i = 0; i < list.size(); i++) {
+            CheckBox temp = list.get(i);
 
+            if(temp.isChecked())buffer.append(" " + ((CheckBox)list.get(i)).getText().toString());
+
+        }
+
+        Log.wtf("SELECT", buffer.toString());
     }
 
     public class ButtomNaviListener implements BottomNavigationView.OnNavigationItemSelectedListener {
