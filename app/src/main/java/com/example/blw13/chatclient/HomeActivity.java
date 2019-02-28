@@ -353,6 +353,28 @@ public class HomeActivity extends AppCompatActivity implements
                 .build().execute();
     }
 
+    @Override
+    public void onDeleteConnection(Connection conn) {
+        JSONObject json = new JSONObject();
+        try{
+            json.put("id", conn.getID());
+        } catch (Exception e) {
+
+        }
+        Uri uri = new Uri.Builder()
+                .scheme("https")
+                .appendPath(getString(R.string.ep_base_url))
+                .appendPath(getString(R.string.ep_connection))
+                .appendPath("delete")
+                .build();
+        new SendPostAsyncTask.Builder(uri.toString(), json)
+                .onPreExecute(this::onWaitFragmentInteractionShow)
+                .onPostExecute(this::handleAcceptConnectionOnPost)
+                .addHeaderField("authorization", mJwToken) //add the JWT as a header
+                .build().execute();
+
+    }
+
     private void handleAcceptConnectionOnPost(final String result) {
         try {
             JSONObject root = new JSONObject(result);
