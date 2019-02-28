@@ -289,7 +289,8 @@ public class HomeActivity extends AppCompatActivity implements
                     connections.add(new Connection.Builder(
                             jsonConnection.getString(getString(R.string.keys_json_connections_username)),
                             jsonConnection.getInt(getString(R.string.keys_json_connections_verified)),
-                            jsonConnection.getInt("primarykey")
+                            jsonConnection.getInt(getString(R.string.keys_json_connections_id)),
+                            jsonConnection.getBoolean(getString(R.string.keys_json_connections_request))
                     ).build());
                 }
                 Connection[] connectionsAsArray = new Connection[connections.size()];
@@ -375,6 +376,8 @@ public class HomeActivity extends AppCompatActivity implements
             JSONObject root = new JSONObject(result);
             if (root.has("success")) {
                 if(root.getBoolean("success")){
+                    // it was a success
+                } else {
 
                 }
             }

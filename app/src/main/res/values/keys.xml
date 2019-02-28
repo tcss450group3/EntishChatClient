@@ -30,6 +30,8 @@
     <string name="keys_json_connections_response">connections</string>s
     <string name="keys_json_connections_username">username</string>
     <string name="keys_json_connections_verified">verified</string>
+    <string name="keys_json_connections_id">primarykey</string>
+    <string name="keys_json_connections_request">request</string>
 
     <string name="keys_intent_notification_msg">was app started from message notification?</string>
 

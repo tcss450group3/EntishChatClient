@@ -30,6 +30,8 @@ public class OneConnectionFragment extends Fragment implements View.OnClickListe
 
     private Connection mConn;
 
+    private TextView mTextStatus;
+
     public OneConnectionFragment() {
         // Required empty public constructor
     }
@@ -44,16 +46,21 @@ public class OneConnectionFragment extends Fragment implements View.OnClickListe
         if(getArguments() != null){
             mConn = (Connection) getArguments().getSerializable(ARG_CONNECTION);
             ((TextView) v.findViewById(R.id.textView_one_connection_display_username)).setText(mConn.getName());
-            TextView tv = v.findViewById(R.id.textView_one_connection_status_display);
+            mTextStatus = v.findViewById(R.id.textView_one_connection_status_display);
             if(mConn.getAccepted() == -1){
-                tv.setText("accepted");
+                mTextStatus.setText("accepted");
                 v.findViewById(R.id.button_one_connection_accept).setVisibility(View.GONE);
                 v.findViewById(R.id.button_one_connection_reject).setVisibility(View.GONE);
                 v.findViewById(R.id.textView_accept_invitation).setVisibility(View.GONE);
-            } else {
+            } else if(mConn.isRequest()){
                 v.findViewById(R.id.button_one_connection_accept).setOnClickListener(this::onAccept);
                 v.findViewById(R.id.button_one_connection_reject).setOnClickListener(this::onAccept);
-                tv.setText("pending");
+                mTextStatus.setText("pending");
+            } else {
+                v.findViewById(R.id.button_one_connection_accept).setVisibility(View.GONE);
+                v.findViewById(R.id.button_one_connection_reject).setVisibility(View.GONE);
+                v.findViewById(R.id.textView_accept_invitation).setVisibility(View.GONE);
+                mTextStatus.setText("pending");
             }
 
         }
@@ -69,6 +76,7 @@ public class OneConnectionFragment extends Fragment implements View.OnClickListe
         activity.findViewById(R.id.button_one_connection_accept).setVisibility(View.GONE);
         activity.findViewById(R.id.button_one_connection_reject).setVisibility(View.GONE);
         activity.findViewById(R.id.textView_accept_invitation).setVisibility(View.GONE);
+        mTextStatus.setText("accepted");
         Toast.makeText(getActivity(), "Connection accepted",
                 Toast.LENGTH_SHORT).show();
     }
