@@ -4,9 +4,22 @@ import android.content.Context;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.CheckBox;
+import android.widget.LinearLayout;
+
+import com.example.blw13.chatclient.Content.Connection;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.util.ArrayList;
+import java.util.List;
 
 
 /**
@@ -19,6 +32,8 @@ public class NewConversationFragment extends Fragment {
 
     private OnNewConversationFragmentInteractionListener mListener;
 
+    private ArrayList<CheckBox> mCheckBoxList = new ArrayList<>();
+
     public NewConversationFragment() {
         // Required empty public constructor
     }
@@ -27,8 +42,39 @@ public class NewConversationFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_new_conversation, container, false);
+        View v = inflater.inflate(R.layout.fragment_new_conversation, container, false);
+        LinearLayout mlayout = (LinearLayout) v.findViewById(R.id.new_conversation_linear);
+
+        Button confirm = (Button) v.findViewById(R.id.new_conversation_confirm_btn);
+        confirm.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mListener.OnNewConversationConfirmClick(mCheckBoxList);
+            }
+        });
+
+        try {
+            JSONObject root = new JSONObject(getArguments().getString("result"));
+            if (root.has(getString(R.string.keys_json_connections_response))) {
+                JSONArray response = root.getJSONArray(
+                        getString(R.string.keys_json_connections_response));
+                List<Connection> connections = new ArrayList<>();
+                for (int i = 0; i < response.length(); i++) {
+                    JSONObject jsonConnection = response.getJSONObject(i);
+                    CheckBox cb = new CheckBox(v.getContext());
+                    cb.setText(jsonConnection.getString(getString(R.string.keys_json_connections_username)));
+                    mlayout.addView(cb);
+                    mCheckBoxList.add(cb);
+                }
+
+            } else {
+                Log.e("ERROR!", "No response");
+            }
+        } catch (JSONException e) {
+            e.printStackTrace();
+            Log.e("ERROR!", e.getMessage());
+        }
+        return v;
     }
 
     // TODO: Rename method, update argument and hook method into UI event
@@ -68,6 +114,6 @@ public class NewConversationFragment extends Fragment {
     public interface OnNewConversationFragmentInteractionListener {
         // TODO: Update argument type and name
         void onNewConversationFragmentInteraction(Uri uri);
-        void OnNewConversationConfirmClick();
+        void OnNewConversationConfirmClick(ArrayList<CheckBox> list);
     }
 }
