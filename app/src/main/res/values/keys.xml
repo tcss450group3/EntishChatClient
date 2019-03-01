@@ -33,6 +33,9 @@
     <string name="keys_json_connections_id">primarykey</string>
     <string name="keys_json_connections_request">request</string>
 
+    <string name="keys_conversation_credentials">credentials1</string>
+    <string name="keys_conversation_id">myid</string>
+
     <string name="keys_intent_notification_msg">was app started from message notification?</string>
 
 </resources>

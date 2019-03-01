@@ -328,7 +328,10 @@ public class HomeActivity extends AppCompatActivity implements
 
     @Override
     public void onProfileFragmentInteraction(Connection item) {
-
+        NewConversationFragment fragment = new NewConversationFragment();
+        Bundle args = new Bundle();
+        args.putSerializable(getString(R.string.keys_conversation_credentials), item);
+        args.putInt(getString(R.string.keys_conversation_id), mID);
 
     }
 
