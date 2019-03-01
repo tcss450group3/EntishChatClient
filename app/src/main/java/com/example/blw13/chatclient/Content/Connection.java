@@ -14,30 +14,42 @@ public class Connection implements Serializable {
     //username of the person you are connected with
     private final String username;
 
-    //checks if the person you are connected with has accepted your request
+    //checks if the connection has been accepted by both members
     private final int accepted;
 
     //id of the connection
     private final int id;
+
+    //checks if this connection is a request sent to the current user
+    private final boolean request;
+
     //private final String details;
 
     private Connection(Builder builder) {
         this.username = builder.username;
         this.accepted = builder.accepted;
         this.id = builder.id;
+        this.request = builder.request;
         //this.details = builder.details;
     }
 
+    //returns the other person's username
     public String getName() {
         return username;
     }
 
-    //gets the
+    //gets an int that tells if the connection is accepted by both users
     public int getAccepted() {
         return accepted;
     }
 
+    //returns the id of the connection
     public int getID(){return id;}
+
+    //returns true if this connection is a request sent to the current user.
+    public boolean isRequest(){
+        return request;
+    }
 
 
     /**
@@ -47,12 +59,14 @@ public class Connection implements Serializable {
         private final String username;
         private final int accepted;
         private final int id;
+        private final boolean request;
         //private final String details;
 
-        public Builder(String username, int accepted, int id) {
+        public Builder(String username, int accepted, int id, boolean request) {
             this.username = username;
             this.accepted = accepted;
             this.id = id;
+            this.request = request;
             //this.details = details;
         }
 

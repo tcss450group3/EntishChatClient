@@ -30,6 +30,11 @@
     <string name="keys_json_connections_response">connections</string>
     <string name="keys_json_connections_username">username</string>
     <string name="keys_json_connections_verified">verified</string>
+    <string name="keys_json_connections_id">primarykey</string>
+    <string name="keys_json_connections_request">request</string>
+
+    <string name="keys_conversation_credentials">credentials1</string>
+    <string name="keys_conversation_id">myid</string>
 
     <string name="keys_json_newconversation_response">conversation</string>
     <string name="keys_json_newconversation_chatid">chatid</string>

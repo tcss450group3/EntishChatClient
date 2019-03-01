@@ -30,6 +30,8 @@ public class OneConnectionFragment extends Fragment implements View.OnClickListe
 
     private Connection mConn;
 
+    private TextView mTextStatus;
+
     public OneConnectionFragment() {
         // Required empty public constructor
     }
@@ -44,37 +46,56 @@ public class OneConnectionFragment extends Fragment implements View.OnClickListe
         if(getArguments() != null){
             mConn = (Connection) getArguments().getSerializable(ARG_CONNECTION);
             ((TextView) v.findViewById(R.id.textView_one_connection_display_username)).setText(mConn.getName());
-            TextView tv = v.findViewById(R.id.textView_one_connection_status_display);
+            mTextStatus = v.findViewById(R.id.textView_one_connection_status_display);
+
             if(mConn.getAccepted() == -1){
-                tv.setText("accepted");
+                mTextStatus.setText("accepted");
                 v.findViewById(R.id.button_one_connection_accept).setVisibility(View.GONE);
                 v.findViewById(R.id.button_one_connection_reject).setVisibility(View.GONE);
                 v.findViewById(R.id.textView_accept_invitation).setVisibility(View.GONE);
-            } else {
+                v.findViewById(R.id.button_one_connection_starNewConvo).setEnabled(false);
+            } else if(mConn.isRequest()){
                 v.findViewById(R.id.button_one_connection_accept).setOnClickListener(this::onAccept);
-                v.findViewById(R.id.button_one_connection_reject).setOnClickListener(this::onAccept);
-                tv.setText("pending");
+                v.findViewById(R.id.button_one_connection_reject).setOnClickListener(this::onDeleteContact);
+                v.findViewById(R.id.button_one_connection_delete).setVisibility(View.GONE);
+                v.findViewById(R.id.button_one_connection_starNewConvo).setEnabled(false);
+                mTextStatus.setText("pending");
+            } else {
+                v.findViewById(R.id.button_one_connection_accept).setVisibility(View.GONE);
+                v.findViewById(R.id.button_one_connection_reject).setVisibility(View.GONE);
+                v.findViewById(R.id.textView_accept_invitation).setVisibility(View.GONE);
+                v.findViewById(R.id.button_one_connection_starNewConvo).setEnabled(false);
+                mTextStatus.setText("pending");
             }
 
         }
 
+        v.findViewById(R.id.button_one_connection_delete).setOnClickListener(this::onDeleteContact);
         v.findViewById(R.id.button_one_connection_starNewConvo).setOnClickListener(this);
 
         return v;
     }
 
+    //Accepts an incoming connection request allowing you to start a conversation.
     private void onAccept(View v){
         mListener.onAcceptProfileFragment(mConn);
         Activity activity = getActivity();
         activity.findViewById(R.id.button_one_connection_accept).setVisibility(View.GONE);
         activity.findViewById(R.id.button_one_connection_reject).setVisibility(View.GONE);
         activity.findViewById(R.id.textView_accept_invitation).setVisibility(View.GONE);
+        v.findViewById(R.id.button_one_connection_starNewConvo).setEnabled(true);
+        v.findViewById(R.id.button_one_connection_delete).setVisibility(View.VISIBLE);
+        mTextStatus.setText("accepted");
         Toast.makeText(getActivity(), "Connection accepted",
                 Toast.LENGTH_SHORT).show();
     }
 
-    private void onReject(View v){
-
+     /*
+     *   Deletes a connection from this users connections,
+     *    used when rejecting a connection request as well
+     */
+    private void onDeleteContact(View v){
+        mListener.onDeleteConnection(mConn);
     }
 
     @Override
@@ -112,8 +133,9 @@ public class OneConnectionFragment extends Fragment implements View.OnClickListe
      */
     public interface OnProfileFragmentInteractionListener {
         // TODO: Update argument type and name
-        void onProfileFragmentInteraction(Connection item);
+        void onProfileFragmentInteraction(Connection conn);
         void onAcceptProfileFragment(Connection conn);
+        void onDeleteConnection(Connection conn);
     }
 
 }
