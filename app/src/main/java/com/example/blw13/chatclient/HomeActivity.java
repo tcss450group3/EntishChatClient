@@ -31,7 +31,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 
-
 public class HomeActivity extends AppCompatActivity implements
         ConnectionListFragment.OnListFragmentInteractionListener,
         WaitFragment.OnWaitFragmentInteractionListener,
@@ -41,7 +40,6 @@ public class HomeActivity extends AppCompatActivity implements
         NewConversationFragment.OnNewConversationFragmentInteractionListener{
 
     private TextView mTextMessage;
-
     private String mJwToken;
     private int mID;
     private Credentials mCredentials;
@@ -73,8 +71,6 @@ public class HomeActivity extends AppCompatActivity implements
         navigation.setOnNavigationItemSelectedListener(new ButtomNaviListener(this));
 
 
-
-
         if (getIntent().hasExtra(getString(R.string.keys_intent_notification_msg)) &&
                 getIntent().getBooleanExtra(getString(R.string.keys_intent_notification_msg), false)) {
             String chatID = "0"; //Default value
@@ -84,19 +80,10 @@ public class HomeActivity extends AppCompatActivity implements
             onConversationListFragmentInteraction(chatID);
             return;
         } else {
-            Fragment fragment;
-            fragment = new HomeFragment();
+            Fragment fragment = new HomeFragment();
             fragment.setArguments(args);
-            FragmentTransaction transaction = getSupportFragmentManager()
-                    .beginTransaction()
-                    .replace(R.id.home_display_container, fragment)
-                    .addToBackStack(null);
-            // Commit the transaction
-            transaction.commit();
+            loadFragment(fragment);
         }
-
-
-
     }
 
     protected void logout() {
@@ -127,11 +114,7 @@ public class HomeActivity extends AppCompatActivity implements
         args.putSerializable(OneConnectionFragment.ARG_CONNECTION, item);
         OneConnectionFragment one = new OneConnectionFragment();
         one.setArguments(args);
-        FragmentTransaction transaction = getSupportFragmentManager()
-                .beginTransaction()
-                .replace(R.id.home_display_container, one)
-                .addToBackStack("profile");
-        transaction.commit();
+        loadFragment(one);
     }
 
     @Override
@@ -143,12 +126,7 @@ public class HomeActivity extends AppCompatActivity implements
     public void onWaitFragmentInteractionShow() {
         //create and add wait fragment to activity, while an asynchronous task is running
         Log.wtf("HomeAct", "inside show");
-        getSupportFragmentManager()
-                .beginTransaction()
-                .add(R.id.home_display_container, new WaitFragment(), "WAIT")
-                .addToBackStack(null)
-                .commit();
-
+        loadFragment(new WaitFragment(), "WAIT");
     }
 
     @Override
@@ -162,22 +140,15 @@ public class HomeActivity extends AppCompatActivity implements
     }
 
     private void handleConversationListGetOnPostExecute(final String result) { //parse JSON
-
         // try to log the result of our conversation list respond
         Log.wtf("HomeAct", result);
 
         Bundle args = new Bundle();
         args.putSerializable("result" , result);
 
-
         ConversationListFragment convers = new ConversationListFragment();
         convers.setArguments(args);
-        FragmentTransaction trans = getSupportFragmentManager()
-                .beginTransaction()
-                .replace(R.id.home_display_container, convers)
-                .addToBackStack("conversationList");
-        trans.commit();
-
+        loadFragment(convers);
     }
 
     public JSONObject createJSONObject(String chatid) {
@@ -196,9 +167,7 @@ public class HomeActivity extends AppCompatActivity implements
 
     @Override
     public void onConversationListFragmentInteraction(String chatid) {
-
         //JSONObject msg = chatid.asJSONObject();
-
         Uri uri = new Uri.Builder()
                 .scheme("https")
                 .appendPath(getString(R.string.ep_base_url))
@@ -247,11 +216,7 @@ public class HomeActivity extends AppCompatActivity implements
         NewConversationFragment newC = new NewConversationFragment();
 
         newC.setArguments(args);
-        FragmentTransaction transaction = getSupportFragmentManager()
-                .beginTransaction()
-                .replace(R.id.home_display_container, newC)
-                .addToBackStack("oneConv");
-        transaction.commit();
+        loadFragment(newC);
     }
 
 
@@ -269,11 +234,7 @@ public class HomeActivity extends AppCompatActivity implements
         OneConversation conv = new OneConversation();
 
         conv.setArguments(args);
-        FragmentTransaction transaction = getSupportFragmentManager()
-                .beginTransaction()
-                .replace(R.id.home_display_container, conv)
-                .addToBackStack("oneConv");
-        transaction.commit();
+        loadFragment(conv);
     }
 
     private void handleConnectionListGetOnPostExecute(final String result) {
@@ -325,6 +286,16 @@ public class HomeActivity extends AppCompatActivity implements
         // Commit the transaction
         transaction.commit();
     }
+
+    private void loadFragment(Fragment frag, String tag) {
+        FragmentTransaction transaction = getSupportFragmentManager()
+                .beginTransaction()
+                .replace(R.id.home_display_container, frag, tag)
+                .addToBackStack(null);
+        // Commit the transaction
+        transaction.commit();
+    }
+
 
     @Override
     public void onProfileFragmentInteraction(Connection item) {
@@ -520,16 +491,9 @@ public class HomeActivity extends AppCompatActivity implements
             Uri uri;
             switch (item.getItemId()) {
                 case R.id.butt_navigation_home:
-                    Bundle args = new Bundle();
-                    args.putSerializable(getString(R.string.keys_json_field_username), mCredentials.getUsername());
-
-                    HomeFragment home = new HomeFragment();
-                    FragmentTransaction transaction = getSupportFragmentManager()
-                            .beginTransaction()
-                            .replace(R.id.home_display_container, home)
-                            .addToBackStack("home");
-                    transaction.commit();
+                    loadFragment(new HomeFragment());
                     return true;
+
                 case R.id.butt_navigation_chats:
                     uri = new Uri.Builder()
                             .scheme("https")
@@ -549,6 +513,7 @@ public class HomeActivity extends AppCompatActivity implements
                             .addHeaderField("authorization", mJwToken) //add the JWT as a header
                             .build().execute();
                     return true;
+
                 case R.id.butt_navigation_connections:
                     JSONObject json = new JSONObject();
                     try {
@@ -568,20 +533,10 @@ public class HomeActivity extends AppCompatActivity implements
                             .build().execute();
                     return true;
                 case R.id.butt_navigation_weather:
-                    WeatherFragment weather = new WeatherFragment();
-                    FragmentTransaction transaction4 = getSupportFragmentManager()
-                            .beginTransaction()
-                            .replace(R.id.home_display_container, weather)
-                            .addToBackStack("home");
-                    transaction4.commit();
+                    loadFragment(new WeatherFragment());
                     return true;
                 case R.id.butt_navigation_account:
-                    AccountFragment accountFragment = new AccountFragment();
-                    FragmentTransaction transaction5 = getSupportFragmentManager()
-                            .beginTransaction()
-                            .replace(R.id.home_display_container, accountFragment)
-                            .addToBackStack("account");
-                    transaction5.commit();
+                    loadFragment(new AccountFragment());
                     return true;
             }
             return false;
