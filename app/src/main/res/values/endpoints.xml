@@ -22,5 +22,10 @@
 
     <string name="ep_connection">connection</string>
 
+    <!--this is the conversation endpoint-->
+
+    <string name="ep_conversation">conversation</string>
+    <string name="ep_conversation_new">new</string>
+
 
 </resources>

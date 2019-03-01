@@ -418,15 +418,63 @@ public class HomeActivity extends AppCompatActivity implements
 
     @Override
     public void OnNewConversationConfirmClick(ArrayList<CheckBox> list) {
-        StringBuffer buffer = new StringBuffer("I want to talk with");
+        StringBuffer buffer = new StringBuffer("");
+        int counter = 0;
         for (int i = 0; i < list.size(); i++) {
             CheckBox temp = list.get(i);
+            if(temp.isChecked()){
+                if(counter ==0) {
+                    buffer.append(((CheckBox)list.get(i)).getText().toString());
+                    counter++;
+                } else {
+                    buffer.append(", " + ((CheckBox)list.get(i)).getText().toString());
+                }
+            }
+        }
+        buffer.append(", " + mCredentials.getUsername());
 
-            if(temp.isChecked())buffer.append(" " + ((CheckBox)list.get(i)).getText().toString());
+        JSONObject json = new JSONObject();
+        try {
+            json.put("name", buffer.toString());
+
+        } catch (Exception e){
 
         }
+        Uri uri = new Uri.Builder()
+                .scheme("https")
+                .appendPath(getString(R.string.ep_base_url))
+                .appendPath(getString(R.string.ep_conversation))
+                .appendPath(getString(R.string.ep_conversation_new))
+                .build();
+        new SendPostAsyncTask.Builder(uri.toString(), json)
+                .onPreExecute(this::onWaitFragmentInteractionShow)
+                .onPostExecute(this::handleShowingNewConversationOnPostExecute)
+                .addHeaderField("authorization", mJwToken) //add the JWT as a header
+                .build().execute();
+        //return true;
+    }
 
-        Log.wtf("SELECT", buffer.toString());
+    private void handleShowingNewConversationOnPostExecute(final String result) {
+        //Log.wtf("ERROR!", result);
+        onWaitFragmentInteractionHide();
+
+        try {
+            JSONObject root = new JSONObject(result);
+            if (root.has(getString(R.string.keys_json_newconversation_response))) {
+                JSONArray response = root.getJSONArray(
+                        getString(R.string.keys_json_newconversation_response));
+                List<Connection> connections = new ArrayList<>();
+                JSONObject temp =response.getJSONObject(0);
+                String chatid = temp.getString(getString(R.string.keys_json_newconversation_chatid));
+                onConversationListFragmentInteraction(chatid);
+            } else {
+
+            }
+        } catch (JSONException e) {
+            e.printStackTrace();
+            Log.e("ERROR!", e.getMessage());
+        }
+
     }
 
     public class ButtomNaviListener implements BottomNavigationView.OnNavigationItemSelectedListener {
