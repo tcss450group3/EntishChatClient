@@ -1,14 +1,18 @@
 package com.example.blw13.chatclient;
 
+import android.Manifest;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.ActivityInfo;
+import android.content.pm.PackageManager;
+import android.location.Location;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.BottomNavigationView;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
@@ -20,6 +24,12 @@ import android.widget.TextView;
 import com.example.blw13.chatclient.Content.Connection;
 import com.example.blw13.chatclient.Model.Credentials;
 import com.example.blw13.chatclient.utils.SendPostAsyncTask;
+import com.google.android.gms.location.FusedLocationProviderClient;
+import com.google.android.gms.location.LocationCallback;
+import com.google.android.gms.location.LocationRequest;
+import com.google.android.gms.location.LocationResult;
+import com.google.android.gms.location.LocationServices;
+import com.google.android.gms.tasks.OnSuccessListener;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -37,17 +47,39 @@ public class HomeActivity extends AppCompatActivity implements
         ConversationListFragment.OnConversationListFragmentInteractionListener,
         OneConnectionFragment.OnProfileFragmentInteractionListener,
         NewConnection.OnNewConnectionFragmentInteractionListener,
-        NewConversationFragment.OnNewConversationFragmentInteractionListener{
+        NewConversationFragment.OnNewConversationFragmentInteractionListener,
+        WeatherChoseLocationFragment.OnWeatherLocationChangeListener {
 
+    private final String TAG = "HomeActivity";
     private TextView mTextMessage;
     private String mJwToken;
     private int mID;
     private Credentials mCredentials;
     private String mcurrentchatid;
+    private static final int MY_PERMISSIONS_LOCATIONS = 8414;
+    private LocationRequest mLocationRequest;
+    private Location mCurrentLocation;
+    private FusedLocationProviderClient mFusedLocationClient;
+    private LocationCallback mLocationCallback;
+    /**
+     * The desired interval for location updates. Inexact. Updates may be more or less frequent.
+     */
+    public static final long UPDATE_INTERVAL_IN_MILLISECONDS = 60000;
+
+    /**
+     * The fastest rate for active location updates. Exact. Updates will never be more frequent
+     * than this value.
+     */
+    public static final long FASTEST_UPDATE_INTERVAL_IN_MILLISECONDS =
+            UPDATE_INTERVAL_IN_MILLISECONDS / 30000;
+
+
+
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        mCurrentLocation = new Location("");
         super.onCreate(savedInstanceState);
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
         setContentView(R.layout.activity_home);
@@ -84,7 +116,152 @@ public class HomeActivity extends AppCompatActivity implements
             fragment.setArguments(args);
             loadFragment(fragment);
         }
+
+        mFusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
+
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION)
+                != PackageManager.PERMISSION_GRANTED
+                && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION)
+                != PackageManager.PERMISSION_GRANTED) {
+
+            ActivityCompat.requestPermissions(this,
+                    new String[]{Manifest.permission.ACCESS_COARSE_LOCATION
+                            , Manifest.permission.ACCESS_FINE_LOCATION},
+                    MY_PERMISSIONS_LOCATIONS);
+        } else {
+            //The user has already allowed the use of Locations. Get the current location.
+            requestLocation();
+        }
+
+        mLocationCallback = new LocationCallback() {
+            @Override
+            public void onLocationResult(LocationResult locationResult) {
+                if (locationResult == null) {
+                    return;
+                }
+                for (Location location : locationResult.getLocations()) {
+                    // Update UI with location data
+                    // ...
+                    Log.d("LOCATION UPDATE!", location.toString());
+                    mCurrentLocation = location;
+                }
+            };
+        };
+
+        createLocationRequest();
+
+
     }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        startLocationUpdates();
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        stopLocationUpdates();
+    }
+
+    /**
+     * Requests location updates from the FusedLocationApi.
+     */
+    protected void startLocationUpdates() {
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION)
+                == PackageManager.PERMISSION_GRANTED
+                && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION)
+                == PackageManager.PERMISSION_GRANTED) {
+
+            mFusedLocationClient.requestLocationUpdates(mLocationRequest,
+                    mLocationCallback,
+                    null /* Looper */);
+        }
+    }
+
+    /**
+     * Removes location updates from the FusedLocationApi.
+     */
+    protected void stopLocationUpdates() {
+        // It is a good practice to remove location requests when the activity is in a paused or
+        // stopped state. Doing so helps battery performance and is especially
+        // recommended in applications that request frequent location updates.
+        mFusedLocationClient.removeLocationUpdates(mLocationCallback);
+    }
+
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode,
+                                           String permissions[], int[] grantResults) {
+        switch (requestCode) {
+            case MY_PERMISSIONS_LOCATIONS: {
+                // If request is cancelled, the result arrays are empty.
+                if (grantResults.length > 0
+                        && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+
+                    // permission was granted, yay! Do the
+                    // locations-related task you need to do.
+                    requestLocation();
+
+                } else {
+
+                    // permission denied, boo! Disable the
+                    // functionality that depends on this permission.
+                    Log.d("PERMISSION DENIED", "Nothing to see or do here.");
+
+                    // TODO disable dynamic content that depends on location
+
+                }
+                return;
+            }
+
+            // other 'case' lines to check for other
+            // permissions this app might request
+        }
+    }
+
+    private void requestLocation() {
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION)
+                != PackageManager.PERMISSION_GRANTED
+                && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION)
+                != PackageManager.PERMISSION_GRANTED) {
+
+            Log.d("REQUEST LOCATION", "User did NOT allow permission to request location!");
+        } else {
+            mFusedLocationClient.getLastLocation()
+                    .addOnSuccessListener(this, new OnSuccessListener<Location>() {
+                        @Override
+                        public void onSuccess(Location location) {
+                            // Got last known location. In some rare situations this can be null.
+                            if (location != null) {
+                                Log.d("LOCATION", location.toString());
+                                mCurrentLocation = location;
+                            }
+                        }
+                    });
+        }
+    }
+
+    /**
+     * Create and configure a Location Request used when retrieving location updates
+     */
+    protected void createLocationRequest() {
+        mLocationRequest = LocationRequest.create();
+
+        // Sets the desired interval for active location updates. This interval is
+        // inexact. You may not receive updates at all if no location sources are available, or
+        // you may receive them slower than requested. You may also receive updates faster than
+        // requested if other applications are requesting location at a faster interval.
+        mLocationRequest.setInterval(UPDATE_INTERVAL_IN_MILLISECONDS);
+
+        // Sets the fastest rate for active location updates. This interval is exact, and your
+        // application will never receive updates faster than this value.
+        mLocationRequest.setFastestInterval(FASTEST_UPDATE_INTERVAL_IN_MILLISECONDS);
+
+        mLocationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
+    }
+
 
     protected void logout() {
         new DeleteTokenAsyncTask().execute();
@@ -106,6 +283,7 @@ public class HomeActivity extends AppCompatActivity implements
         // End this Activity and remove it from the Activity back stack.
         finish();
     }
+
 
 
     @Override
@@ -476,6 +654,24 @@ public class HomeActivity extends AppCompatActivity implements
 
     }
 
+
+    @Override
+    public Boolean DisplayFavoriteLocations() {
+        loadFragment(new FavoriteLocationsFragment());
+        return null;
+    }
+
+    @Override
+    public Boolean OnWeatherLocationChanged(Location theNewLoc) {
+        Fragment frag = new WeatherFragment();
+        Bundle args = new Bundle();
+        args.putParcelable(getString(R.string.keys_location), theNewLoc);
+        frag.setArguments(args);
+        loadFragment(frag);
+        return true;
+    }
+
+
     public class ButtomNaviListener implements BottomNavigationView.OnNavigationItemSelectedListener {
 
 
@@ -533,7 +729,11 @@ public class HomeActivity extends AppCompatActivity implements
                             .build().execute();
                     return true;
                 case R.id.butt_navigation_weather:
-                    loadFragment(new WeatherFragment());
+                    Fragment frag = new WeatherFragment();
+                    Bundle args = new Bundle();
+                    args.putParcelable(getString(R.string.keys_location), mCurrentLocation);
+                    frag.setArguments(args);
+                    loadFragment(frag);
                     return true;
                 case R.id.butt_navigation_account:
                     loadFragment(new AccountFragment());
