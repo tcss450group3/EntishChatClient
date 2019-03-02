@@ -38,6 +38,7 @@ import org.json.JSONObject;
 import me.pushy.sdk.Pushy;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 
@@ -596,19 +597,39 @@ public class HomeActivity extends AppCompatActivity implements
     @Override
     public void OnNewConversationConfirmClick(ArrayList<CheckBox> list) {
         StringBuffer buffer = new StringBuffer("");
+
+        // add my username to the list
+        // sort the list to ASE order
+        //list.add()
+
+        ArrayList<String> sortednames = new ArrayList<>();
+
         int counter = 0;
+
         for (int i = 0; i < list.size(); i++) {
             CheckBox temp = list.get(i);
             if(temp.isChecked()){
-                if(counter ==0) {
-                    buffer.append(((CheckBox)list.get(i)).getText().toString());
-                    counter++;
-                } else {
-                    buffer.append(", " + ((CheckBox)list.get(i)).getText().toString());
-                }
+                    sortednames.add(((CheckBox)list.get(i)).getText().toString());
             }
         }
-        buffer.append(", " + mCredentials.getUsername());
+        sortednames.add(mCredentials.getUsername());
+
+        Collections.sort(sortednames,String.CASE_INSENSITIVE_ORDER);
+
+
+        for (int i = 0; i < sortednames.size(); i++) {
+            String temp = sortednames.get(i);
+
+            if(counter == 0) {
+                buffer.append(sortednames.get(i));
+                counter++;
+            } else {
+                buffer.append(", " + sortednames.get(i));
+
+            }
+        }
+
+        Log.wtf("AAAAHHH", buffer.toString());
 
         JSONObject json = new JSONObject();
         try {
