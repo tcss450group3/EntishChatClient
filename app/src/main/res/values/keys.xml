@@ -26,6 +26,7 @@
     <string name="keys_prefs_email">traffic_light_wont_let_me_through</string>
     <string name="keys_prefs_username">some phish lyrics I guess</string>
     <string name="keys_prefs_password">see_the_city_see_the_zoo</string>
+    <string name="keys_prefs_UserId">Don not really know what to put here</string>
 
     <string name="keys_json_connections_response">connections</string>
     <string name="keys_json_connections_username">username</string>
@@ -38,6 +39,8 @@
 
     <string name="keys_json_newconversation_response">conversation</string>
     <string name="keys_json_newconversation_chatid">chatid</string>
+
+    <string name="keys_location">get location</string>
 
     <string name="keys_intent_notification_msg">was app started from message notification?</string>
 

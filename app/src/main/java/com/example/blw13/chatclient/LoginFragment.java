@@ -28,7 +28,7 @@ import me.pushy.sdk.Pushy;
  */
 public class LoginFragment extends Fragment implements View.OnClickListener {
 
-
+    private final String TAG = "Login Fragment";
     private OnLoginFragmentInteractionListener mListener;
     public Credentials mCredentials;
     private EditText mEmailEntry;
@@ -186,17 +186,15 @@ public class LoginFragment extends Fragment implements View.OnClickListener {
 
                 mJwt = resultsJSON.getString(
                         getString(R.string.keys_json_login_jwt));
-    Log.e("CREDENTIALS 11111", mCredentials.asJSONObject().toString());
-                new RegisterForPushNotificationsAsync().execute();
-
                 mCredentials = new Credentials.Builder(
                         mCredentials.getEmail(),
                         mCredentials.getPassword())
                         .addUsername(resultsJSON.getString(getString(R.string.keys_json_login_username)))
                         .addID(resultsJSON.getInt(getString(R.string.keys_json_login_id)))
                         .build();
-Log.e("CREDENTIALS 33333", mCredentials.asJSONObject().toString());
 //                saveCredentials(mCredentials);
+                new RegisterForPushNotificationsAsync().execute();
+
 //                mListener.onLoginSuccess(mCredentials, mJwt);
                 return;
 
@@ -240,7 +238,9 @@ Log.e("CREDENTIALS 33333", mCredentials.asJSONObject().toString());
 
         prefs.edit().putString(getString(R.string.keys_prefs_password),
                 credentials.getPassword()).apply();
-        Log.e("PREFS---------","" + prefs.getAll() );
+
+        prefs.edit().putInt(getString(R.string.keys_prefs_UserId),credentials.getID()).apply();
+        Log.d("PREFS---------","" + prefs.getAll());
     }
 
     private void doLogin(Credentials credentials) { //build the web service URL
@@ -253,7 +253,6 @@ Log.e("CREDENTIALS 33333", mCredentials.asJSONObject().toString());
         //build the JSONObject
         JSONObject msg = credentials.asJSONObject();
 
-        Log.e("CREDS--------", msg.toString());
         mCredentials = credentials;
 
         Log.d("JSON Credentials", msg.toString());
@@ -335,8 +334,6 @@ Log.e("CREDENTIALS 33333", mCredentials.asJSONObject().toString());
         protected void onPostExecute(String deviceToken) {
 //            // Log it for debugging purposes
             Log.d("LoginFrag", "Pushy device token: " + deviceToken);
-
-
             //build the web service URL
             Uri uri = new Uri.Builder()
                     .scheme("https")

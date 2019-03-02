@@ -28,4 +28,7 @@
     <string name="ep_conversation_new">new</string>
 
 
+    <string name="geocodebase">https://maps.googleapis.com/maps/api/geocode/"</string>
+
+
 </resources>
