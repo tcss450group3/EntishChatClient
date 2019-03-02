@@ -51,7 +51,7 @@ public class ConversationListFragment extends Fragment {
                     LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT
                             , ViewGroup.LayoutParams.WRAP_CONTENT);
                     params.setMargins(10, 10, 10, 10);
-                    params.height =150;
+                    params.height =ViewGroup.LayoutParams.WRAP_CONTENT;;
                     params.width = ViewGroup.LayoutParams.MATCH_PARENT;
 
                     LinearLayout mlayout = (LinearLayout) v.findViewById(R.id.chatlist_scroll_layout);
@@ -61,10 +61,19 @@ public class ConversationListFragment extends Fragment {
                         MyTextView textView = new MyTextView(v.getContext()
                                 ,jsonBlog.getString("chatid")
                                 ,jsonBlog.getString("name"));
+
+                        String[] chatMembers = jsonBlog.getString("name").split(", ");
+                        Log.wtf("SIZE" , chatMembers.length + "");
+
                         textView.setText( textView.getName());
 
-                        textView.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_launcher_foreground, 0, 0, 0);
-                       // textView.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
+                        if(chatMembers.length > 2) {
+                            textView.setCompoundDrawablesWithIntrinsicBounds(R.mipmap.ic_group_chat_round, 0, 0, 0);
+                        } else{
+                            textView.setCompoundDrawablesWithIntrinsicBounds(R.mipmap.ic_one_on_one_round, 0, 0, 0);
+                        }
+
+
                         textView.setGravity(Gravity.CENTER_VERTICAL | Gravity.CENTER_HORIZONTAL);
 
                         textView.setBackground(getResources().getDrawable(R.drawable.rounded_corner_for_conversation_list));
