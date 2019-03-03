@@ -48,7 +48,9 @@
     <string name="text_pending">Pending</string>
     <string name="text_denied">Denied</string>
     <string name="text_delete_contact">Delete Contact</string>
-    <string name="text_search_by_username">Search for new Connection by Username or Email</string>
+    <string name="text_search_by_username">Search for new Connection by Username</string>
+    <string name="text_send_email">Send email invitation link to new user</string>
+    <string name="text_new_connection_button_send">Send</string>
     <string name="text_confirm_new_connection">Do you want to accept this connection?</string>
     <string name="text_start_conversation">Start New Conversation</string>
     <string name="text_search_button">Search</string>
