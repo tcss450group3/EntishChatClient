@@ -638,7 +638,6 @@ public class HomeActivity extends AppCompatActivity implements
             e.printStackTrace();
             Log.e("ERROR!", e.getMessage());
         }
-
     }
 
 
@@ -660,7 +659,6 @@ public class HomeActivity extends AppCompatActivity implements
 
 
     public class ButtomNaviListener implements BottomNavigationView.OnNavigationItemSelectedListener {
-
 
         private HomeActivity myActivity;
 
