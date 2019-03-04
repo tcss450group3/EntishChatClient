@@ -54,12 +54,18 @@ public class WeatherFragment extends Fragment  {
         ImageButton b = (ImageButton) v.findViewById(R.id.imageButton_weather_change_locations);
         b.setOnClickListener(this::ChangeLocation);
         Log.d(Tag, "onCreateView: my location is " + mCurrentLocation.toString() + " my UID is "+ mUID);
+        //TODO display weather
         return v;
     }
 
 
+
+
     private void ChangeLocation(View view) {
         Fragment frag = new WeatherChoseLocationFragment();
+        Bundle args = new Bundle();
+        args.putParcelable(getString(R.string.keys_location), mCurrentLocation);
+        frag.setArguments(args);
         FragmentTransaction transaction = getActivity().getSupportFragmentManager()
                 .beginTransaction()
                 .replace(R.id.home_display_container, frag)

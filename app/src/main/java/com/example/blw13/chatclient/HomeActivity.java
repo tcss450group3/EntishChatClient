@@ -60,7 +60,7 @@ public class HomeActivity extends AppCompatActivity implements
     private static final int MY_PERMISSIONS_LOCATIONS = 8414;
     private LocationRequest mLocationRequest;
     private Location mCurrentLocation;
-    private FusedLocationProviderClient mFusedLocationClient;
+    public FusedLocationProviderClient mFusedLocationClient;
     private LocationCallback mLocationCallback;
     /**
      * The desired interval for location updates. Inexact. Updates may be more or less frequent.
