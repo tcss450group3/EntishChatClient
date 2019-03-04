@@ -15,7 +15,10 @@ import android.widget.Toast;
 
 import com.example.blw13.chatclient.Content.Connection;
 import com.example.blw13.chatclient.utils.SendPostAsyncTask;
+import com.example.blw13.chatclient.Model.Credentials;
 
+import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 
 
@@ -53,7 +56,6 @@ public class OneConnectionFragment extends Fragment implements View.OnClickListe
                 v.findViewById(R.id.button_one_connection_accept).setVisibility(View.GONE);
                 v.findViewById(R.id.button_one_connection_reject).setVisibility(View.GONE);
                 v.findViewById(R.id.textView_accept_invitation).setVisibility(View.GONE);
-                v.findViewById(R.id.button_one_connection_starNewConvo).setEnabled(false);
             } else if(mConn.isRequest()){
                 v.findViewById(R.id.button_one_connection_accept).setOnClickListener(this::onAccept);
                 v.findViewById(R.id.button_one_connection_reject).setOnClickListener(this::onDeleteContact);
@@ -115,9 +117,58 @@ public class OneConnectionFragment extends Fragment implements View.OnClickListe
         mListener = null;
     }
 
+    public void handleGetConversationWithOnPostExecute(final String result) {
+        try {
+            JSONObject root = new JSONObject(result);
+
+            if (root.has("conversation")) {
+                String chatid = null;
+                boolean found = false;
+                JSONArray data = root.getJSONArray("conversation");
+                for (int i = 0; i < data.length(); i++) {
+                    JSONObject jsonCovo = data.getJSONObject(i);
+                    String[] chatMembers = jsonCovo.getString("name").split(", ");
+                    if(chatMembers.length == 2){
+                        for(String member : chatMembers){
+                            if(member.equals(mConn.getName())) {
+                                chatid = jsonCovo.getString("chatid");
+                                found = true;
+                                break;
+                            }
+                        }
+                    }
+                    if(found) break;
+                }
+                if(found) {
+                    mListener.onStartNewConversation(chatid);
+                } else {
+                    mListener.onStartNewConversation(mConn);
+                }
+            }
+        }catch(Exception e) {
+
+        }
+    }
+
     @Override
     public void onClick(View v) {
-        mListener.onProfileFragmentInteraction(mConn);
+        Uri uri = new Uri.Builder()
+                .scheme("https")
+                .appendPath(getString(R.string.ep_base_url))
+                .appendPath("conversation")
+                .build();
+        JSONObject messageJson = new JSONObject();
+        try {
+            messageJson.put("email", mListener.getCredentials().getEmail());
+        } catch (JSONException e) {
+            e.printStackTrace();
+            Log.e("ERROR! ", e.getMessage());
+        }
+        new SendPostAsyncTask.Builder(uri.toString(), messageJson)
+                .onPreExecute(this.mListener::onWaitFragmentInteractionShow)
+                .onPostExecute(this::handleGetConversationWithOnPostExecute)
+                .addHeaderField("authorization", mListener.getJwtoken()) //add the JWT as a header
+                .build().execute();
 
     }
 
@@ -131,11 +182,14 @@ public class OneConnectionFragment extends Fragment implements View.OnClickListe
      * "http://developer.android.com/training/basics/fragments/communicating.html"
      * >Communicating with Other Fragments</a> for more information.
      */
-    public interface OnProfileFragmentInteractionListener {
+    public interface OnProfileFragmentInteractionListener extends WaitFragment.OnWaitFragmentInteractionListener{
         // TODO: Update argument type and name
-        void onProfileFragmentInteraction(Connection conn);
+        void onStartNewConversation(String chatid);
+        void onStartNewConversation(Connection conn);
         void onAcceptProfileFragment(Connection conn);
         void onDeleteConnection(Connection conn);
+        Credentials getCredentials();
+        String getJwtoken();
     }
 
 }

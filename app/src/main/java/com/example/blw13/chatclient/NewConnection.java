@@ -61,7 +61,6 @@ public class NewConnection extends Fragment implements View.OnClickListener {
                 JSONObject json = new JSONObject();
                 json.put("email", email);
                 json.put("sender", mListener.getCredentials().getUsername());
-                Log.e("WOAHAUSERNAME",mListener.getCredentials().getUsername());
                 Uri uri = new Uri.Builder()
                         .scheme("https")
                         .appendPath(getString(R.string.ep_base_url))

@@ -42,7 +42,7 @@ public class PushReceiver extends BroadcastReceiver {
 
         String messageText = intent.getStringExtra("message");
 
-        String chatID = intent.getStringExtra("chatid") ;
+        String chatID = intent.getStringExtra("chatid");
 
         ActivityManager.RunningAppProcessInfo appProcessInfo = new ActivityManager.RunningAppProcessInfo();
         ActivityManager.getMyMemoryState(appProcessInfo);

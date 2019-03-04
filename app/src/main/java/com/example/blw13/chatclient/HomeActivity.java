@@ -477,8 +477,45 @@ public class HomeActivity extends AppCompatActivity implements
 
 
     @Override
-    public void onProfileFragmentInteraction(Connection item) {
+    public void onStartNewConversation(String chatid) {
+        //JSONObject msg = chatid.asJSONObject();
+        Uri uri = new Uri.Builder()
+                .scheme("https")
+                .appendPath(getString(R.string.ep_base_url))
+                .appendPath("messaging")
+                .appendPath("getAll")
+                .build();
+        new SendPostAsyncTask.Builder(uri.toString(),createJSONObject(chatid))
+                .onPreExecute(this::onWaitFragmentInteractionShow)
+                .onPostExecute(this::handleMsgGetOnPostExecute)
+                .addHeaderField("authorization", mJwToken) //add the JWT as a header
+                .build().execute();
+    }
 
+    @Override
+    public void onStartNewConversation(Connection conn){
+        StringBuilder sb = new StringBuilder();
+        sb.append(mCredentials.getUsername());
+        sb.append(", ");
+        sb.append(conn.getName());
+        JSONObject json = new JSONObject();
+        try {
+            json.put("name", sb.toString());
+
+        } catch (Exception e){
+
+        }
+        Uri uri = new Uri.Builder()
+                .scheme("https")
+                .appendPath(getString(R.string.ep_base_url))
+                .appendPath(getString(R.string.ep_conversation))
+                .appendPath(getString(R.string.ep_conversation_new))
+                .build();
+        new SendPostAsyncTask.Builder(uri.toString(), json)
+                .onPreExecute(this::onWaitFragmentInteractionShow)
+                .onPostExecute(this::handleShowingNewConversationOnPostExecute)
+                .addHeaderField("authorization", mJwToken) //add the JWT as a header
+                .build().execute();
     }
 
     @Override
