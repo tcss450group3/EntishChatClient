@@ -38,6 +38,7 @@ import org.json.JSONObject;
 import me.pushy.sdk.Pushy;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 
@@ -59,7 +60,7 @@ public class HomeActivity extends AppCompatActivity implements
     private static final int MY_PERMISSIONS_LOCATIONS = 8414;
     private LocationRequest mLocationRequest;
     private Location mCurrentLocation;
-    private FusedLocationProviderClient mFusedLocationClient;
+    public FusedLocationProviderClient mFusedLocationClient;
     private LocationCallback mLocationCallback;
     /**
      * The desired interval for location updates. Inexact. Updates may be more or less frequent.
@@ -477,10 +478,6 @@ public class HomeActivity extends AppCompatActivity implements
 
     @Override
     public void onProfileFragmentInteraction(Connection item) {
-        NewConversationFragment fragment = new NewConversationFragment();
-        Bundle args = new Bundle();
-        args.putSerializable(getString(R.string.keys_conversation_credentials), item);
-        args.putInt(getString(R.string.keys_conversation_id), mID);
 
     }
 
@@ -545,48 +542,18 @@ public class HomeActivity extends AppCompatActivity implements
 
     }
 
-    private void handleNewConnectionOnPostExecute(final String result){
-        try {
-            JSONObject root = new JSONObject(result);
-            if (root.has("success")) {
-                if(root.getBoolean("success")){
-                    // it was a success
-                } else {
 
-                }
-            }
-            onWaitFragmentInteractionHide();
-        } catch (JSONException e) {
-            e.printStackTrace();
-            Log.e("ERROR!", e.getMessage());
-            //notify user
-            onWaitFragmentInteractionHide();
-        }
+
+    @Override
+    public String getJwtoken() {
+        return mJwToken;
     }
 
     @Override
-    public boolean onNewConnectionFragmentInteraction(Credentials item) {
-        JSONObject json = new JSONObject();
-        try {
-            json.put("email", item.getEmail());
-            json.put("username", item.getUsername());
-            json.put("id", mID);
-        } catch (Exception e){
-
-        }
-        Uri uri = new Uri.Builder()
-                .scheme("https")
-                .appendPath(getString(R.string.ep_base_url))
-                .appendPath(getString(R.string.ep_connection))
-                .appendPath("new")
-                .build();
-        new SendPostAsyncTask.Builder(uri.toString(), json)
-                .onPreExecute(this::onWaitFragmentInteractionShow)
-                .onPostExecute(this::handleNewConnectionOnPostExecute)
-                .addHeaderField("authorization", mJwToken) //add the JWT as a header
-                .build().execute();
-        return true;
+    public Credentials getCredentials() {
+        return mCredentials;
     }
+
 
     @Override
     public void onNewConversationFragmentInteraction(Uri uri) {
@@ -596,19 +563,39 @@ public class HomeActivity extends AppCompatActivity implements
     @Override
     public void OnNewConversationConfirmClick(ArrayList<CheckBox> list) {
         StringBuffer buffer = new StringBuffer("");
+
+        // add my username to the list
+        // sort the list to ASE order
+        //list.add()
+
+        ArrayList<String> sortednames = new ArrayList<>();
+
         int counter = 0;
+
         for (int i = 0; i < list.size(); i++) {
             CheckBox temp = list.get(i);
             if(temp.isChecked()){
-                if(counter ==0) {
-                    buffer.append(((CheckBox)list.get(i)).getText().toString());
-                    counter++;
-                } else {
-                    buffer.append(", " + ((CheckBox)list.get(i)).getText().toString());
-                }
+                    sortednames.add(((CheckBox)list.get(i)).getText().toString());
             }
         }
-        buffer.append(", " + mCredentials.getUsername());
+        sortednames.add(mCredentials.getUsername());
+
+        Collections.sort(sortednames,String.CASE_INSENSITIVE_ORDER);
+
+
+        for (int i = 0; i < sortednames.size(); i++) {
+            String temp = sortednames.get(i);
+
+            if(counter == 0) {
+                buffer.append(sortednames.get(i));
+                counter++;
+            } else {
+                buffer.append(", " + sortednames.get(i));
+
+            }
+        }
+
+        Log.wtf("AAAAHHH", buffer.toString());
 
         JSONObject json = new JSONObject();
         try {
