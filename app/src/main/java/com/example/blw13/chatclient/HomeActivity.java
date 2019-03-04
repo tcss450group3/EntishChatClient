@@ -478,10 +478,6 @@ public class HomeActivity extends AppCompatActivity implements
 
     @Override
     public void onProfileFragmentInteraction(Connection item) {
-        NewConversationFragment fragment = new NewConversationFragment();
-        Bundle args = new Bundle();
-        args.putSerializable(getString(R.string.keys_conversation_credentials), item);
-        args.putInt(getString(R.string.keys_conversation_id), mID);
 
     }
 
@@ -546,48 +542,18 @@ public class HomeActivity extends AppCompatActivity implements
 
     }
 
-    private void handleNewConnectionOnPostExecute(final String result){
-        try {
-            JSONObject root = new JSONObject(result);
-            if (root.has("success")) {
-                if(root.getBoolean("success")){
-                    // it was a success
-                } else {
 
-                }
-            }
-            onWaitFragmentInteractionHide();
-        } catch (JSONException e) {
-            e.printStackTrace();
-            Log.e("ERROR!", e.getMessage());
-            //notify user
-            onWaitFragmentInteractionHide();
-        }
+
+    @Override
+    public String getJwtoken() {
+        return mJwToken;
     }
 
     @Override
-    public boolean onNewConnectionFragmentInteraction(Credentials item) {
-        JSONObject json = new JSONObject();
-        try {
-            json.put("email", item.getEmail());
-            json.put("username", item.getUsername());
-            json.put("id", mID);
-        } catch (Exception e){
-
-        }
-        Uri uri = new Uri.Builder()
-                .scheme("https")
-                .appendPath(getString(R.string.ep_base_url))
-                .appendPath(getString(R.string.ep_connection))
-                .appendPath("new")
-                .build();
-        new SendPostAsyncTask.Builder(uri.toString(), json)
-                .onPreExecute(this::onWaitFragmentInteractionShow)
-                .onPostExecute(this::handleNewConnectionOnPostExecute)
-                .addHeaderField("authorization", mJwToken) //add the JWT as a header
-                .build().execute();
-        return true;
+    public Credentials getCredentials() {
+        return mCredentials;
     }
+
 
     @Override
     public void onNewConversationFragmentInteraction(Uri uri) {
