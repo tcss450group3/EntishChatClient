@@ -68,9 +68,19 @@
     <string name="text_weather_Wind">Wind: </string>
     <string name="text_weather_Humidity">Humidity: </string>
     <string name="text_weather_Temp">Temperature: </string>
+    <string name="text_weather_add_to_favs">Save to Favorites</string>
+    <string name="text_weather_save">Save</string>
+    <string name="text_weather_name">Name</string>
+    <string name="text_weather_current_weather">Current Weather:</string>
+    <string name="text_weather_hourlyforecast">24-Hour Forecast:</string>
+    <string name="text_weather_tendayforecast">10-Day Forecast:</string>
+    <string name="text_add_a_nickname">Add a nickname for this location:</string>
 
 
     <string name="title_activity_maps">Map</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
 
 
 </resources>

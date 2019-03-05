@@ -75,14 +75,13 @@ public class WeatherChoseLocationFragment extends Fragment {
             Log.e(TAG, "SearchZip: got here" );
             try {
                 toSearch = Integer.parseInt(mZipEntry.getText().toString());
+                mListener.OnWeatherLocationChanged(toSearch);
             } catch (Exception e){
                 Log.e(TAG, "SearchZip: failed \n" + e.getStackTrace() );
                 mZipEntry.setError("Not a valid zip");
             }
 
         } else mZipEntry.setError("Not a valid zip");
-
-        mListener.OnWeatherLocationChanged(toSearch);
     }
 
     private void SearchMap(View view) {

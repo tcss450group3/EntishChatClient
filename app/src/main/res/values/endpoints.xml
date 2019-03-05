@@ -27,8 +27,9 @@
 
     <string name="ep_weather_base">weather</string>
     <string name="ep_weather_current">current</string>
-    <string name="ep_weather_forecast_hourly">/forecast/hourly</string>
-    <string name="ep_weather_forecast_daily">/forecast/daily</string>
+    <string name="ep_weather_forecast">forecast</string>
+    <string name="ep_weather_daily">daily</string>
+    <string name="ep_weather_hourly">hourly</string>
 
 
 
