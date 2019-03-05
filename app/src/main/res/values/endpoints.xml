@@ -19,16 +19,18 @@
     <string name="ep_get_all_messages">getAll</string>
 
     <!--this is the connections endpoint-->
-
     <string name="ep_connection">connection</string>
 
     <!--this is the conversation endpoint-->
-
     <string name="ep_conversation">conversation</string>
     <string name="ep_conversation_new">new</string>
 
+    <string name="ep_weather_base">weather</string>
+    <string name="ep_weather_current">current</string>
+    <string name="ep_weather_forecast_hourly">/forecast/hourly</string>
+    <string name="ep_weather_forecast_daily">/forecast/daily</string>
 
-    <string name="geocodebase">https://maps.googleapis.com/maps/api/geocode/"</string>
+
 
 
 </resources>
