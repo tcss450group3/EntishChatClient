@@ -62,6 +62,7 @@ public class HomeActivity extends AppCompatActivity implements
     private Location mCurrentLocation;
     public FusedLocationProviderClient mFusedLocationClient;
     private LocationCallback mLocationCallback;
+    private BottomNavigationView mNavigationView;
     /**
      * The desired interval for location updates. Inexact. Updates may be more or less frequent.
      */
@@ -73,8 +74,6 @@ public class HomeActivity extends AppCompatActivity implements
      */
     public static final long FASTEST_UPDATE_INTERVAL_IN_MILLISECONDS =
             UPDATE_INTERVAL_IN_MILLISECONDS / 30000;
-
-
 
 
 
@@ -92,7 +91,6 @@ public class HomeActivity extends AppCompatActivity implements
             mJwToken = getIntent().getStringExtra(getString(R.string.keys_intent_jwt));
             args.putSerializable(getString(R.string.keys_intent_jwt), mJwToken);
         }
-
         if (intent.getExtras().containsKey(getString(R.string.keys_intent_credentials))) {
             mCredentials = (Credentials) intent.getExtras().getSerializable(getString(R.string.keys_intent_credentials));
             args.putSerializable(getString(R.string.keys_json_field_username), mCredentials.getUsername());
@@ -100,26 +98,12 @@ public class HomeActivity extends AppCompatActivity implements
         }
 
         mTextMessage = (TextView) findViewById(R.id.message);
-        BottomNavigationView navigation = (BottomNavigationView) findViewById(R.id.home_navigation_bar);
-        navigation.setOnNavigationItemSelectedListener(new ButtomNaviListener(this));
-
-
-        if (getIntent().hasExtra(getString(R.string.keys_intent_notification_msg)) &&
-                getIntent().getBooleanExtra(getString(R.string.keys_intent_notification_msg), false)) {
-            String chatID = "0"; //Default value
-            if(getIntent().hasExtra(getString(R.string.keys_intent_chatID))){
-                chatID = getIntent().getStringExtra(getString(R.string.keys_intent_chatID));
-            }
-            onConversationListFragmentInteraction(chatID);
-            return;
-        } else {
-            Fragment fragment = new HomeFragment();
-            fragment.setArguments(args);
-            loadFragment(fragment);
-        }
+        mNavigationView = (BottomNavigationView) findViewById(R.id.home_navigation_bar);
+        mNavigationView.setOnNavigationItemSelectedListener(new ButtomNaviListener(this));
 
         mFusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
 
+        // Ask for permission to use location at this spot because dynamic content may rely on it
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION)
                 != PackageManager.PERMISSION_GRANTED
                 && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION)
@@ -142,8 +126,6 @@ public class HomeActivity extends AppCompatActivity implements
                 }
                 for (Location location : locationResult.getLocations()) {
                     // Update UI with location data
-                    // ...
-                    Log.d("LOCATION UPDATE!", location.toString());
                     mCurrentLocation = location;
                 }
             };
@@ -151,7 +133,20 @@ public class HomeActivity extends AppCompatActivity implements
 
         createLocationRequest();
 
-
+        //Decide where to start the app, home or did it come from a message. Also we will have to check if it came from a
+        // different notification here
+        if (getIntent().hasExtra(getString(R.string.keys_intent_notification_msg)) &&
+                getIntent().getBooleanExtra(getString(R.string.keys_intent_notification_msg), false)) {
+            String chatID = "0"; //Default value
+            if(getIntent().hasExtra(getString(R.string.keys_intent_chatID))){
+                chatID = getIntent().getStringExtra(getString(R.string.keys_intent_chatID));
+            }
+            onConversationListFragmentInteraction(chatID);
+        } else {
+            Fragment fragment = new HomeFragment();
+            fragment.setArguments(args);
+            loadFragment(fragment);
+        }
     }
 
     @Override
@@ -304,7 +299,7 @@ public class HomeActivity extends AppCompatActivity implements
     @Override
     public void onWaitFragmentInteractionShow() {
         //create and add wait fragment to activity, while an asynchronous task is running
-        Log.wtf("HomeAct", "inside show");
+        mNavigationView.setEnabled(false);
         loadFragment(new WaitFragment(), "WAIT");
     }
 
@@ -315,7 +310,7 @@ public class HomeActivity extends AppCompatActivity implements
                 .beginTransaction()
                 .remove(getSupportFragmentManager().findFragmentByTag("WAIT"))
                 .commit();
-
+        mNavigationView.setEnabled(true);
     }
 
     private void handleConversationListGetOnPostExecute(final String result) { //parse JSON
@@ -324,7 +319,6 @@ public class HomeActivity extends AppCompatActivity implements
 
         Bundle args = new Bundle();
         args.putSerializable("result" , result);
-
         ConversationListFragment convers = new ConversationListFragment();
         convers.setArguments(args);
         loadFragment(convers);
@@ -353,7 +347,6 @@ public class HomeActivity extends AppCompatActivity implements
                 .appendPath("messaging")
                 .appendPath("getAll")
                 .build();
-        Log.e("HOME ACTIVTY ", "onConversationListFragmentInteraction: starting async taks with chat id "+chatid );
         new SendPostAsyncTask.Builder(uri.toString(),createJSONObject(chatid))
                 .onPreExecute(this::onWaitFragmentInteractionShow)
                 .onPostExecute(this::handleMsgGetOnPostExecute)
@@ -632,8 +625,6 @@ public class HomeActivity extends AppCompatActivity implements
             }
         }
 
-        Log.wtf("AAAAHHH", buffer.toString());
-
         JSONObject json = new JSONObject();
         try {
             json.put("name", buffer.toString());
@@ -675,7 +666,6 @@ public class HomeActivity extends AppCompatActivity implements
             e.printStackTrace();
             Log.e("ERROR!", e.getMessage());
         }
-
     }
 
 
@@ -695,13 +685,23 @@ public class HomeActivity extends AppCompatActivity implements
         return true;
     }
 
+    @Override
+    public Boolean OnWeatherLocationChanged(int theNewZip) {
+        Fragment frag = new WeatherFragment();
+        Bundle args = new Bundle();
+        args.putSerializable(getString(R.string.keys_zipcode), theNewZip);
+        frag.setArguments(args);
+        loadFragment(frag);
+        return true;
+    }
+
 
     public class ButtomNaviListener implements BottomNavigationView.OnNavigationItemSelectedListener {
-
 
         private HomeActivity myActivity;
 
         public ButtomNaviListener(HomeActivity theActivity) {
+
             myActivity = theActivity;
         }
 
@@ -758,6 +758,7 @@ public class HomeActivity extends AppCompatActivity implements
                     args.putParcelable(getString(R.string.keys_location), mCurrentLocation);
                     frag.setArguments(args);
                     loadFragment(frag);
+//                    ((WeatherFragment) frag).DisplayWeather();
                     return true;
                 case R.id.butt_navigation_account:
                     loadFragment(new AccountFragment());

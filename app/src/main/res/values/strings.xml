@@ -45,6 +45,8 @@
     <string name="text_Status">Status:</string>
     <string name="text_accept">Accept</string>
     <string name="text_reject">Reject</string>
+    <string name="text_select_recipients"> Select all you want to chat with:</string>
+    <string name="text_confirm"> Confirm</string>
     <string name="text_pending">Pending</string>
     <string name="text_denied">Denied</string>
     <string name="text_delete_contact">Delete Contact</string>
@@ -63,9 +65,11 @@
     <string name="text_zip_code">Zip Code</string>
     <string name="text_weather_title">Where would you like to search?</string>
     <string name="text_Search_on_map">Search by Map Location</string>
+    <string name="text_weather_Wind">Wind: </string>
+    <string name="text_weather_Humidity">Humidity: </string>
+    <string name="text_weather_Temp">Temperature: </string>
 
-    <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
+
     <string name="title_activity_maps">Map</string>
 
 

@@ -3,13 +3,25 @@ package com.example.blw13.chatclient;
 
 import android.content.Context;
 import android.location.Location;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
+
+import com.example.blw13.chatclient.Content.Connection;
+import com.example.blw13.chatclient.utils.SendPostAsyncTask;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -57,10 +69,20 @@ public class WeatherChoseLocationFragment extends Fragment {
     }
 
     private void SearchZip(View view) {
-        //TODO logic for valid zip
-        int toSearch = Integer.valueOf(mZipEntry.getText().toString());
-        //TODO search by zip
-        mListener.OnWeatherLocationChanged(new Location(""));
+        String zipEntry = mZipEntry.getText().toString();
+        int toSearch = 0;
+        if (zipEntry!=null && zipEntry.length() == 5){
+            Log.e(TAG, "SearchZip: got here" );
+            try {
+                toSearch = Integer.parseInt(mZipEntry.getText().toString());
+            } catch (Exception e){
+                Log.e(TAG, "SearchZip: failed \n" + e.getStackTrace() );
+                mZipEntry.setError("Not a valid zip");
+            }
+
+        } else mZipEntry.setError("Not a valid zip");
+
+        mListener.OnWeatherLocationChanged(toSearch);
     }
 
     private void SearchMap(View view) {
@@ -86,8 +108,10 @@ public class WeatherChoseLocationFragment extends Fragment {
         }
     }
 
-    public interface OnWeatherLocationChangeListener {
+    public interface OnWeatherLocationChangeListener extends WaitFragment.OnWaitFragmentInteractionListener{
         Boolean DisplayFavoriteLocations();
+        String getJwtoken();
         Boolean OnWeatherLocationChanged(Location theNewLoc);
+        Boolean OnWeatherLocationChanged(int theNewZip);
     }
 }
