@@ -14,6 +14,7 @@ public class  MainActivity extends AppCompatActivity implements LoginFragment.On
         RegisterFragment.OnRegisterFragmentInteractionListener, VerifyFragment.OnVerifyFragmentInteractionListener {
 
     private boolean mLoadFromChatNotification = false;
+    private boolean ismLoadFromConnectionNotification = false;
     private String mChatID;
     private static final String TAG = MainActivity.class.getSimpleName();
 
@@ -28,6 +29,8 @@ public class  MainActivity extends AppCompatActivity implements LoginFragment.On
                 mChatID = getIntent().getExtras().getString("chatid"); }
             if (getIntent().getExtras().containsKey("type")) {
                 mLoadFromChatNotification = getIntent().getExtras().getString("type").equals("msg"); }
+            if (getIntent().getExtras().containsKey("type")) {
+                ismLoadFromConnectionNotification = getIntent().getExtras().getString("type").equals("request"); }
         }
 
         if(savedInstanceState == null) {
@@ -52,6 +55,7 @@ public class  MainActivity extends AppCompatActivity implements LoginFragment.On
         intent.putExtra(getString(R.string.keys_intent_jwt), jwt);
         intent.putExtra(getString(R.string.keys_intent_credentials), id);
         intent.putExtra(getString(R.string.keys_intent_notification_msg), mLoadFromChatNotification);
+        intent.putExtra(getString(R.string.keys_intent_notification_conn), ismLoadFromConnectionNotification);
         intent.putExtra(getString(R.string.keys_intent_chatID), mChatID);
         startActivity(intent);
         finish();

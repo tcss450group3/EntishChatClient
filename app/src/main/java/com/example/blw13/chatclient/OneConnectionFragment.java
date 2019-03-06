@@ -85,8 +85,8 @@ public class OneConnectionFragment extends Fragment implements View.OnClickListe
         activity.findViewById(R.id.button_one_connection_accept).setVisibility(View.GONE);
         activity.findViewById(R.id.button_one_connection_reject).setVisibility(View.GONE);
         activity.findViewById(R.id.textView_accept_invitation).setVisibility(View.GONE);
-        v.findViewById(R.id.button_one_connection_starNewConvo).setEnabled(true);
-        v.findViewById(R.id.button_one_connection_delete).setVisibility(View.VISIBLE);
+        activity.findViewById(R.id.button_one_connection_starNewConvo).setEnabled(true);
+        activity.findViewById(R.id.button_one_connection_delete).setVisibility(View.VISIBLE);
         mTextStatus.setText("accepted");
         Toast.makeText(getActivity(), "Connection accepted",
                 Toast.LENGTH_SHORT).show();
