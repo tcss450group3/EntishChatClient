@@ -671,8 +671,43 @@ public class HomeActivity extends AppCompatActivity implements
 
     @Override
     public Boolean DisplayFavoriteLocations() {
-        loadFragment(new FavoriteLocationsFragment());
+        JSONObject json = new JSONObject();
+        try {
+            json.put("memberid", mID);
+
+        } catch (Exception e){
+
+        }
+        Uri uri = new Uri.Builder()
+                .scheme("https")
+                .appendPath(getString(R.string.ep_base_url))
+                .appendPath(getString(R.string.ep_weather_base))
+                .appendPath(getString(R.string.ep_weather_favorite))
+                .build();
+        new SendPostAsyncTask.Builder(uri.toString(), json)
+                .onPreExecute(this::onWaitFragmentInteractionShow)
+                .onPostExecute(this::handleShowingfavoriteLocationOnPostExecute)
+                .addHeaderField("authorization", mJwToken) //add the JWT as a header
+                .build().execute();
+        //loadFragment(new
+        // ());
         return null;
+    }
+
+    private void handleShowingfavoriteLocationOnPostExecute(String result) {
+        onWaitFragmentInteractionHide();
+
+        Bundle args = new Bundle();
+        args.putSerializable("result" , result);
+        args.putSerializable(getString(R.string.keys_intent_jwt), mJwToken);
+        args.putSerializable(getString(R.string.keys_intent_credentials), mCredentials);
+
+        onWaitFragmentInteractionHide();
+
+        FavoriteLocationsFragment flFrag = new FavoriteLocationsFragment();
+
+        flFrag.setArguments(args);
+        loadFragment(flFrag);
     }
 
     @Override

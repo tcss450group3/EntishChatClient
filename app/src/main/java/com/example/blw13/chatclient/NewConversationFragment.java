@@ -58,7 +58,6 @@ public class NewConversationFragment extends Fragment {
             if (root.has(getString(R.string.keys_json_connections_response))) {
                 JSONArray response = root.getJSONArray(
                         getString(R.string.keys_json_connections_response));
-                List<Connection> connections = new ArrayList<>();
                 for (int i = 0; i < response.length(); i++) {
                     JSONObject jsonConnection = response.getJSONObject(i);
                     CheckBox cb = new CheckBox(v.getContext());

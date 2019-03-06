@@ -9,11 +9,18 @@ import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.CheckBox;
 import android.widget.LinearLayout;
 
+import com.example.blw13.chatclient.Content.Connection;
 import com.example.blw13.chatclient.R;
 
+import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -39,46 +46,83 @@ public class FavoriteLocationsFragment extends Fragment {
 
         LinearLayout mlayout = (LinearLayout) v.findViewById(R.id.favoritelocation_scroll_layout);
 
-        for (int i = 0; i < 3; i++) {
-            //JSONObject jsonBlog = data.getJSONObject(i);
-            MyTextView textView = new MyTextView(v.getContext()
-                    ,"nickname"
-                    ,"Favorite Location " + i);
 
-           // String[] chatMembers = jsonBlog.getString("name").split(", ");
-           // Log.wtf("SIZE" , chatMembers.length + "");
 
-            textView.setText( textView.getName());
+        try {
+            JSONObject root = new JSONObject(getArguments().getString("result"));
+            if (root.has(getString(R.string.keys_favorite_location))) {
+                JSONArray response = root.getJSONArray(
+                        getString(R.string.keys_favorite_location));
+                for (int i = 0; i < response.length(); i++) {
+                    JSONObject jsonConnection = response.getJSONObject(i);
+                    MyTextView textView = new MyTextView(v.getContext()
+                            ,jsonConnection.getString("lat")
+                            ,jsonConnection.getString("nickname"));
+                    textView.setText( textView.getName());
 
-//            if(chatMembers.length > 2) {
-//                textView.setCompoundDrawablesWithIntrinsicBounds(R.mipmap.ic_group_chat_round, 0, 0, 0);
-//            } else{
-            if(i==0) {
-                textView.setCompoundDrawablesWithIntrinsicBounds(R.mipmap.coudy_rain, 0, 0, 0);
-            } else if (i ==1) {
-                textView.setCompoundDrawablesWithIntrinsicBounds(R.mipmap.cloud_wind, 0, 0, 0);
+                    if(i==0) {
+                        textView.setCompoundDrawablesWithIntrinsicBounds(R.mipmap.coudy_rain, 0, 0, 0);
+                    } else if (i ==1) {
+                        textView.setCompoundDrawablesWithIntrinsicBounds(R.mipmap.cloud_wind, 0, 0, 0);
 
-            }  else{
-                textView.setCompoundDrawablesWithIntrinsicBounds(R.mipmap.cloud_rain_lightning, 0, 0, 0);
+                    }  else{
+                        textView.setCompoundDrawablesWithIntrinsicBounds(R.mipmap.cloud_rain_lightning, 0, 0, 0);
+                    }
+
+
+                    textView.setGravity(Gravity.CENTER_VERTICAL | Gravity.CENTER_HORIZONTAL);
+
+                    textView.setBackground(getResources().getDrawable(R.drawable.rounded_corner_for_conversation_list));
+
+                    textView.setTextSize(24);
+                    textView.setLayoutParams(params);
+
+                    mlayout.addView(textView);
+                }
+
+            } else {
+                Log.e("ERROR!", "No response");
             }
-
-            //}
-
-
-            textView.setGravity(Gravity.CENTER_VERTICAL | Gravity.CENTER_HORIZONTAL);
-
-            textView.setBackground(getResources().getDrawable(R.drawable.rounded_corner_for_conversation_list));
-
-            textView.setTextSize(24);
-            textView.setLayoutParams(params);
-//            textView.setOnClickListener(new View.OnClickListener() {
-//                @Override
-//                public void onClick(View v) {
-//                    mListener.onConversationListFragmentInteraction(((MyTextView)v).getChatid());
-//                }
-//            });
-            mlayout.addView(textView);
+        } catch (JSONException e) {
+            e.printStackTrace();
+            Log.e("ERROR!", e.getMessage());
         }
+//
+//        for (int i = 0; i < 3; i++) {
+//            //JSONObject jsonBlog = data.getJSONObject(i);
+//            MyTextView textView = new MyTextView(v.getContext()
+//                    ,"nickname"
+//                    ,"Favorite Location " + i);
+//
+//           // String[] chatMembers = jsonBlog.getString("name").split(", ");
+//           // Log.wtf("SIZE" , chatMembers.length + "");
+//
+//            textView.setText( textView.getName());
+//
+////            if(chatMembers.length > 2) {
+////                textView.setCompoundDrawablesWithIntrinsicBounds(R.mipmap.ic_group_chat_round, 0, 0, 0);
+////            } else{
+//            if(i==0) {
+//                textView.setCompoundDrawablesWithIntrinsicBounds(R.mipmap.coudy_rain, 0, 0, 0);
+//            } else if (i ==1) {
+//                textView.setCompoundDrawablesWithIntrinsicBounds(R.mipmap.cloud_wind, 0, 0, 0);
+//
+//            }  else{
+//                textView.setCompoundDrawablesWithIntrinsicBounds(R.mipmap.cloud_rain_lightning, 0, 0, 0);
+//            }
+//
+//            //}
+//
+//
+//            textView.setGravity(Gravity.CENTER_VERTICAL | Gravity.CENTER_HORIZONTAL);
+//
+//            textView.setBackground(getResources().getDrawable(R.drawable.rounded_corner_for_conversation_list));
+//
+//            textView.setTextSize(24);
+//            textView.setLayoutParams(params);
+//
+//            mlayout.addView(textView);
+//        }
 
 
         return v;
