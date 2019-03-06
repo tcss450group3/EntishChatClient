@@ -158,8 +158,6 @@ public class WeatherFragment extends Fragment  {
                     String weatherCode = details.getString("code");
                     String description = details.getString("description");
 
-
-
                     //Create a textview and display weather in loop
                     TextView thistextView = new TextView(getView().getContext());
                     thistextView.setText("Date: " + date + "\nHigh: " + maxTemp + "F\nLow: "+ minTemp + "F\n"
@@ -313,35 +311,5 @@ public class WeatherFragment extends Fragment  {
     public void onDetach() {
         super.onDetach();
         mListener = null;
-    }
-
-
-    public class MyTextView extends android.support.v7.widget.AppCompatTextView {
-
-
-        private String mTimeStamp;
-        private String mTemp;
-        private String mDescription;
-//        String windDir = jsonWeather.getString("wind_cdir_full");
-//        String humidStr = jsonWeather.getString("rh");
-//                    if (jsonWeather.has("weather")){
-//            JSONObject details = jsonWeather.getJSONObject(getString(R.string.keys_json_weather_details));
-//            String icon = details.getString("icon");
-//            //TODO Set icon
-//            String weatherCode = details.getString("code");
-//            String description = details.getString("description");
-
-        public MyTextView(Context context, String timeStamp, String temp, String description ) {
-            super(context);
-            mTimeStamp = timeStamp;
-            mTemp = temp;
-            mDescription = description;
-
-
-
-        }
-
-
-
     }
 }
