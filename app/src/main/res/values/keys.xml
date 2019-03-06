@@ -45,6 +45,7 @@
     <string name="keys_json_newconversation_chatid">chatid</string>
 
     <string name="keys_location">get location</string>
+    <string name="keys_favorite_location">locations</string>
     <string name="keys_zipcode">zipcode</string>
 
     <string name="keys_intent_notification_msg">was app started from message notification?</string>
