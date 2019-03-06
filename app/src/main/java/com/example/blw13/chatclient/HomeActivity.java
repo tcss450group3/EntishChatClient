@@ -142,7 +142,11 @@ public class HomeActivity extends AppCompatActivity implements
                 chatID = getIntent().getStringExtra(getString(R.string.keys_intent_chatID));
             }
             onConversationListFragmentInteraction(chatID);
+        } else if(getIntent().hasExtra(getString(R.string.keys_intent_notification_conn)) &&
+                getIntent().getBooleanExtra(getString(R.string.keys_intent_notification_conn), false)){
+            loadConnections();
         } else {
+
             Fragment fragment = new HomeFragment();
             fragment.setArguments(args);
             loadFragment(fragment);
@@ -694,6 +698,25 @@ public class HomeActivity extends AppCompatActivity implements
         return true;
     }
 
+    private void loadConnections(){
+        JSONObject json = new JSONObject();
+        try {
+            json.put("id", mID);
+        } catch (Exception e){
+        }
+        Uri uri = new Uri.Builder()
+                .scheme("https")
+                .appendPath(getString(R.string.ep_base_url))
+                .appendPath("connection")
+                .appendPath("get")
+                .build();
+        new SendPostAsyncTask.Builder(uri.toString(), json)
+                .onPreExecute(this::onWaitFragmentInteractionShow)
+                .onPostExecute(this::handleConnectionListGetOnPostExecute)
+                .addHeaderField("authorization", mJwToken) //add the JWT as a header
+                .build().execute();
+    }
+
 
     public class ButtomNaviListener implements BottomNavigationView.OnNavigationItemSelectedListener {
 
@@ -734,22 +757,7 @@ public class HomeActivity extends AppCompatActivity implements
                     return true;
 
                 case R.id.butt_navigation_connections:
-                    JSONObject json = new JSONObject();
-                    try {
-                        json.put("id", mID);
-                    } catch (Exception e){
-                    }
-                    uri = new Uri.Builder()
-                            .scheme("https")
-                            .appendPath(getString(R.string.ep_base_url))
-                            .appendPath("connection")
-                            .appendPath("get")
-                            .build();
-                    new SendPostAsyncTask.Builder(uri.toString(), json)
-                            .onPreExecute(myActivity::onWaitFragmentInteractionShow)
-                            .onPostExecute(myActivity::handleConnectionListGetOnPostExecute)
-                            .addHeaderField("authorization", mJwToken) //add the JWT as a header
-                            .build().execute();
+                    loadConnections();
                     return true;
                 case R.id.butt_navigation_weather:
                     Fragment frag = new WeatherFragment();

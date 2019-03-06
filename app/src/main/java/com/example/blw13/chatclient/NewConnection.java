@@ -128,7 +128,7 @@ public class NewConnection extends Fragment implements View.OnClickListener {
                     Toast.makeText(getActivity(), "Connection sent",
                             Toast.LENGTH_SHORT).show();
                 } else {
-                    mUsername.setError("user does not exist");
+                    mUsername.setError(root.getString(getString(R.string.keys_json_error)));
                 }
             }
             mListener.onWaitFragmentInteractionHide();
@@ -147,6 +147,7 @@ public class NewConnection extends Fragment implements View.OnClickListener {
                 JSONObject json = new JSONObject();
                 json.put("username", mUsername.getText().toString());
                 json.put("id", mListener.getCredentials().getID());
+                json.put("sender", mListener.getCredentials().getUsername());
                 Uri uri = new Uri.Builder()
                         .scheme("https")
                         .appendPath(getString(R.string.ep_base_url))
