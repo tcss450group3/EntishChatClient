@@ -410,7 +410,6 @@ public class HomeActivity extends AppCompatActivity implements
     }
 
     private void handleConnectionListGetOnPostExecute(final String result) {
-        Log.wtf("LOOKHERE", result);
         try {
             JSONObject root = new JSONObject(result);
             if (root.has(getString(R.string.keys_json_connections_response))) {
