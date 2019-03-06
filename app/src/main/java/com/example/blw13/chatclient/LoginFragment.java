@@ -170,7 +170,15 @@ public class LoginFragment extends Fragment implements View.OnClickListener {
      * Handle the setup of the UI before the HTTP call to the webservice.
      */
     private void handleLoginOnPre() {
+        SetButtonsEnabled(false);
         mListener.onWaitFragmentInteractionShow();
+    }
+
+    private void SetButtonsEnabled(Boolean enabled) {
+        getView().findViewById(R.id.login_login_btn).setEnabled(enabled);
+        getView().findViewById(R.id.login_register_btn).setEnabled(enabled);
+        getView().findViewById(R.id.login_verify_btn).setEnabled(enabled);
+        return;
     }
 
     private void handleLoginOnPost(String result) {
@@ -209,8 +217,6 @@ public class LoginFragment extends Fragment implements View.OnClickListener {
                             .setError(resultsJSON.getString("error"));
                 }
             }
-
-            mListener.onWaitFragmentInteractionHide();
         } catch (JSONException e) {
             //It appears that the web service did not return a JSON formatted
             //String or it did not have what we expected in it.
@@ -221,6 +227,8 @@ public class LoginFragment extends Fragment implements View.OnClickListener {
             ((TextView) getView().findViewById(R.id.login_editText_email))
                     .setError("Login Unsuccessful (unknown reason)");
         }
+        mListener.onWaitFragmentInteractionHide();
+        SetButtonsEnabled(true);
     }
 
     private void saveCredentials(final Credentials credentials) {

@@ -86,11 +86,11 @@ public class  MainActivity extends AppCompatActivity implements LoginFragment.On
                 .replace(R.id.frame_main_container, verifyFragment)
                 .addToBackStack("login");
         transaction.commit();
-
     }
 
     @Override
     public void onWaitFragmentInteractionShow() {
+
         //create and add wait fragment to activity, while an asynchronous task is running
         getSupportFragmentManager()
                 .beginTransaction()

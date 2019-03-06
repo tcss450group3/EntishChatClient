@@ -119,16 +119,17 @@ public class RegisterFragment extends Fragment implements View.OnClickListener {
                 }
 
             }
-            mListener.onWaitFragmentInteractionHide();
         } catch (JSONException e) {
             //It appears that the web service did not return a JSON formatted
             //String or it did not have what we expected in it.
             Log.e("JSON_PARSE_ERROR", result
                     + System.lineSeparator()
                     + e.getMessage());
-            mListener.onWaitFragmentInteractionHide();
+
             mEmailEt.setError("Register Unsuccessful");
         }
+        getView().findViewById(R.id.register_register_btn).setEnabled(true);
+        mListener.onWaitFragmentInteractionHide();
     }
 
     /**
@@ -143,6 +144,7 @@ public class RegisterFragment extends Fragment implements View.OnClickListener {
      * Handle the setup of the UI before the HTTP call to the webservice.
      */
     private void handleRegisterOnPre() {
+        getView().findViewById(R.id.register_register_btn).setEnabled(false);
         mListener.onWaitFragmentInteractionShow();
     }
 
