@@ -856,7 +856,6 @@ public class HomeActivity extends AppCompatActivity implements
      */
     private class PushMessageReceiver extends BroadcastReceiver {
 
-
         @Override
         public void onReceive(Context context, Intent intent) {
 

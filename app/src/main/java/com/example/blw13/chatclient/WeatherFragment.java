@@ -44,6 +44,8 @@ public class WeatherFragment extends Fragment  {
     }
 
 
+
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -76,9 +78,11 @@ public class WeatherFragment extends Fragment  {
             }
         }
         Log.d(TAG, "onCreateView: my location is " + mCurrentLocation.toString() + " my UID is "+ mUID);
+        //TODO make a ui progress bar and call DISPLAYWEATHER in OnStart
         DisplayWeather();
         return v;
     }
+
 
 
 
@@ -161,7 +165,7 @@ public class WeatherFragment extends Fragment  {
                     //Create a textview and display weather in loop
                     TextView thistextView = new TextView(getView().getContext());
                     thistextView.setText("Date: " + date + "\nHigh: " + maxTemp + "F\nLow: "+ minTemp + "F\n"
-                            + description + "\nChange of precip: " + probablePrecip + "%" );
+                            + description + "\nChance of precip: " + probablePrecip + "%" );
                     thistextView.setGravity(Gravity.CENTER_VERTICAL | Gravity.CENTER_HORIZONTAL);
                     thistextView.setBackground(getResources().getDrawable(R.drawable.rounded_corner_for_conversation_list));
                     thistextView.setLayoutParams(params);

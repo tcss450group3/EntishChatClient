@@ -94,7 +94,7 @@ public class  MainActivity extends AppCompatActivity implements LoginFragment.On
 
     @Override
     public void onWaitFragmentInteractionShow() {
-
+    
         //create and add wait fragment to activity, while an asynchronous task is running
         getSupportFragmentManager()
                 .beginTransaction()
