@@ -35,6 +35,13 @@
     <string name="ep_weather_daily">daily</string>
     <string name="ep_weather_hourly">hourly</string>
 
+    <string name="ep_weather_icon_base">weatherbit.io</string>
+    <string name="ep_weather_icon_1">static</string>
+    <string name="ep_weather_icon_2">img</string>
+    <string name="ep_weather_icon_3">icons</string>
+    <string name="ep_weather_icon_append">.png</string>
+
+
 
 
 
