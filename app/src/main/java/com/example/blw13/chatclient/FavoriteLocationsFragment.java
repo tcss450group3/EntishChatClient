@@ -87,43 +87,6 @@ public class FavoriteLocationsFragment extends Fragment {
             e.printStackTrace();
             Log.e("ERROR!", e.getMessage());
         }
-//
-//        for (int i = 0; i < 3; i++) {
-//            //JSONObject jsonBlog = data.getJSONObject(i);
-//            MyTextView textView = new MyTextView(v.getContext()
-//                    ,"nickname"
-//                    ,"Favorite Location " + i);
-//
-//           // String[] chatMembers = jsonBlog.getString("name").split(", ");
-//           // Log.wtf("SIZE" , chatMembers.length + "");
-//
-//            textView.setText( textView.getName());
-//
-////            if(chatMembers.length > 2) {
-////                textView.setCompoundDrawablesWithIntrinsicBounds(R.mipmap.ic_group_chat_round, 0, 0, 0);
-////            } else{
-//            if(i==0) {
-//                textView.setCompoundDrawablesWithIntrinsicBounds(R.mipmap.coudy_rain, 0, 0, 0);
-//            } else if (i ==1) {
-//                textView.setCompoundDrawablesWithIntrinsicBounds(R.mipmap.cloud_wind, 0, 0, 0);
-//
-//            }  else{
-//                textView.setCompoundDrawablesWithIntrinsicBounds(R.mipmap.cloud_rain_lightning, 0, 0, 0);
-//            }
-//
-//            //}
-//
-//
-//            textView.setGravity(Gravity.CENTER_VERTICAL | Gravity.CENTER_HORIZONTAL);
-//
-//            textView.setBackground(getResources().getDrawable(R.drawable.rounded_corner_for_conversation_list));
-//
-//            textView.setTextSize(24);
-//            textView.setLayoutParams(params);
-//
-//            mlayout.addView(textView);
-//        }
-
 
         return v;
     }
