@@ -13,6 +13,8 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.example.blw13.chatclient.Model.Credentials;
+
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -58,9 +60,23 @@ public class ConversationListFragment extends Fragment {
 
                     for (int i = 0; i < data.length(); i++) {
                         JSONObject jsonBlog = data.getJSONObject(i);
+                        String names = jsonBlog.getString("name");
+
+                        String myName = ((Credentials)getArguments().get("credential")).getUsername();
+
+                        int index = names.indexOf(myName);
+                        String chatRoomName;
+
+                        if(index == 0) {
+                            chatRoomName = names.substring(index + myName.length() + 2);
+                        } else {
+                            chatRoomName = names.substring(0, index-2) + names.substring(index + myName.length());
+                        }
+
+
                         MyTextView textView = new MyTextView(v.getContext()
                                 ,jsonBlog.getString("chatid")
-                                ,jsonBlog.getString("name"));
+                                ,chatRoomName);
 
                         String[] chatMembers = jsonBlog.getString("name").split(", ");
                         Log.wtf("SIZE" , chatMembers.length + "");

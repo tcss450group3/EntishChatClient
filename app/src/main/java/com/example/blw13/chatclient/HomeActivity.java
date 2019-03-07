@@ -323,6 +323,7 @@ public class HomeActivity extends AppCompatActivity implements
 
         Bundle args = new Bundle();
         args.putSerializable("result" , result);
+        args.putSerializable("credential" , mCredentials);
         ConversationListFragment convers = new ConversationListFragment();
         convers.setArguments(args);
         loadFragment(convers);
