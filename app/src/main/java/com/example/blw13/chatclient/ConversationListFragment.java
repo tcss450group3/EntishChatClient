@@ -1,7 +1,11 @@
 package com.example.blw13.chatclient;
 
+import android.app.AlertDialog;
+import android.app.Dialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.os.Bundle;
+import android.support.v4.app.DialogFragment;
 import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.Gravity;
@@ -12,6 +16,7 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.blw13.chatclient.Model.Credentials;
 
@@ -29,6 +34,7 @@ import org.json.JSONObject;
 public class ConversationListFragment extends Fragment {
 
     private OnConversationListFragmentInteractionListener mListener;
+
 
     public ConversationListFragment() {
         // Required empty public constructor
@@ -78,8 +84,12 @@ public class ConversationListFragment extends Fragment {
                                 ,jsonBlog.getString("chatid")
                                 ,chatRoomName);
 
+
+
                         String[] chatMembers = jsonBlog.getString("name").split(", ");
-                        Log.wtf("SIZE" , chatMembers.length + "");
+
+
+                        int verification = Integer.parseInt(jsonBlog.getString("verified"));
 
                         textView.setText( textView.getName());
 
@@ -92,16 +102,45 @@ public class ConversationListFragment extends Fragment {
 
                         textView.setGravity(Gravity.CENTER_VERTICAL | Gravity.CENTER_HORIZONTAL);
 
-                        textView.setBackground(getResources().getDrawable(R.drawable.rounded_corner_for_conversation_list));
-
                         textView.setTextSize(24);
                         textView.setLayoutParams(params);
-                        textView.setOnClickListener(new View.OnClickListener() {
-                            @Override
-                            public void onClick(View v) {
-                                mListener.onConversationListFragmentInteraction(((MyTextView)v).getChatid());
-                            }
-                        });
+
+
+                        if(verification ==-1) {// if the conversation is verified
+                            textView.setBackground(getResources().getDrawable(R.drawable.rounded_corner_for_conversation_list));
+                            textView.setOnClickListener(new View.OnClickListener() {
+                                @Override
+                                public void onClick(View v) {
+                                    mListener.onConversationListFragmentInteraction(((MyTextView) v).getChatid());
+                                }
+                            });
+                        } else {// handle when conversation is not verified
+                            textView.setBackground(getResources().getDrawable(R.drawable.rounded_corner_orange));
+                            textView.setOnClickListener(new View.OnClickListener() {
+                                @Override
+                                public void onClick(View v) {
+                                    //mListener.onConversationListFragmentInteraction(((MyTextView) v).getChatid());
+                                    AlertDialog.Builder dia = new AlertDialog.Builder(getContext());
+                                    dia.setMessage("Do you want to join this chat?").setCancelable(true)
+                                            .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                                                @Override
+                                                public void onClick(DialogInterface dialog, int which) {
+
+                                                    mListener.onJoinConversationClick(((MyTextView)v).getChatid());
+                                                }
+                                            })
+                                            .setNegativeButton("NO", new DialogInterface.OnClickListener() {
+                                                @Override
+                                                public void onClick(DialogInterface dialog, int which) {
+                                                    dialog.cancel();
+                                                }
+                                            });
+                                    AlertDialog alert = dia.create();
+                                    alert.setTitle("Join this chat");
+                                    alert.show();
+                                }
+                            });
+                        }
                         mlayout.addView(textView);
                     }
 
@@ -161,6 +200,7 @@ public class ConversationListFragment extends Fragment {
         // TODO: Update argument type and name
         void onConversationListFragmentInteraction(String charid);
         void onNewConversationClick();
+        void onJoinConversationClick(String chatid);
     }
 
     public class MyTextView extends android.support.v7.widget.AppCompatTextView {
@@ -186,5 +226,36 @@ public class ConversationListFragment extends Fragment {
         }
 
 
+    }
+
+    public static class MyDialogFragment extends DialogFragment{
+        Context mContext;
+        public MyDialogFragment() {
+            mContext = getActivity();
+        }
+        @Override
+        public Dialog onCreateDialog(Bundle savedInstanceState) {
+            AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(mContext);
+            alertDialogBuilder.setTitle("Really?");
+            alertDialogBuilder.setMessage("Are you sure?");
+            alertDialogBuilder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    Toast.makeText(mContext.getApplicationContext(), "CLick-Click!!",Toast.LENGTH_LONG).show();
+                }
+            });
+
+            alertDialogBuilder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    dialog.dismiss();
+                }
+            });
+
+
+            return alertDialogBuilder.create();
+        }
     }
 }
