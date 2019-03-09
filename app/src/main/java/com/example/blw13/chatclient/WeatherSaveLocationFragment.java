@@ -2,14 +2,22 @@ package com.example.blw13.chatclient;
 
 
 import android.location.Location;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.TextView;
+import android.widget.Toast;
+
+import com.example.blw13.chatclient.utils.SendPostAsyncTask;
+
+import org.json.JSONObject;
 
 
 /**
@@ -21,6 +29,8 @@ public class WeatherSaveLocationFragment extends Fragment {
     private Location mLocationToSave;
     private int mZipToSave;
     private int mUID;
+    private View mView;
+    private String mToken;
 
     public WeatherSaveLocationFragment() {
         // Required empty public constructor
@@ -32,6 +42,7 @@ public class WeatherSaveLocationFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View v = inflater.inflate(R.layout.fragment_weather_save_location, container, false);
+        mView=v;
 
         //Init to prevent null pointer
         mLocationToSave = new Location("");
@@ -49,6 +60,9 @@ public class WeatherSaveLocationFragment extends Fragment {
             if(getArguments().containsKey(getString(R.string.keys_prefs_UserId))) {
                 mUID = (int) getArguments().getInt(getString(R.string.keys_prefs_UserId));
             }
+            if(getArguments().containsKey("token")) {
+                mToken = (String) getArguments().getString("token");
+            }
         }
         Button mConfirm = (Button) v.findViewById(R.id.button_weather_save_location_confirm);
         mConfirm.setOnClickListener(this::SaveLocation);
@@ -56,8 +70,35 @@ public class WeatherSaveLocationFragment extends Fragment {
     }
 
     private void SaveLocation(View view) {
+
+        String nickname = ((TextView)mView.findViewById(R.id.editText_weather_nickname_input)).getText().toString();
+        Log.wtf("SAVE", nickname);
+
+        JSONObject json = new JSONObject();
+        try {
+            json.put("memberid", mUID);
+            json.put("nickname", nickname);
+            json.put("lat", mLocationToSave.getLatitude());
+            json.put("long", mLocationToSave.getLongitude());
+            json.put("zip", mZipToSave);
+        } catch (Exception e){
+        }
+        Uri uri = new Uri.Builder()
+                .scheme("https")
+                .appendPath(getString(R.string.ep_base_url))
+                .appendPath("weather")
+                .appendPath("save")
+                .build();
+        new SendPostAsyncTask.Builder(uri.toString(), json)
+//                .onPreExecute(this::onWaitFragmentInteractionShow)
+//                .onPostExecute(this::handlejoinConversationOnPostExecute)
+                .addHeaderField("authorization", mToken) //add the JWT as a header
+                .build().execute();
+
         //TODO backend call to save location
         //TODO Toast location saved
+        Toast.makeText(getActivity(), "Location saved!",
+                Toast.LENGTH_LONG).show();
         getFragmentManager().popBackStackImmediate();
     }
 
