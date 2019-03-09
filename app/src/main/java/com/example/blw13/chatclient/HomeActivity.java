@@ -74,8 +74,11 @@ public class HomeActivity extends AppCompatActivity implements
     public FusedLocationProviderClient mFusedLocationClient;
     private LocationCallback mLocationCallback;
     private BottomNavigationView mNavigationView;
+    private Connection[] mConnections;
     private TextView mConversationIcon;
     private TextView mConnectionIcon;
+    private boolean loadHome;
+    private boolean loadConn;
 
     /**
      * The desired interval for location updates. Inexact. Updates may be more or less frequent.
@@ -98,6 +101,7 @@ public class HomeActivity extends AppCompatActivity implements
         super.onCreate(savedInstanceState);
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
         setContentView(R.layout.activity_home);
+
 
         Intent intent = getIntent();
         Bundle args = new Bundle();
@@ -171,13 +175,11 @@ public class HomeActivity extends AppCompatActivity implements
             onConversationListFragmentInteraction(chatID);
         } else if(getIntent().hasExtra(getString(R.string.keys_intent_notification_conn)) &&
                 getIntent().getBooleanExtra(getString(R.string.keys_intent_notification_conn), false)){
-            loadConnections();
+            loadConn = true;
         } else {
-
-            Fragment fragment = new HomeFragment();
-            fragment.setArguments(args);
-            loadFragment(fragment);
+            loadHome = true;
         }
+        loadConnections();
     }
 
 
@@ -496,15 +498,15 @@ public class HomeActivity extends AppCompatActivity implements
                             jsonConnection.getBoolean(getString(R.string.keys_json_connections_request))
                     ).build());
                 }
-                Connection[] connectionsAsArray = new Connection[connections.size()];
-                connectionsAsArray = connections.toArray(connectionsAsArray);
-                Bundle args = new Bundle();
-                args.putSerializable(ConnectionListFragment.ARG_CONNECTIONS, connectionsAsArray);
-                Fragment frag = new ConnectionListFragment();
-                frag.setArguments(args);
-                onWaitFragmentInteractionHide();
-                loadFragment(frag);
-
+                mConnections = new Connection[connections.size()];
+                mConnections = connections.toArray(mConnections);
+                if(loadHome){
+                    loadHome = false;
+                    loadHomeFragment();
+                } else if(loadConn){
+                    loadConn = false;
+                    loadConnectionList();
+                }
             } else {
                 Log.e("ERROR!", "No response");
                 //notify user
@@ -639,6 +641,7 @@ public class HomeActivity extends AppCompatActivity implements
             //notify user
             onWaitFragmentInteractionHide();
         }
+        loadConnections();
 
     }
 
@@ -796,7 +799,7 @@ public class HomeActivity extends AppCompatActivity implements
         return true;
     }
 
-    private void loadConnections(){
+    public void loadConnections(){
         JSONObject json = new JSONObject();
         try {
             json.put("id", mID);
@@ -809,10 +812,37 @@ public class HomeActivity extends AppCompatActivity implements
                 .appendPath("get")
                 .build();
         new SendPostAsyncTask.Builder(uri.toString(), json)
-                .onPreExecute(this::onWaitFragmentInteractionShow)
                 .onPostExecute(this::handleConnectionListGetOnPostExecute)
                 .addHeaderField("authorization", mJwToken) //add the JWT as a header
                 .build().execute();
+    }
+
+    private void loadConnectionList(){
+        Bundle args = new Bundle();
+        args.putSerializable(ConnectionListFragment.ARG_CONNECTIONS, mConnections);
+        Fragment frag = new ConnectionListFragment();
+        frag.setArguments(args);
+        loadFragment(frag);
+    }
+
+    //anything necessary to load the home fragment
+    private void loadHomeFragment(){
+        Connection[] requests;
+        ArrayList<Connection> list = new ArrayList<Connection>();
+        for(Connection i : mConnections){
+            //add all connections that are requests
+            if(i.isRequest()){
+                list.add(i);
+            }
+        }
+        requests = new Connection[list.size()];
+        requests = list.toArray(requests);
+
+        Bundle args = new Bundle();
+        args.putSerializable(HomeFragment.ARG_CONNECTIONS, requests);
+        Fragment frag = new HomeFragment();
+        frag.setArguments(args);
+        loadFragment(frag);
     }
 
 
@@ -831,7 +861,7 @@ public class HomeActivity extends AppCompatActivity implements
             Uri uri;
             switch (item.getItemId()) {
                 case R.id.butt_navigation_home:
-                    loadFragment(new HomeFragment());
+                    loadHomeFragment();
                     return true;
 
                 case R.id.butt_navigation_conversations:
@@ -859,7 +889,7 @@ public class HomeActivity extends AppCompatActivity implements
                 case R.id.butt_navigation_connections:
                     badge = findViewById(R.id.badge_frame_layout_connections);
                     badge.setVisibility(View.INVISIBLE);
-                    loadConnections();
+                    loadConnectionList();
                     return true;
 
                 case R.id.butt_navigation_weather:
