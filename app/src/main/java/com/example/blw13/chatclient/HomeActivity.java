@@ -924,9 +924,11 @@ public class HomeActivity extends AppCompatActivity implements
                 View badge = findViewById(R.id.badge_frame_layout_conversations);
                 badge.setVisibility(View.VISIBLE);
             }
-            if (intent.getAction() == RECEIVED_NEW_CONNECTION) {
+            if (intent.getAction() == PushReceiver.RECEIVED_NEW_CONNECTION) {
                 View badge = findViewById(R.id.badge_frame_layout_connections);
                 badge.setVisibility(View.VISIBLE);
+                loadConnections();
+                Log.e("whoadude","what happened?");
             }
         }
     }
