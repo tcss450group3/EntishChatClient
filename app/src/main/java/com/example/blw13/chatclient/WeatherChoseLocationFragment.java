@@ -49,7 +49,7 @@ public class WeatherChoseLocationFragment extends Fragment {
         View v = inflater.inflate(R.layout.fragment_weather_chose_location, container, false);
         v.findViewById(R.id.button_search_by_map).setOnClickListener(this::SearchMap);
         v.findViewById(R.id.button_search_by_zip).setOnClickListener(this::SearchZip);
-        v.findViewById(R.id.button_weather_go_to_my_locations).setOnClickListener(this::SearchMyLocations);
+
         mZipEntry = v.findViewById(R.id.editText_WeatherSearch_zip_entry);
         //Initialize to prevent null pointer access
         mCurrentLocation = new Location("");
@@ -62,11 +62,6 @@ public class WeatherChoseLocationFragment extends Fragment {
         return v;
     }
 
-
-
-    private void SearchMyLocations(View view) {
-        mListener.DisplayFavoriteLocations();
-    }
 
     private void SearchZip(View view) {
         String zipEntry = mZipEntry.getText().toString();

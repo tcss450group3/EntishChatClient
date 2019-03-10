@@ -69,6 +69,8 @@ public class WeatherFragment extends Fragment  {
         Button butt = (Button) v.findViewById(R.id.button_weather_add_to_favs);
         butt.setOnClickListener(this::AddToFavs);
 
+        v.findViewById(R.id.button_weather_go_to_my_locations).setOnClickListener(this::SearchMyLocations);
+
         if(getArguments() != null){
             if(getArguments().containsKey(getString(R.string.keys_location))){
                 mCurrentLocation = (Location) getArguments().getParcelable(getString(R.string.keys_location));
@@ -82,7 +84,9 @@ public class WeatherFragment extends Fragment  {
         return v;
     }
 
-
+    private void SearchMyLocations(View view) {
+        mListener.DisplayFavoriteLocations();
+    }
 
     public void DisplayWeather() {
         JSONObject json = new JSONObject();

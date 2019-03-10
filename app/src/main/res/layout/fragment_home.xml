@@ -31,7 +31,6 @@
         android:id="@+id/frag_home_username_textview"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
         android:background="@color/colorPrimary"
         android:backgroundTint="@color/colorExtra1"
         android:backgroundTintMode="src_over"
@@ -39,6 +38,7 @@
         android:text="hah"
         android:textColor="@color/colorExtra2"
         android:textSize="24sp"
+        app:layout_constraintEnd_toEndOf="@+id/textView4"
         app:layout_constraintStart_toStartOf="@+id/textView4"
         app:layout_constraintTop_toBottomOf="@+id/textView4" />
 

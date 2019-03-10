@@ -56,7 +56,8 @@ public class HomeActivity extends AppCompatActivity implements
         OneConnectionFragment.OnProfileFragmentInteractionListener,
         NewConnection.OnNewConnectionFragmentInteractionListener,
         NewConversationFragment.OnNewConversationFragmentInteractionListener,
-        WeatherChoseLocationFragment.OnWeatherLocationChangeListener {
+        WeatherChoseLocationFragment.OnWeatherLocationChangeListener,
+        FavoriteLocationsFragment.OnSelectFavoriteListener {
 
     private final String TAG = "HomeActivity";
     public static final String RECEIVED_NEW_MESSAGE = "new message from pushy";
@@ -756,8 +757,6 @@ public class HomeActivity extends AppCompatActivity implements
                 .onPostExecute(this::handleShowingfavoriteLocationOnPostExecute)
                 .addHeaderField("authorization", mJwToken) //add the JWT as a header
                 .build().execute();
-        //loadFragment(new
-        // ());
         return null;
     }
 
