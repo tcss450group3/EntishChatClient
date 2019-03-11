@@ -17,12 +17,12 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.FrameLayout;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.example.blw13.chatclient.utils.GetAsyncTask;
 import com.example.blw13.chatclient.utils.SendPostAsyncTask;
 
 import org.json.JSONArray;
@@ -30,14 +30,9 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.BufferedInputStream;
-import java.io.BufferedReader;
-import java.io.IOException;
 import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.OutputStreamWriter;
 import java.net.HttpURLConnection;
 import java.net.URL;
-import java.net.URLConnection;
 
 
 /**
@@ -93,8 +88,14 @@ public class WeatherFragment extends Fragment  {
         }
         Log.d(TAG, "onCreateView: my location is " + mCurrentLocation.toString() + " my UID is "+ mUID);
         //TODO make a ui progress bar and call DISPLAYWEATHER in OnStart
-        DisplayWeather();
+
         return v;
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        DisplayWeather();
     }
 
 
@@ -172,7 +173,6 @@ public class WeatherFragment extends Fragment  {
                     String probablePrecip = jsonWeather.getString("pop");
                     JSONObject details = jsonWeather.getJSONObject(getString(R.string.keys_json_weather_details));
                     String icon = details.getString("icon");
-                    //TODO Set icon
 
                     Uri uri = new Uri.Builder()
                             .scheme("https")
@@ -183,8 +183,15 @@ public class WeatherFragment extends Fragment  {
                             .appendPath(icon + ".png")
                             .build();
                     ImageView thisImageView = new ImageView(getActivity());
-                    // This is a blocking task, but is being done in an async task... is this okay?
+
+
+//                    new GetAsyncTask.Builder(uri.toString())
+//                .onPreExecute(this.mListener::onWaitFragmentInteractionShow)
+//                            .onPostExecute(thisImageView.setImageBitmap(fetchFavicon(uri)))
+//                            .build().execute();
+
                     thisImageView.setImageBitmap(fetchFavicon(uri));
+
 
 
                     String weatherCode = details.getString("code");
@@ -209,6 +216,10 @@ public class WeatherFragment extends Fragment  {
             Log.e("ERROR!", e.getMessage());
             //notify user
         }
+
+    }
+
+    private void setImage(String s, ImageView thisImageView ) {
 
     }
 
@@ -291,7 +302,7 @@ public class WeatherFragment extends Fragment  {
                 mLocationDisplay.append(", " + state);
 
                 String temp = jsonWeather.getString("temp");
-                TextView tv = getView().findViewById(R.id.textView_weather_temp);
+                TextView tv = getView().findViewById(R.id.textView_homeFrag_weather_temp);
                 tv.setText("Temperature: " +temp + "F");
 
                 String windSpStr = jsonWeather.getString("wind_spd");
@@ -314,12 +325,12 @@ public class WeatherFragment extends Fragment  {
                             .appendPath(getString(R.string.ep_weather_icon_3))
                             .appendPath(icon + ".png")
                             .build();
-                    ImageView iv = getView().findViewById(R.id.imageView_Current_weather_icon);
+                    ImageView iv = getView().findViewById(R.id.imageView_homeFrag_Current_weather_icon);
                     // This is a blocking task, but is being done in an async task... is this okay?
                     iv.setImageBitmap(fetchFavicon(uri));
                     String weatherCode = details.getString("code");
                     String description = details.getString("description");
-                    tv = getView().findViewById(R.id.textView_Weather_conditions);
+                    tv = getView().findViewById(R.id.textView__homeFrag_Weather_conditions);
                     tv.setText(description);
                 }
 
@@ -381,6 +392,7 @@ public class WeatherFragment extends Fragment  {
     private Bitmap fetchFavicon(Uri uri) {
 
         Log.i(TAG, "Fetching icon from: " + uri);
+
         try
         {
             HttpURLConnection conn = (HttpURLConnection) new URL(uri.toString()).openConnection();
