@@ -7,6 +7,58 @@
     tools:context=".HomeFragment">
 
     <!-- TODO: Update blank fragment layout -->
+
+    <ImageView
+        android:id="@+id/imageView_HomeFrag_Logo"
+        android:layout_width="392dp"
+        android:layout_height="100dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="92dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginBottom="8dp"
+        android:src="@mipmap/text_icon"
+        app:layout_constraintBottom_toTopOf="@+id/guideline3"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.333"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintStart_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/textView4"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="40dp"
+        android:layout_marginEnd="8dp"
+        android:background="@color/colorExtra3"
+        android:backgroundTint="@color/colorExtra1"
+        android:fontFamily="casual"
+        android:text="Welcome!"
+        android:textAlignment="viewStart"
+        android:textAllCaps="false"
+        android:textColor="@color/colorExtra1"
+        android:textSize="36sp"
+        android:textStyle="bold|italic"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/imageView_HomeFrag_Logo" />
+
+    <TextView
+        android:id="@+id/frag_home_username_textview"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:background="@color/colorExtra3"
+        android:backgroundTintMode="src_over"
+        android:fontFamily="casual"
+        android:text="hah"
+        android:textColor="@color/colorExtra1"
+        android:textSize="24sp"
+        android:textStyle="bold"
+        app:layout_constraintStart_toStartOf="@+id/textView4"
+        app:layout_constraintTop_toBottomOf="@+id/textView4" />
+
     <android.support.constraint.ConstraintLayout
         android:id="@+id/constraint_current_weather"
         android:layout_width="match_parent"
@@ -65,73 +117,5 @@
             app:layout_constraintTop_toBottomOf="@+id/textView__homeFrag_Weather_conditions" />
 
     </android.support.constraint.ConstraintLayout>
-
-    <ImageView
-        android:id="@+id/imageView_HomeFrag_Logo2"
-        android:layout_width="392dp"
-        android:layout_height="100dp"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="92dp"
-        android:layout_marginEnd="8dp"
-        android:layout_marginBottom="8dp"
-        android:src="@mipmap/text_icon"
-        app:layout_constraintBottom_toTopOf="@+id/guideline3"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.333"
-        app:layout_constraintStart_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
-    <TextView
-        android:id="@+id/textView4"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginEnd="8dp"
-        android:background="@color/colorPrimary"
-        android:backgroundTint="@color/colorExtra1"
-        android:fontFamily="monospace"
-        android:text="Welcome!"
-        android:textAlignment="viewStart"
-        android:textAllCaps="false"
-        android:textColor="@color/colorExtra2"
-        android:textSize="36sp"
-        android:textStyle="bold|italic"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/imageView_HomeFrag_Logo2" />
-
-    <TextView
-        android:id="@+id/frag_home_username_textview"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:background="@color/colorPrimary"
-        android:backgroundTint="@color/colorExtra1"
-        android:backgroundTintMode="src_over"
-        android:fontFamily="monospace"
-        android:text="hah"
-        android:textColor="@color/colorExtra2"
-        android:textSize="24sp"
-        app:layout_constraintEnd_toEndOf="@+id/textView4"
-        app:layout_constraintStart_toStartOf="@+id/textView4"
-        app:layout_constraintTop_toBottomOf="@+id/textView4" />
-
-    <android.support.v7.widget.RecyclerView
-        android:id="@+id/list"
-        android:name="com.example.blw13.chatclient.HomeFragment"
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="8dp"
-        android:layout_marginEnd="8dp"
-        android:layout_marginBottom="64dp"
-        android:background="@color/colorExtra1"
-        app:layoutManager="LinearLayoutManager"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/constraint_current_weather"
-        tools:context=".ConversationListFragment"
-        tools:listitem="@layout/fragment_connectionlist" />
 
 </android.support.constraint.ConstraintLayout>
