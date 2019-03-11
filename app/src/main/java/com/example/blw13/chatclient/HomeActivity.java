@@ -80,6 +80,7 @@ public class HomeActivity extends AppCompatActivity implements
     private TextView mConnectionIcon;
     private boolean loadHome;
     private boolean loadConn;
+    private PushMessageReceiver mPushMessageReciever;
 
     /**
      * The desired interval for location updates. Inexact. Updates may be more or less frequent.
@@ -92,7 +93,6 @@ public class HomeActivity extends AppCompatActivity implements
      */
     public static final long FASTEST_UPDATE_INTERVAL_IN_MILLISECONDS =
             UPDATE_INTERVAL_IN_MILLISECONDS / 30000;
-    private PushMessageReceiver mPushMessageReciever;
 
 
     @SuppressLint("RestrictedApi")
@@ -101,9 +101,12 @@ public class HomeActivity extends AppCompatActivity implements
 
         super.onCreate(savedInstanceState);
 
+        //Default for location is UWT
         mCurrentLocation = new Location("");
+        mCurrentLocation.setLongitude(-122.439820);
+        mCurrentLocation.setLatitude(47.245218);
 
-        //Let's me permit web calls syncronously. DO NOT ABUSE!!!
+        //Let's me permit web calls syncronously. DO NOT ABUSE!!! (like I am in the weather fragment)
         StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
         StrictMode.setThreadPolicy(policy);
 
@@ -186,6 +189,11 @@ public class HomeActivity extends AppCompatActivity implements
             loadConn = true;
         } else {
             loadHome = true;
+
+            Fragment fragment = new HomeFragment();
+            args.putParcelable(getString(R.string.keys_location), mCurrentLocation);
+            fragment.setArguments(args);
+            loadFragment(fragment);
         }
         loadConnections();
     }
