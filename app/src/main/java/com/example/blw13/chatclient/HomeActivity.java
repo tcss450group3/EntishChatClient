@@ -941,11 +941,13 @@ public class HomeActivity extends AppCompatActivity implements
             if (intent.getAction() == RECEIVED_NEW_MESSAGE) {
                 View badge = findViewById(R.id.badge_frame_layout_conversations);
                 badge.setVisibility(View.VISIBLE);
+    Log.e("whoadude","got a new message?");
             }
             if (intent.getAction() == (PushReceiver.RECEIVED_NEW_CONNECTION)) {
                 View badge = findViewById(R.id.badge_frame_layout_connections);
                 badge.setVisibility(View.VISIBLE);
                 loadConnections();
+
             }
         }
     }

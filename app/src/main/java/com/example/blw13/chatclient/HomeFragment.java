@@ -54,6 +54,8 @@ public class HomeFragment extends Fragment implements  View.OnClickListener{
 
     private List<Connection> mConnections;
 
+    private View mView;
+
     public HomeFragment() {
         // Required empty public constructor
     }
@@ -74,6 +76,8 @@ public class HomeFragment extends Fragment implements  View.OnClickListener{
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View v = inflater.inflate(R.layout.fragment_home, container, false);
+
+        mView =v;
         Bundle args = getArguments();
 
         mCurrentLocation = new Location("");
@@ -101,6 +105,9 @@ public class HomeFragment extends Fragment implements  View.OnClickListener{
                 recyclerView.setLayoutManager(new GridLayoutManager(context, mColumnCount));
             }
             recyclerView.setAdapter(new MyConnectionListRecyclerViewAdapter(mConnections, mListener));
+            if (mConnections.size() == 0) recyclerView.setVisibility(View.INVISIBLE);
+            else recyclerView.setVisibility(View.VISIBLE);
+
         }
 
         mLocationDisplay = (TextView)v.findViewById(R.id.textView_homeFrag_weather_location);
@@ -186,7 +193,7 @@ public class HomeFragment extends Fragment implements  View.OnClickListener{
                 mLocationDisplay.append(", " + state);
 
                 String temp = jsonWeather.getString("temp");
-                TextView tv = getView().findViewById(R.id.textView_homeFrag_weather_temp);
+                TextView tv = mView.findViewById(R.id.textView_homeFrag_weather_temp);
                 tv.setText("Temperature: " +temp + "F");
 
                 if (jsonWeather.has("weather")){
@@ -200,12 +207,12 @@ public class HomeFragment extends Fragment implements  View.OnClickListener{
                             .appendPath(getString(R.string.ep_weather_icon_3))
                             .appendPath(icon + ".png")
                             .build();
-                    ImageView iv = getView().findViewById(R.id.imageView_homeFrag_Current_weather_icon);
+                    ImageView iv = mView.findViewById(R.id.imageView_homeFrag_Current_weather_icon);
                     // This is a blocking task, but is being done in an async task... is this okay?
                     iv.setImageBitmap(fetchFavicon(uri));
                     String weatherCode = details.getString("code");
                     String description = details.getString("description");
-                    tv = getView().findViewById(R.id.textView_homeFrag_Weather_conditions);
+                    tv = mView.findViewById(R.id.textView_homeFrag_Weather_conditions);
                     tv.setText(description);
                 }
 

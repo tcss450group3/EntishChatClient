@@ -163,7 +163,7 @@ public class NewConnection extends Fragment implements View.OnClickListener {
             } catch (Exception e) {
 
             }
-        } else{
+        } else {
             mUsername.setError("Username must not be empty!");
         }
 
