@@ -61,7 +61,7 @@
 
     <!--Weather-->
     <string name="text_search_by_zip">Search By Zip Code</string>
-    <string name="text_go_to_favorite_locations">My Favorite Locations</string>
+    <string name="text_go_to_favorite_locations">View Saved Locations</string>
     <string name="text_zip_code">Zip Code</string>
     <string name="text_weather_title">Where would you like to search?</string>
     <string name="text_Search_on_map">Search by Map Location</string>

@@ -2,6 +2,7 @@ package com.example.blw13.chatclient;
 
 
 import android.content.Context;
+import android.location.Location;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.util.Log;
@@ -25,8 +26,10 @@ import java.util.List;
 /**
  * A simple {@link Fragment} subclass.
  */
-public class FavoriteLocationsFragment extends Fragment {
+public class FavoriteLocationsFragment extends Fragment implements View.OnClickListener {
 
+    private JSONArray mFavorites;
+    private OnSelectFavoriteListener mListener;
 
     public FavoriteLocationsFragment() {
         // Required empty public constructor
@@ -53,19 +56,23 @@ public class FavoriteLocationsFragment extends Fragment {
             if (root.has(getString(R.string.keys_favorite_location))) {
                 JSONArray response = root.getJSONArray(
                         getString(R.string.keys_favorite_location));
+                mFavorites = response;
                 for (int i = 0; i < response.length(); i++) {
                     JSONObject jsonConnection = response.getJSONObject(i);
-                    MyTextView textView = new MyTextView(v.getContext()
-                            ,jsonConnection.getString("lat")
-                            ,jsonConnection.getString("nickname"));
-                    textView.setText( textView.getName());
+
+                    MyTextView textView = new MyTextView(v.getContext(),
+                            jsonConnection.getString("nickname"),
+                            jsonConnection.getString("lat"),
+                            jsonConnection.getString("long"));
+
+                    textView.setText(textView.getName());
 
                     if(i==0) {
                         textView.setCompoundDrawablesWithIntrinsicBounds(R.mipmap.coudy_rain, 0, 0, 0);
                     } else if (i ==1) {
                         textView.setCompoundDrawablesWithIntrinsicBounds(R.mipmap.cloud_wind, 0, 0, 0);
 
-                    }  else{
+                    } else {
                         textView.setCompoundDrawablesWithIntrinsicBounds(R.mipmap.cloud_rain_lightning, 0, 0, 0);
                     }
 
@@ -76,8 +83,10 @@ public class FavoriteLocationsFragment extends Fragment {
 
                     textView.setTextSize(24);
                     textView.setLayoutParams(params);
-
+                    textView.setOnClickListener(this);
+                    textView.setId(i);
                     mlayout.addView(textView);
+
                 }
 
             } else {
@@ -91,27 +100,76 @@ public class FavoriteLocationsFragment extends Fragment {
         return v;
     }
 
+    @Override
+    public void onClick(View view) {
+        int i = view.getId();
+        JSONObject favorite = null;
+        try {
+            favorite = mFavorites.getJSONObject(i);
+            if (favorite != null) {
+                int zip = favorite.getInt("zip");
+                double lat = favorite.getDouble("lat");
+                double lon = favorite.getDouble("long");
+
+                if (zip != 0) {
+                    mListener.OnWeatherLocationChanged(zip);
+                } else {
+                    Location theNew = new Location("");
+                    theNew.setLatitude(lat);
+                    theNew.setLongitude(lon);
+                    mListener.OnWeatherLocationChanged(theNew);
+                }
+            }
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
+    }
+
+    @Override
+    public void onAttach(Context context) {
+        super.onAttach(context);
+        Log.e("onAttach: ", context.toString() );
+        if (context instanceof OnSelectFavoriteListener) {
+            mListener = (OnSelectFavoriteListener) context;
+        } else {
+            throw new RuntimeException(context.toString()
+                    + " must implement OnSelectFavoriteListener");
+        }
+    }
+
+    public interface OnSelectFavoriteListener {
+        Boolean OnWeatherLocationChanged(Location theNewLoc);
+        Boolean OnWeatherLocationChanged(int theNewZip);
+    }
+
 
     public class MyTextView extends android.support.v7.widget.AppCompatTextView {
 
 
-        private String mChatid;
+        private String mLat;
+        private String mLon;
         private String mName;
 
 
-        public MyTextView(Context context, String charid, String name ) {
+        public MyTextView(Context context, String name, String lat, String lon ) {
 
             super(context);
-            mChatid = charid;
             mName = name;
-        }
-
-        public String getChatid() {
-            return mChatid;
+            mLat = lat;
+            mLon = lon;
         }
 
         public String getName() {
             return mName;
+        }
+
+        public String getLat() {
+            return mLat;
+        }
+
+        public String getLon() {
+            return mLon;
         }
 
 

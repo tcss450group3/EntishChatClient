@@ -52,6 +52,7 @@ public class WeatherFragment extends Fragment  {
     private int mCurrentZip;
     private FragmentActivity mActivity;
     private WeatherChoseLocationFragment.OnWeatherLocationChangeListener mListener;
+    private View mView;
 
     public WeatherFragment() {
         // Required empty public constructor
@@ -65,6 +66,7 @@ public class WeatherFragment extends Fragment  {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View v = inflater.inflate(R.layout.fragment_weather, container, false);
+        mView = v;
         SharedPreferences prefs =
                 getActivity().getSharedPreferences(
                         getString(R.string.keys_shared_prefs),
@@ -83,6 +85,8 @@ public class WeatherFragment extends Fragment  {
         Button butt = (Button) v.findViewById(R.id.button_weather_add_to_favs);
         butt.setOnClickListener(this::AddToFavs);
 
+        v.findViewById(R.id.button_weather_go_to_my_locations).setOnClickListener(this::SearchMyLocations);
+
         if(getArguments() != null){
             if(getArguments().containsKey(getString(R.string.keys_location))){
                 mCurrentLocation = (Location) getArguments().getParcelable(getString(R.string.keys_location));
@@ -97,7 +101,9 @@ public class WeatherFragment extends Fragment  {
         return v;
     }
 
-
+    private void SearchMyLocations(View view) {
+        mListener.DisplayFavoriteLocations();
+    }
 
 
     public void DisplayWeather() {
@@ -161,7 +167,7 @@ public class WeatherFragment extends Fragment  {
 
             if (root.has(getString(R.string.keys_json_weather_data))) {
                 JSONArray data = root.getJSONArray(getString(R.string.keys_json_weather_data));
-                LinearLayout mlayout = (LinearLayout) getView().findViewById(R.id.DailyWeatherScrollView);
+                LinearLayout mlayout = (LinearLayout) mView.findViewById(R.id.DailyWeatherScrollView);
 
                 for (int i =0; i<data.length();i++){
                     LinearLayout thisFrame = new LinearLayout(getActivity());
@@ -191,7 +197,7 @@ public class WeatherFragment extends Fragment  {
                     String description = details.getString("description");
 
                     //Create a textview and display weather in loop
-                    TextView thistextView = new TextView(getView().getContext());
+                    TextView thistextView = new TextView(mView.getContext());
                     thistextView.setText("Date: " + date + "\nHigh: " + maxTemp + "F\nLow: "+ minTemp + "F\n"
                             + description + "\nChance of precip: " + probablePrecip + "%" );
                     thistextView.setGravity(Gravity.CENTER_VERTICAL | Gravity.CENTER_HORIZONTAL);
@@ -224,7 +230,7 @@ public class WeatherFragment extends Fragment  {
 
             if (root.has(getString(R.string.keys_json_weather_data))) {
                 JSONArray data = root.getJSONArray(getString(R.string.keys_json_weather_data));
-                LinearLayout mlayout = (LinearLayout) getView().findViewById(R.id.HourlyWeatherScrollView);
+                LinearLayout mlayout = (LinearLayout) mView.findViewById(R.id.HourlyWeatherScrollView);
 
                 for (int i =0; i<data.length();i++){
                     LinearLayout thisFrame = new LinearLayout(getActivity());
@@ -255,7 +261,7 @@ public class WeatherFragment extends Fragment  {
                     String description = details.getString("description");
 
                     //Create a textview and display weather in loop
-                    TextView thistextView = new TextView(getView().getContext());
+                    TextView thistextView = new TextView(mView.getContext());
                     thistextView.setText("Time: " + timeStamp + " \nTemperature: " + temp + "F\n"+description );
                     thistextView.setGravity(Gravity.CENTER_VERTICAL | Gravity.CENTER_HORIZONTAL);
                     thisFrame.setBackground(getResources().getDrawable(R.drawable.rounded_corner_for_conversation_list));
@@ -291,16 +297,16 @@ public class WeatherFragment extends Fragment  {
                 mLocationDisplay.append(", " + state);
 
                 String temp = jsonWeather.getString("temp");
-                TextView tv = getView().findViewById(R.id.textView_weather_temp);
+                TextView tv = mView.findViewById(R.id.textView_weather_temp);
                 tv.setText("Temperature: " +temp + "F");
 
                 String windSpStr = jsonWeather.getString("wind_spd");
                 String windDir = jsonWeather.getString("wind_cdir_full");
-                tv = getView().findViewById(R.id.textView_weather_wind);
+                tv = mView.findViewById(R.id.textView_weather_wind);
                 tv.append(" " + windDir + " " + windSpStr + "mph");
 
                 String humidStr = jsonWeather.getString("rh");
-                tv = getView().findViewById(R.id.textView_weather_humidity);
+                tv = mView.findViewById(R.id.textView_weather_humidity);
                 tv.append(humidStr + "%");
 
                 if (jsonWeather.has("weather")){
@@ -319,7 +325,7 @@ public class WeatherFragment extends Fragment  {
                     iv.setImageBitmap(fetchFavicon(uri));
                     String weatherCode = details.getString("code");
                     String description = details.getString("description");
-                    tv = getView().findViewById(R.id.textView_Weather_conditions);
+                    tv = mView.findViewById(R.id.textView_Weather_conditions);
                     tv.setText(description);
                 }
 
@@ -340,6 +346,10 @@ public class WeatherFragment extends Fragment  {
         args.putParcelable(getString(R.string.keys_location), mCurrentLocation);
         args.putSerializable(getString(R.string.keys_zipcode), mCurrentZip);
         args.putSerializable(getString(R.string.keys_prefs_UserId), mUID);
+        args.putSerializable("token", mListener.getJwtoken());
+
+
+
         frag.setArguments(args);
         FragmentTransaction transaction = getActivity().getSupportFragmentManager()
                 .beginTransaction()

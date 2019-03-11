@@ -57,7 +57,8 @@ public class HomeActivity extends AppCompatActivity implements
         OneConnectionFragment.OnProfileFragmentInteractionListener,
         NewConnection.OnNewConnectionFragmentInteractionListener,
         NewConversationFragment.OnNewConversationFragmentInteractionListener,
-        WeatherChoseLocationFragment.OnWeatherLocationChangeListener {
+        WeatherChoseLocationFragment.OnWeatherLocationChangeListener,
+        FavoriteLocationsFragment.OnSelectFavoriteListener {
 
     private final String TAG = "HomeActivity";
     public static final String RECEIVED_NEW_MESSAGE = "new message from pushy";
@@ -423,6 +424,35 @@ public class HomeActivity extends AppCompatActivity implements
                 .build().execute();
     }
 
+    @Override
+    public void onJoinConversationClick(String chatid) {
+        Log.wtf("Verification", chatid + ", " + mCredentials.getID());
+
+        mcurrentchatid = chatid;
+
+        JSONObject json = new JSONObject();
+        try {
+            json.put("chatid", chatid);
+            json.put("memberid", mCredentials.getID());
+        } catch (Exception e){
+        }
+        Uri uri = new Uri.Builder()
+                .scheme("https")
+                .appendPath(getString(R.string.ep_base_url))
+                .appendPath("conversation")
+                .appendPath("accept")
+                .build();
+        new SendPostAsyncTask.Builder(uri.toString(), json)
+                .onPreExecute(this::onWaitFragmentInteractionShow)
+                .onPostExecute(this::handlejoinConversationOnPostExecute)
+                .addHeaderField("authorization", mJwToken) //add the JWT as a header
+                .build().execute();
+    }
+
+    private void handlejoinConversationOnPostExecute(String s) {
+        onConversationListFragmentInteraction(mcurrentchatid);
+    }
+
 
     private void handleNewConversationOnPostExecute(final String result) {
         Log.wtf("CHATLIST", result);
@@ -735,8 +765,6 @@ public class HomeActivity extends AppCompatActivity implements
                 .onPostExecute(this::handleShowingfavoriteLocationOnPostExecute)
                 .addHeaderField("authorization", mJwToken) //add the JWT as a header
                 .build().execute();
-        //loadFragment(new
-        // ());
         return null;
     }
 
