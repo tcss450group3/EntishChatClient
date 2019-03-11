@@ -101,6 +101,9 @@ public class HomeFragment extends Fragment implements  View.OnClickListener{
                 recyclerView.setLayoutManager(new GridLayoutManager(context, mColumnCount));
             }
             recyclerView.setAdapter(new MyConnectionListRecyclerViewAdapter(mConnections, mListener));
+            if (mConnections.size() == 0) recyclerView.setVisibility(View.INVISIBLE);
+            else recyclerView.setVisibility(View.VISIBLE);
+
         }
 
         mLocationDisplay = (TextView)v.findViewById(R.id.textView_homeFrag_weather_location);

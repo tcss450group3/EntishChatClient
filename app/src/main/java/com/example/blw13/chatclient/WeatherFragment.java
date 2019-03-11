@@ -200,7 +200,6 @@ public class WeatherFragment extends Fragment  {
                     thisImageView.setImageBitmap(fetchFavicon(uri));
 
 
-
                     String weatherCode = details.getString("code");
                     String description = details.getString("description");
 
