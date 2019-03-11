@@ -2,11 +2,13 @@ package com.example.blw13.chatclient;
 
 
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.location.Location;
 import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
@@ -47,6 +49,7 @@ public class WeatherFragment extends Fragment  {
     private FragmentActivity mActivity;
     private WeatherChoseLocationFragment.OnWeatherLocationChangeListener mListener;
     private View mView;
+    private LinearLayout m24layout;
 
     public WeatherFragment() {
         // Required empty public constructor
@@ -72,6 +75,10 @@ public class WeatherFragment extends Fragment  {
         mCurrentZip = 0;
 
         mLocationDisplay = v.findViewById(R.id.textView_WeatherMain_Display_location);
+
+
+        m24layout = (LinearLayout) mView.findViewById(R.id.HourlyWeatherScrollView);
+
 
         ImageButton b = (ImageButton) v.findViewById(R.id.imageButton_weather_change_locations);
         b.setOnClickListener(this::ChangeLocationLoad);
@@ -231,67 +238,141 @@ public class WeatherFragment extends Fragment  {
     }
 
     private void HandleHourlyWeatherOnPost(final String result) {
-        LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT
-                , ViewGroup.LayoutParams.WRAP_CONTENT);
-        params.setMargins(10, 10, 10, 20);
-        params.height =ViewGroup.LayoutParams.WRAP_CONTENT;;
-        params.width = ViewGroup.LayoutParams.MATCH_PARENT;
+        new DisplayHourlyWeatherAsyncTask().execute(result);
 
-        try {
-            JSONObject root = new JSONObject(result);
+//        LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT
+//                , ViewGroup.LayoutParams.WRAP_CONTENT);
+//        params.setMargins(10, 10, 10, 20);
+//        params.height =ViewGroup.LayoutParams.WRAP_CONTENT;;
+//        params.width = ViewGroup.LayoutParams.MATCH_PARENT;
+//
+//        try {
+//            JSONObject root = new JSONObject(result);
+//
+//            if (root.has(getString(R.string.keys_json_weather_data))) {
+//                JSONArray data = root.getJSONArray(getString(R.string.keys_json_weather_data));
+//                LinearLayout mlayout = (LinearLayout) mView.findViewById(R.id.HourlyWeatherScrollView);
+//
+//                for (int i =0; i<data.length();i++){
+//                    LinearLayout thisFrame = new LinearLayout(getActivity());
+//                    JSONObject jsonWeather = data.getJSONObject(i);
+//
+//                    String timeStamp = jsonWeather.getString("timestamp_local");
+//                    String temp = jsonWeather.getString("temp");
+//                    String windSpStr = jsonWeather.getString("wind_spd");
+//                    String windDir = jsonWeather.getString("wind_cdir_full");
+//                    String humidStr = jsonWeather.getString("rh");
+//                    JSONObject details = jsonWeather.getJSONObject(getString(R.string.keys_json_weather_details));
+//                    String icon = details.getString("icon");
+//
+//                    Uri uri = new Uri.Builder()
+//                            .scheme("https")
+//                            .appendPath(getString(R.string.ep_weather_icon_base))
+//                            .appendPath(getString(R.string.ep_weather_icon_1))
+//                            .appendPath(getString(R.string.ep_weather_icon_2))
+//                            .appendPath(getString(R.string.ep_weather_icon_3))
+//                            .appendPath(icon + ".png")
+//                            .build();
+//                    ImageView iv = new ImageView(getActivity());
+//                    // This is a blocking task, but is being done in an async task... is this okay?
+//                    iv.setImageBitmap(fetchFavicon(uri));
+//
+//
+//                    String weatherCode = details.getString("code");
+//                    String description = details.getString("description");
+//
+//                    //Create a textview and display weather in loop
+//                    TextView thistextView = new TextView(mView.getContext());
+//                    thistextView.setText("Time: " + timeStamp + " \nTemperature: " + temp + "F\n"+description );
+//                    thistextView.setGravity(Gravity.CENTER_VERTICAL | Gravity.CENTER_HORIZONTAL);
+//                    thisFrame.setBackground(getResources().getDrawable(R.drawable.rounded_corner_for_conversation_list));
+//                    thisFrame.setLayoutParams(params);
+//
+//                    thisFrame.addView(iv);
+//                    thisFrame.addView(thistextView);
+//
+//                    mlayout.addView(thisFrame);
+//
+//                }
+//            }
+//        } catch (JSONException e) {
+//            e.printStackTrace();
+//            Log.e("ERROR!", e.getMessage());
+//            //notify user
+//        }
 
-            if (root.has(getString(R.string.keys_json_weather_data))) {
-                JSONArray data = root.getJSONArray(getString(R.string.keys_json_weather_data));
-                LinearLayout mlayout = (LinearLayout) mView.findViewById(R.id.HourlyWeatherScrollView);
+    }
 
-                for (int i =0; i<data.length();i++){
-                    LinearLayout thisFrame = new LinearLayout(getActivity());
-                    JSONObject jsonWeather = data.getJSONObject(i);
+    private class DisplayHourlyWeatherAsyncTask extends AsyncTask<String, Void, String> {
 
-                    String timeStamp = jsonWeather.getString("timestamp_local");
-                    String temp = jsonWeather.getString("temp");
-                    String windSpStr = jsonWeather.getString("wind_spd");
-                    String windDir = jsonWeather.getString("wind_cdir_full");
-                    String humidStr = jsonWeather.getString("rh");
-                    JSONObject details = jsonWeather.getJSONObject(getString(R.string.keys_json_weather_details));
-                    String icon = details.getString("icon");
+        @Override
+        protected String doInBackground(String... result) {
+            LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT
+                    , ViewGroup.LayoutParams.WRAP_CONTENT);
+            params.setMargins(10, 10, 10, 20);
+            params.height =ViewGroup.LayoutParams.WRAP_CONTENT;;
+            params.width = ViewGroup.LayoutParams.MATCH_PARENT;
 
-                    Uri uri = new Uri.Builder()
-                            .scheme("https")
-                            .appendPath(getString(R.string.ep_weather_icon_base))
-                            .appendPath(getString(R.string.ep_weather_icon_1))
-                            .appendPath(getString(R.string.ep_weather_icon_2))
-                            .appendPath(getString(R.string.ep_weather_icon_3))
-                            .appendPath(icon + ".png")
-                            .build();
-                    ImageView iv = new ImageView(getActivity());
-                    // This is a blocking task, but is being done in an async task... is this okay?
-                    iv.setImageBitmap(fetchFavicon(uri));
+            try {
+                JSONObject root = new JSONObject(result[0]);
+
+                if (root.has(getString(R.string.keys_json_weather_data))) {
+                    JSONArray data = root.getJSONArray(getString(R.string.keys_json_weather_data));
 
 
-                    String weatherCode = details.getString("code");
-                    String description = details.getString("description");
+                    for (int i =0; i<data.length();i++){
+                        LinearLayout thisFrame = new LinearLayout(getActivity());
+                        JSONObject jsonWeather = data.getJSONObject(i);
 
-                    //Create a textview and display weather in loop
-                    TextView thistextView = new TextView(mView.getContext());
-                    thistextView.setText("Time: " + timeStamp + " \nTemperature: " + temp + "F\n"+description );
-                    thistextView.setGravity(Gravity.CENTER_VERTICAL | Gravity.CENTER_HORIZONTAL);
-                    thisFrame.setBackground(getResources().getDrawable(R.drawable.rounded_corner_for_conversation_list));
-                    thisFrame.setLayoutParams(params);
+                        String timeStamp = jsonWeather.getString("timestamp_local");
+                        String temp = jsonWeather.getString("temp");
+                        String windSpStr = jsonWeather.getString("wind_spd");
+                        String windDir = jsonWeather.getString("wind_cdir_full");
+                        String humidStr = jsonWeather.getString("rh");
+                        JSONObject details = jsonWeather.getJSONObject(getString(R.string.keys_json_weather_details));
+                        String icon = details.getString("icon");
 
-                    thisFrame.addView(iv);
-                    thisFrame.addView(thistextView);
+                        Uri uri = new Uri.Builder()
+                                .scheme("https")
+                                .appendPath(getString(R.string.ep_weather_icon_base))
+                                .appendPath(getString(R.string.ep_weather_icon_1))
+                                .appendPath(getString(R.string.ep_weather_icon_2))
+                                .appendPath(getString(R.string.ep_weather_icon_3))
+                                .appendPath(icon + ".png")
+                                .build();
+                        ImageView iv = new ImageView(getActivity());
+                        // This is a blocking task, but is being done in an async task... is this okay?
+                        iv.setImageBitmap(fetchFavicon(uri));
 
-                    mlayout.addView(thisFrame);
 
+                        String weatherCode = details.getString("code");
+                        String description = details.getString("description");
+
+                        //Create a textview and display weather in loop
+                        TextView thistextView = new TextView(getContext());
+                        thistextView.setText("Time: " + timeStamp + " \nTemperature: " + temp + "F\n"+description );
+                        thistextView.setGravity(Gravity.CENTER_VERTICAL | Gravity.CENTER_HORIZONTAL);
+                        thisFrame.setBackground(getResources().getDrawable(R.drawable.rounded_corner_for_conversation_list));
+                        thisFrame.setLayoutParams(params);
+
+                        thisFrame.addView(iv);
+                        thisFrame.addView(thistextView);
+
+                        addIcon(thisFrame);
+                    }
                 }
+            } catch (JSONException e) {
+                e.printStackTrace();
+                Log.e("ERROR!", e.getMessage());
+                //notify user
             }
-        } catch (JSONException e) {
-            e.printStackTrace();
-            Log.e("ERROR!", e.getMessage());
-            //notify user
+            return null;
         }
 
+    }
+
+    private void addIcon(LinearLayout thisFrame){
+        m24layout.addView(thisFrame);
     }
 
 
@@ -350,6 +431,7 @@ public class WeatherFragment extends Fragment  {
         }
 //        this.mListener.onWaitFragmentInteractionHide();
     }
+
 
 
     private void AddToFavs(View view) {
@@ -421,4 +503,6 @@ public class WeatherFragment extends Fragment  {
 
 //
     }
+
+
 }
