@@ -115,5 +115,6 @@ public class ConnectionListFragment extends Fragment implements View.OnClickList
         // TODO: Update argument type and name
         void onConnectionListFragmentInteraction(Connection item);
         void onConnectionListFragmentNewConnection();
+        String getJwtoken();
     }
 }

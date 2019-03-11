@@ -88,7 +88,7 @@
                 app:layout_constraintTop_toTopOf="parent" />
 
             <TextView
-                android:id="@+id/textView__homeFrag_Weather_conditions"
+                android:id="@+id/textView_homeFrag_Weather_conditions"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="8dp"
@@ -104,7 +104,7 @@
                 android:layout_marginTop="8dp"
                 android:text="@string/text_weather_Temp"
                 app:layout_constraintStart_toEndOf="@+id/imageView_homeFrag_Current_weather_icon"
-                app:layout_constraintTop_toBottomOf="@+id/textView__homeFrag_Weather_conditions" />
+                app:layout_constraintTop_toBottomOf="@+id/textView_homeFrag_Weather_conditions" />
 
             <TextView
                 android:id="@+id/textView_weather_wind"

@@ -22,7 +22,6 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import com.example.blw13.chatclient.utils.GetAsyncTask;
 import com.example.blw13.chatclient.utils.SendPostAsyncTask;
 
 import org.json.JSONArray;
@@ -310,7 +309,7 @@ public class WeatherFragment extends Fragment  {
                 mLocationDisplay.append(", " + state);
 
                 String temp = jsonWeather.getString("temp");
-                TextView tv = mView.findViewById(R.id.textView_weather_temp);
+                TextView tv = mView.findViewById(R.id.textView_homeFrag_weather_temp);
                 tv.setText("Temperature: " +temp + "F");
 
                 String windSpStr = jsonWeather.getString("wind_spd");
@@ -338,7 +337,7 @@ public class WeatherFragment extends Fragment  {
                     iv.setImageBitmap(fetchFavicon(uri));
                     String weatherCode = details.getString("code");
                     String description = details.getString("description");
-                    tv = mView.findViewById(R.id.textView_Weather_conditions);
+                    tv = mView.findViewById(R.id.textView_homeFrag_Weather_conditions);
                     tv.setText(description);
                 }
 

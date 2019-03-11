@@ -47,8 +47,6 @@ public class HomeFragment extends Fragment implements  View.OnClickListener{
     private TextView mUserNameDisplay;
     private TextView mLocationDisplay;
     private Location mCurrentLocation;
-    private WeatherChoseLocationFragment.OnWeatherLocationChangeListener mListener;
-
 
     private ConnectionListFragment.OnListFragmentInteractionListener mListener;
 
@@ -65,6 +63,7 @@ public class HomeFragment extends Fragment implements  View.OnClickListener{
         super.onCreate(savedInstanceState);
 
         if (getArguments() != null) {
+
             mConnections = Arrays.asList((Connection[]) getArguments().getSerializable(ARG_CONNECTIONS));
         }
     }
@@ -141,10 +140,11 @@ public class HomeFragment extends Fragment implements  View.OnClickListener{
      * "http://developer.android.com/training/basics/fragments/communicating.html"
      * >Communicating with Other Fragments</a> for more information.
      */
-    public interface OnListFragmentInteractionListener {
-        // TODO: Update argument type and name
-        void onConnectionListFragmentInteraction(Connection item);
-        void onConnectionListFragmentNewConnection();
+//    public interface OnListFragmentInteractionListener {
+//        void onConnectionListFragmentInteraction(Connection item);
+//        void onConnectionListFragmentNewConnection();
+//        String getJwtoken();
+//    }
 
 
     public void DisplayWeather() {
@@ -163,6 +163,7 @@ public class HomeFragment extends Fragment implements  View.OnClickListener{
                 .appendPath(getString(R.string.ep_weather_base))
                 .appendPath(getString(R.string.ep_weather_current))
                 .build();
+
         new SendPostAsyncTask.Builder(uri.toString(), json)
 //                .onPreExecute(this.mListener::onWaitFragmentInteractionShow)
                 .onPostExecute(this::handleCurrentWeatherOnPost)
@@ -204,7 +205,7 @@ public class HomeFragment extends Fragment implements  View.OnClickListener{
                     iv.setImageBitmap(fetchFavicon(uri));
                     String weatherCode = details.getString("code");
                     String description = details.getString("description");
-                    tv = getView().findViewById(R.id.textView__homeFrag_Weather_conditions);
+                    tv = getView().findViewById(R.id.textView_homeFrag_Weather_conditions);
                     tv.setText(description);
                 }
 

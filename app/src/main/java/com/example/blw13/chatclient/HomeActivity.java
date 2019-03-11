@@ -81,6 +81,7 @@ public class HomeActivity extends AppCompatActivity implements
     private boolean loadHome;
     private boolean loadConn;
     private PushMessageReceiver mPushMessageReciever;
+    private Bundle mArgs;
 
     /**
      * The desired interval for location updates. Inexact. Updates may be more or less frequent.
@@ -115,15 +116,15 @@ public class HomeActivity extends AppCompatActivity implements
 
 
         Intent intent = getIntent();
-        Bundle args = new Bundle();
+        mArgs = new Bundle();
 
         if (intent.getExtras().containsKey(getString(R.string.keys_intent_jwt))) {
             mJwToken = getIntent().getStringExtra(getString(R.string.keys_intent_jwt));
-            args.putSerializable(getString(R.string.keys_intent_jwt), mJwToken);
+            mArgs.putSerializable(getString(R.string.keys_intent_jwt), mJwToken);
         }
         if (intent.getExtras().containsKey(getString(R.string.keys_intent_credentials))) {
             mCredentials = (Credentials) intent.getExtras().getSerializable(getString(R.string.keys_intent_credentials));
-            args.putSerializable(getString(R.string.keys_json_field_username), mCredentials.getUsername());
+            mArgs.putSerializable(getString(R.string.keys_json_field_username), mCredentials.getUsername());
             mID = mCredentials.getID();
         }
 
@@ -189,11 +190,6 @@ public class HomeActivity extends AppCompatActivity implements
             loadConn = true;
         } else {
             loadHome = true;
-
-            Fragment fragment = new HomeFragment();
-            args.putParcelable(getString(R.string.keys_location), mCurrentLocation);
-            fragment.setArguments(args);
-            loadFragment(fragment);
         }
         loadConnections();
     }
@@ -845,6 +841,9 @@ public class HomeActivity extends AppCompatActivity implements
     private void loadHomeFragment(){
         Connection[] requests;
         ArrayList<Connection> list = new ArrayList<Connection>();
+
+
+
         for(Connection i : mConnections){
             //add all connections that are requests
             if(i.isRequest()){
@@ -855,9 +854,10 @@ public class HomeActivity extends AppCompatActivity implements
         requests = list.toArray(requests);
 
         Bundle args = new Bundle();
-        args.putSerializable(HomeFragment.ARG_CONNECTIONS, requests);
+        mArgs.putSerializable(HomeFragment.ARG_CONNECTIONS, requests);
+        mArgs.putParcelable(getString(R.string.keys_location), mCurrentLocation);
         Fragment frag = new HomeFragment();
-        frag.setArguments(args);
+        frag.setArguments(mArgs);
         loadFragment(frag);
     }
 
