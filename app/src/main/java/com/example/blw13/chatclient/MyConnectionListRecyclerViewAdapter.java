@@ -70,7 +70,6 @@ public class MyConnectionListRecyclerViewAdapter extends RecyclerView.Adapter<My
             super(view);
             mView = view;
             mContentView = view.findViewById(R.id.connection_name);
-
             mNotificationBubble = view.findViewById(R.id.badge_text_view_connections_item);
 
         }
