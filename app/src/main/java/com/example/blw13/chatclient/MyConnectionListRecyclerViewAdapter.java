@@ -37,6 +37,7 @@ public class MyConnectionListRecyclerViewAdapter extends RecyclerView.Adapter<My
     public void onBindViewHolder(final ViewHolder holder, int position) {
         holder.mItem = mValues.get(position);
         holder.mContentView.setText(mValues.get(position).getName());
+
         if(!holder.mItem.isRequest()) {
             holder.mNotificationBubble.setVisibility(View.GONE);
         }
@@ -70,6 +71,7 @@ public class MyConnectionListRecyclerViewAdapter extends RecyclerView.Adapter<My
             mView = view;
             mContentView = view.findViewById(R.id.connection_name);
             mNotificationBubble = view.findViewById(R.id.badge_text_view_connections_item);
+
         }
 
         @Override
