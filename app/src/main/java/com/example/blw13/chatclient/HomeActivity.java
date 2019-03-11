@@ -783,8 +783,6 @@ public class HomeActivity extends AppCompatActivity implements
         args.putSerializable(getString(R.string.keys_intent_jwt), mJwToken);
         args.putSerializable(getString(R.string.keys_intent_credentials), mCredentials);
 
-        onWaitFragmentInteractionHide();
-
         FavoriteLocationsFragment flFrag = new FavoriteLocationsFragment();
 
         flFrag.setArguments(args);
