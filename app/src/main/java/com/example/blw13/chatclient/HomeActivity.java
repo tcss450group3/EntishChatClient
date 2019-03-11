@@ -13,6 +13,7 @@ import android.location.Location;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.StrictMode;
 import android.support.annotation.NonNull;
 import android.support.design.internal.BottomNavigationItemView;
 import android.support.design.widget.BottomNavigationView;
@@ -97,8 +98,15 @@ public class HomeActivity extends AppCompatActivity implements
     @SuppressLint("RestrictedApi")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        mCurrentLocation = new Location("");
+
         super.onCreate(savedInstanceState);
+
+        mCurrentLocation = new Location("");
+
+        //Let's me permit web calls syncronously. DO NOT ABUSE!!!
+        StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
+        StrictMode.setThreadPolicy(policy);
+
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
         setContentView(R.layout.activity_home);
 
@@ -914,7 +922,6 @@ public class HomeActivity extends AppCompatActivity implements
      * A BroadcastReceiver that listens for messages sent from PushReceiver
      */
     private class PushMessageReceiver extends BroadcastReceiver {
-
 
         @Override
         public void onReceive(Context context, Intent intent) {

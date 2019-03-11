@@ -37,6 +37,7 @@ public class MyConnectionListRecyclerViewAdapter extends RecyclerView.Adapter<My
     public void onBindViewHolder(final ViewHolder holder, int position) {
         holder.mItem = mValues.get(position);
         holder.mContentView.setText(mValues.get(position).getName());
+
         if(!holder.mItem.isRequest()) {
             holder.mNotificationBubble.setVisibility(View.GONE);
         }
@@ -47,6 +48,7 @@ public class MyConnectionListRecyclerViewAdapter extends RecyclerView.Adapter<My
                 if (null != mListener) {
                     // Notify the active callbacks interface (the activity, if the
                     // fragment is attached to one) that an item has been selected.
+        // TODO set icon back to something
                     mListener.onConnectionListFragmentInteraction(holder.mItem);
                 }
             }
@@ -68,7 +70,9 @@ public class MyConnectionListRecyclerViewAdapter extends RecyclerView.Adapter<My
             super(view);
             mView = view;
             mContentView = view.findViewById(R.id.connection_name);
+
             mNotificationBubble = view.findViewById(R.id.badge_text_view_connections_item);
+
         }
 
         @Override

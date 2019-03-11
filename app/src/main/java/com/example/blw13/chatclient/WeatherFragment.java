@@ -3,6 +3,8 @@ package com.example.blw13.chatclient;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.location.Location;
 import android.net.Uri;
 import android.os.Bundle;
@@ -15,7 +17,9 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.FrameLayout;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
@@ -24,6 +28,16 @@ import com.example.blw13.chatclient.utils.SendPostAsyncTask;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+
+import java.io.BufferedInputStream;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.OutputStreamWriter;
+import java.net.HttpURLConnection;
+import java.net.URL;
+import java.net.URLConnection;
 
 
 /**
@@ -43,6 +57,8 @@ public class WeatherFragment extends Fragment  {
     public WeatherFragment() {
         // Required empty public constructor
     }
+
+
 
 
     @Override
@@ -80,6 +96,7 @@ public class WeatherFragment extends Fragment  {
             }
         }
         Log.d(TAG, "onCreateView: my location is " + mCurrentLocation.toString() + " my UID is "+ mUID);
+        //TODO make a ui progress bar and call DISPLAYWEATHER in OnStart
         DisplayWeather();
         return v;
     }
@@ -87,6 +104,7 @@ public class WeatherFragment extends Fragment  {
     private void SearchMyLocations(View view) {
         mListener.DisplayFavoriteLocations();
     }
+
 
     public void DisplayWeather() {
         JSONObject json = new JSONObject();
@@ -152,7 +170,7 @@ public class WeatherFragment extends Fragment  {
                 LinearLayout mlayout = (LinearLayout) mView.findViewById(R.id.DailyWeatherScrollView);
 
                 for (int i =0; i<data.length();i++){
-                    Log.wtf("one array item", data.get(i).toString());
+                    LinearLayout thisFrame = new LinearLayout(getActivity());
                     JSONObject jsonWeather = data.getJSONObject(i);
                     String date = jsonWeather.getString("valid_date");
                     String maxTemp = jsonWeather.getString("max_temp");
@@ -161,17 +179,35 @@ public class WeatherFragment extends Fragment  {
                     JSONObject details = jsonWeather.getJSONObject(getString(R.string.keys_json_weather_details));
                     String icon = details.getString("icon");
                     //TODO Set icon
+
+                    Uri uri = new Uri.Builder()
+                            .scheme("https")
+                            .appendPath(getString(R.string.ep_weather_icon_base))
+                            .appendPath(getString(R.string.ep_weather_icon_1))
+                            .appendPath(getString(R.string.ep_weather_icon_2))
+                            .appendPath(getString(R.string.ep_weather_icon_3))
+                            .appendPath(icon + ".png")
+                            .build();
+                    ImageView thisImageView = new ImageView(getActivity());
+                    // This is a blocking task, but is being done in an async task... is this okay?
+                    thisImageView.setImageBitmap(fetchFavicon(uri));
+
+
                     String weatherCode = details.getString("code");
                     String description = details.getString("description");
 
                     //Create a textview and display weather in loop
                     TextView thistextView = new TextView(mView.getContext());
                     thistextView.setText("Date: " + date + "\nHigh: " + maxTemp + "F\nLow: "+ minTemp + "F\n"
-                            + description + "\nChange of precip: " + probablePrecip + "%" );
+                            + description + "\nChance of precip: " + probablePrecip + "%" );
                     thistextView.setGravity(Gravity.CENTER_VERTICAL | Gravity.CENTER_HORIZONTAL);
-                    thistextView.setBackground(getResources().getDrawable(R.drawable.rounded_corner_for_conversation_list));
-                    thistextView.setLayoutParams(params);
-                    mlayout.addView(thistextView);
+
+                    thisFrame.setBackground(getResources().getDrawable(R.drawable.rounded_corner_for_conversation_list));
+                    thisFrame.setLayoutParams(params);
+                    thisFrame.addView(thisImageView);
+                    thisFrame.addView(thistextView);
+
+                    mlayout.addView(thisFrame);
                 }
             }
         } catch (JSONException e) {
@@ -197,6 +233,7 @@ public class WeatherFragment extends Fragment  {
                 LinearLayout mlayout = (LinearLayout) mView.findViewById(R.id.HourlyWeatherScrollView);
 
                 for (int i =0; i<data.length();i++){
+                    LinearLayout thisFrame = new LinearLayout(getActivity());
                     JSONObject jsonWeather = data.getJSONObject(i);
 
                     String timeStamp = jsonWeather.getString("timestamp_local");
@@ -206,7 +243,20 @@ public class WeatherFragment extends Fragment  {
                     String humidStr = jsonWeather.getString("rh");
                     JSONObject details = jsonWeather.getJSONObject(getString(R.string.keys_json_weather_details));
                     String icon = details.getString("icon");
-                    //TODO Set icon
+
+                    Uri uri = new Uri.Builder()
+                            .scheme("https")
+                            .appendPath(getString(R.string.ep_weather_icon_base))
+                            .appendPath(getString(R.string.ep_weather_icon_1))
+                            .appendPath(getString(R.string.ep_weather_icon_2))
+                            .appendPath(getString(R.string.ep_weather_icon_3))
+                            .appendPath(icon + ".png")
+                            .build();
+                    ImageView iv = new ImageView(getActivity());
+                    // This is a blocking task, but is being done in an async task... is this okay?
+                    iv.setImageBitmap(fetchFavicon(uri));
+
+
                     String weatherCode = details.getString("code");
                     String description = details.getString("description");
 
@@ -214,9 +264,14 @@ public class WeatherFragment extends Fragment  {
                     TextView thistextView = new TextView(mView.getContext());
                     thistextView.setText("Time: " + timeStamp + " \nTemperature: " + temp + "F\n"+description );
                     thistextView.setGravity(Gravity.CENTER_VERTICAL | Gravity.CENTER_HORIZONTAL);
-                    thistextView.setBackground(getResources().getDrawable(R.drawable.rounded_corner_for_conversation_list));
-                    thistextView.setLayoutParams(params);
-                    mlayout.addView(thistextView);
+                    thisFrame.setBackground(getResources().getDrawable(R.drawable.rounded_corner_for_conversation_list));
+                    thisFrame.setLayoutParams(params);
+
+                    thisFrame.addView(iv);
+                    thisFrame.addView(thistextView);
+
+                    mlayout.addView(thisFrame);
+
                 }
             }
         } catch (JSONException e) {
@@ -257,7 +312,17 @@ public class WeatherFragment extends Fragment  {
                 if (jsonWeather.has("weather")){
                     JSONObject details = jsonWeather.getJSONObject(getString(R.string.keys_json_weather_details));
                     String icon = details.getString("icon");
-                    //TODO Set icon
+                    Uri uri = new Uri.Builder()
+                            .scheme("https")
+                            .appendPath(getString(R.string.ep_weather_icon_base))
+                            .appendPath(getString(R.string.ep_weather_icon_1))
+                            .appendPath(getString(R.string.ep_weather_icon_2))
+                            .appendPath(getString(R.string.ep_weather_icon_3))
+                            .appendPath(icon + ".png")
+                            .build();
+                    ImageView iv = getView().findViewById(R.id.imageView_Current_weather_icon);
+                    // This is a blocking task, but is being done in an async task... is this okay?
+                    iv.setImageBitmap(fetchFavicon(uri));
                     String weatherCode = details.getString("code");
                     String description = details.getString("description");
                     tv = mView.findViewById(R.id.textView_Weather_conditions);
@@ -321,5 +386,26 @@ public class WeatherFragment extends Fragment  {
     public void onDetach() {
         super.onDetach();
         mListener = null;
+    }
+
+    private Bitmap fetchFavicon(Uri uri) {
+
+        Log.i(TAG, "Fetching icon from: " + uri);
+        try
+        {
+            HttpURLConnection conn = (HttpURLConnection) new URL(uri.toString()).openConnection();
+            conn.setRequestMethod("GET");
+            conn.connect();
+
+            InputStream is = conn.getInputStream();
+            BufferedInputStream bis = new BufferedInputStream(is);
+            return BitmapFactory.decodeStream(bis);
+        } catch (Exception e) {
+            Log.w(TAG, "Failed to fetch favicon from " + uri, e);
+            return null;
+        }
+
+
+//
     }
 }

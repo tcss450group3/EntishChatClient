@@ -24,6 +24,7 @@
             android:contentDescription="TODO"
             app:srcCompat="@drawable/ic_account_box" />
 
+
         <TextView
             android:id="@+id/connection_name"
             android:layout_width="match_parent"
