@@ -63,7 +63,6 @@ public class HomeActivity extends AppCompatActivity implements
 
     private final String TAG = "HomeActivity";
     public static final String RECEIVED_NEW_MESSAGE = "new message from pushy";
-    public static final String RECEIVED_NEW_CONNECTION = "new connection from pushy";
 
     private TextView mTextMessage;
     private String mJwToken;
@@ -203,7 +202,7 @@ public class HomeActivity extends AppCompatActivity implements
             mPushMessageReciever = new PushMessageReceiver();
         }
         IntentFilter iFilter = new IntentFilter(PushReceiver.RECEIVED_NEW_MESSAGE);
-        iFilter.addCategory(RECEIVED_NEW_CONNECTION);
+        iFilter.addAction(PushReceiver.RECEIVED_NEW_CONNECTION);
         registerReceiver(mPushMessageReciever, iFilter);
         startLocationUpdates();
     }
@@ -939,16 +938,14 @@ public class HomeActivity extends AppCompatActivity implements
         @Override
         public void onReceive(Context context, Intent intent) {
 
-
             if (intent.getAction() == RECEIVED_NEW_MESSAGE) {
                 View badge = findViewById(R.id.badge_frame_layout_conversations);
                 badge.setVisibility(View.VISIBLE);
             }
-            if (intent.getAction() == PushReceiver.RECEIVED_NEW_CONNECTION) {
+            if (intent.getAction() == (PushReceiver.RECEIVED_NEW_CONNECTION)) {
                 View badge = findViewById(R.id.badge_frame_layout_connections);
                 badge.setVisibility(View.VISIBLE);
                 loadConnections();
-                Log.e("whoadude","what happened?");
             }
         }
     }
