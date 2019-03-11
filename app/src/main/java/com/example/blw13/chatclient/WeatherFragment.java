@@ -291,7 +291,6 @@ public class WeatherFragment extends Fragment  {
             Log.e("ERROR!", e.getMessage());
             //notify user
         }
-
     }
 
 
