@@ -938,7 +938,7 @@ public class HomeActivity extends AppCompatActivity implements
 
         @Override
         public void onReceive(Context context, Intent intent) {
-
+            Log.e(TAG, "onReceive: got this intent " + intent.getAction() );
 
             if (intent.getAction() == RECEIVED_NEW_MESSAGE) {
                 View badge = findViewById(R.id.badge_frame_layout_conversations);
