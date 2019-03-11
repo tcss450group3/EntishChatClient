@@ -37,7 +37,10 @@ public class MyConnectionListRecyclerViewAdapter extends RecyclerView.Adapter<My
     public void onBindViewHolder(final ViewHolder holder, int position) {
         holder.mItem = mValues.get(position);
         holder.mContentView.setText(mValues.get(position).getName());
-//TODO set icon to what you want
+        if(!holder.mItem.isRequest()) {
+            holder.mNotificationBubble.setVisibility(View.GONE);
+        }
+
         holder.mView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -59,13 +62,14 @@ public class MyConnectionListRecyclerViewAdapter extends RecyclerView.Adapter<My
     public class ViewHolder extends RecyclerView.ViewHolder {
         public final View mView;
         public final TextView mContentView;
+        public final TextView mNotificationBubble;
         public Connection mItem;
 
         public ViewHolder(View view) {
             super(view);
             mView = view;
             mContentView = view.findViewById(R.id.connection_name);
-            //get access to icon
+            mNotificationBubble = view.findViewById(R.id.badge_text_view_connections_item);
         }
 
         @Override
