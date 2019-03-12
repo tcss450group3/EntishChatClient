@@ -734,7 +734,7 @@ public class HomeActivity extends AppCompatActivity implements
     }
 
     private void handleShowingNewConversationOnPostExecute(final String result) {
-        //Log.wtf("ERROR!", result);
+
         onWaitFragmentInteractionHide();
 
         try {

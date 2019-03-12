@@ -1,12 +1,14 @@
 package com.example.blw13.chatclient;
 
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.location.Location;
 import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
@@ -21,6 +23,8 @@ import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+
+import com.example.blw13.chatclient.utils.GetAsyncTask;
 
 import com.example.blw13.chatclient.utils.SendPostAsyncTask;
 
@@ -90,7 +94,6 @@ public class WeatherFragment extends Fragment  {
             }
         }
         Log.d(TAG, "onCreateView: my location is " + mCurrentLocation.toString() + " my UID is "+ mUID);
-        //TODO make a ui progress bar and call DISPLAYWEATHER in OnStart
 
         return v;
     }
@@ -192,12 +195,33 @@ public class WeatherFragment extends Fragment  {
                     ImageView thisImageView = new ImageView(getActivity());
 
 
-//                    new GetAsyncTask.Builder(uri.toString())
-//                .onPreExecute(this.mListener::onWaitFragmentInteractionShow)
-//                            .onPostExecute(thisImageView.setImageBitmap(fetchFavicon(uri)))
-//                            .build().execute();
+                    @SuppressLint("StaticFieldLeak") GetIconAsyncTask get = new GetIconAsyncTask() {
 
-                    thisImageView.setImageBitmap(fetchFavicon(uri));
+                        @Override
+                        protected Bitmap doInBackground(Void... voids) {
+                            Log.i(TAG, "Fetching icon from: " + uri);
+
+                            try {
+                                HttpURLConnection conn = (HttpURLConnection) new URL(uri.toString()).openConnection();
+                                conn.setRequestMethod("GET");
+                                conn.connect();
+
+                                InputStream is = conn.getInputStream();
+                                BufferedInputStream bis = new BufferedInputStream(is);
+                                return BitmapFactory.decodeStream(bis);
+                            } catch (Exception e) {
+                                Log.w(TAG, "Failed to fetch favicon from " + uri, e);
+                                return null;
+                            }
+                        }
+
+                        @Override
+                        protected void onPostExecute(Bitmap result) {
+
+                            thisImageView.setImageBitmap(result);
+                        }
+                    };
+                    get.execute();
 
 
                     String weatherCode = details.getString("code");
@@ -225,9 +249,6 @@ public class WeatherFragment extends Fragment  {
 
     }
 
-    private void setImage(String s, ImageView thisImageView ) {
-
-    }
 
     private void HandleHourlyWeatherOnPost(final String result) {
         LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT
@@ -264,8 +285,39 @@ public class WeatherFragment extends Fragment  {
                             .appendPath(icon + ".png")
                             .build();
                     ImageView iv = new ImageView(getActivity());
-                    // This is a blocking task, but is being done in an async task... is this okay?
-                    iv.setImageBitmap(fetchFavicon(uri));
+
+
+                    @SuppressLint("StaticFieldLeak") GetIconAsyncTask get = new GetIconAsyncTask() {
+
+                        @Override
+                        protected Bitmap doInBackground(Void... voids) {
+                            Log.i(TAG, "Fetching icon from: " + uri);
+
+                            try {
+                                HttpURLConnection conn = (HttpURLConnection) new URL(uri.toString()).openConnection();
+                                conn.setRequestMethod("GET");
+                                conn.connect();
+
+                                InputStream is = conn.getInputStream();
+                                BufferedInputStream bis = new BufferedInputStream(is);
+                                return BitmapFactory.decodeStream(bis);
+                            } catch (Exception e) {
+                                Log.w(TAG, "Failed to fetch favicon from " + uri, e);
+                                return null;
+                            }
+                        }
+
+                        @Override
+                        protected void onPostExecute(Bitmap result) {
+
+                            iv.setImageBitmap(result);
+                        }
+                    };
+                    get.execute();
+
+
+
+//                    iv.setImageBitmap(fetchFavicon(uri));
 
 
                     String weatherCode = details.getString("code");
@@ -332,6 +384,37 @@ public class WeatherFragment extends Fragment  {
                             .build();
                     ImageView iv = getView().findViewById(R.id.imageView_homeFrag_Current_weather_icon);
                     // This is a blocking task, but is being done in an async task... is this okay?
+
+
+                    @SuppressLint("StaticFieldLeak") GetIconAsyncTask get = new GetIconAsyncTask() {
+
+                        @Override
+                        protected Bitmap doInBackground(Void... voids) {
+                            Log.i(TAG, "Fetching icon from: " + uri);
+
+                            try {
+                                HttpURLConnection conn = (HttpURLConnection) new URL(uri.toString()).openConnection();
+                                conn.setRequestMethod("GET");
+                                conn.connect();
+
+                                InputStream is = conn.getInputStream();
+                                BufferedInputStream bis = new BufferedInputStream(is);
+                                return BitmapFactory.decodeStream(bis);
+                            } catch (Exception e) {
+                                Log.w(TAG, "Failed to fetch favicon from " + uri, e);
+                                return null;
+                            }
+                        }
+
+                        @Override
+                        protected void onPostExecute(Bitmap result) {
+
+                            iv.setImageBitmap(result);
+                        }
+                    };
+                    get.execute();
+
+
                     iv.setImageBitmap(fetchFavicon(uri));
                     String weatherCode = details.getString("code");
                     String description = details.getString("description");
@@ -419,4 +502,5 @@ public class WeatherFragment extends Fragment  {
 
 //
     }
+
 }

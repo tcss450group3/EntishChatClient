@@ -1,6 +1,7 @@
 package com.example.blw13.chatclient;
 
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
@@ -209,6 +210,33 @@ public class HomeFragment extends Fragment implements  View.OnClickListener{
                             .build();
                     ImageView iv = mView.findViewById(R.id.imageView_homeFrag_Current_weather_icon);
                     // This is a blocking task, but is being done in an async task... is this okay?
+                    @SuppressLint("StaticFieldLeak") GetIconAsyncTask get = new GetIconAsyncTask() {
+
+                        @Override
+                        protected Bitmap doInBackground(Void... voids) {
+                            Log.i(TAG, "Fetching icon from: " + uri);
+
+                            try {
+                                HttpURLConnection conn = (HttpURLConnection) new URL(uri.toString()).openConnection();
+                                conn.setRequestMethod("GET");
+                                conn.connect();
+
+                                InputStream is = conn.getInputStream();
+                                BufferedInputStream bis = new BufferedInputStream(is);
+                                return BitmapFactory.decodeStream(bis);
+                            } catch (Exception e) {
+                                Log.w(TAG, "Failed to fetch favicon from " + uri, e);
+                                return null;
+                            }
+                        }
+
+                        @Override
+                        protected void onPostExecute(Bitmap result) {
+
+                            iv.setImageBitmap(result);
+                        }
+                    };
+                    get.execute();
                     iv.setImageBitmap(fetchFavicon(uri));
                     String weatherCode = details.getString("code");
                     String description = details.getString("description");
