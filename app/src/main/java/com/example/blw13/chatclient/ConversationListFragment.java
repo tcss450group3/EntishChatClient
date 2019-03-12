@@ -91,7 +91,9 @@ public class ConversationListFragment extends Fragment {
 
                         int verification = Integer.parseInt(jsonBlog.getString("verified"));
 
-                        textView.setText( textView.getName());
+                        int unread = Integer.parseInt(jsonBlog.getString("unread"));
+
+
 
                         if(chatMembers.length > 2) {
                             textView.setCompoundDrawablesWithIntrinsicBounds(R.mipmap.ic_group_chat_round, 0, 0, 0);
@@ -107,7 +109,14 @@ public class ConversationListFragment extends Fragment {
 
 
                         if(verification ==-1) {// if the conversation is verified
-                            textView.setBackground(getResources().getDrawable(R.drawable.rounded_corner_for_conversation_list));
+                            textView.setText( textView.getName());
+
+                            if(unread ==0) {
+                                textView.setBackground(getResources().getDrawable(R.drawable.rounded_corner_orange));
+                            } else {
+                                textView.setBackground(getResources().getDrawable(R.drawable.rounded_corner_for_conversation_list));
+                            }
+
                             textView.setOnClickListener(new View.OnClickListener() {
                                 @Override
                                 public void onClick(View v) {
@@ -115,7 +124,13 @@ public class ConversationListFragment extends Fragment {
                                 }
                             });
                         } else {// handle when conversation is not verified
-                            textView.setBackground(getResources().getDrawable(R.drawable.rounded_corner_orange));
+                            textView.setText( "Chat invitation from "+textView.getName());
+                            if(unread ==0) {
+                                textView.setBackground(getResources().getDrawable(R.drawable.rounded_corner_orange));
+                            } else {
+                                textView.setBackground(getResources().getDrawable(R.drawable.unaccepted_conversation));
+                            }
+
                             textView.setOnClickListener(new View.OnClickListener() {
                                 @Override
                                 public void onClick(View v) {
@@ -141,6 +156,8 @@ public class ConversationListFragment extends Fragment {
                                 }
                             });
                         }
+
+
                         mlayout.addView(textView);
                     }
 
