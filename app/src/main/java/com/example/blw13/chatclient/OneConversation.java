@@ -96,6 +96,34 @@ public class OneConversation extends Fragment {
                 .appendPath(getString(R.string.ep_send))
                 .build()
                 .toString();
+
+        setRead(mChatid, mCredentials.getID());
+    }
+
+    private void setRead(String chatid, int memberid){
+        String url = new Uri.Builder()
+                .scheme("https")
+                .appendPath(getString(R.string.ep_base_url))
+                .appendPath("messaging")
+                .appendPath("read")
+                .build()
+                .toString();
+
+        JSONObject messageJson = new JSONObject();
+        try {
+            messageJson.put("chatid", chatid);
+            messageJson.put("memberid", memberid);
+        } catch (JSONException e) {
+            e.printStackTrace();
+            Log.e("ERROR! ", e.getMessage());
+        }
+
+        Log.e("ERROR! ", messageJson.toString());
+        new SendPostAsyncTask.Builder(url, messageJson)
+                .onCancelled(error -> Log.e(TAG, error))
+                .addHeaderField("authorization", mJwToken)
+                .build().execute();
+
     }
 
 
@@ -170,6 +198,7 @@ public class OneConversation extends Fragment {
             messageJson.put("username", mUsername);
             messageJson.put("message", msg);
             messageJson.put("chatId", mChatid);
+            messageJson.put("memberid", mCredentials.getID());
         } catch (JSONException e) {
             e.printStackTrace();
             Log.e("ERROR! ", e.getMessage());
