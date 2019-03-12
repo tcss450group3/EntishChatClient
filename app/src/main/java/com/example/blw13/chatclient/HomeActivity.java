@@ -48,6 +48,7 @@ import me.pushy.sdk.Pushy;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Objects;
 
 
 public class HomeActivity extends AppCompatActivity implements
@@ -62,7 +63,6 @@ public class HomeActivity extends AppCompatActivity implements
 
     private final String TAG = "HomeActivity";
     public static final String RECEIVED_NEW_MESSAGE = "new message from pushy";
-    public static final String RECEIVED_NEW_CONNECTION = "new connection from pushy";
 
     private TextView mTextMessage;
     private String mJwToken;
@@ -202,7 +202,7 @@ public class HomeActivity extends AppCompatActivity implements
             mPushMessageReciever = new PushMessageReceiver();
         }
         IntentFilter iFilter = new IntentFilter(PushReceiver.RECEIVED_NEW_MESSAGE);
-        iFilter.addCategory(RECEIVED_NEW_CONNECTION);
+        iFilter.addAction(PushReceiver.RECEIVED_NEW_CONNECTION);
         registerReceiver(mPushMessageReciever, iFilter);
         startLocationUpdates();
     }
@@ -355,7 +355,12 @@ public class HomeActivity extends AppCompatActivity implements
     public void onWaitFragmentInteractionShow() {
         //create and add wait fragment to activity, while an asynchronous task is running
         mNavigationView.setEnabled(false);
-        loadFragment(new WaitFragment(), "WAIT");
+        Fragment frag = new WaitFragment();
+        FragmentTransaction transaction = getSupportFragmentManager()
+                .beginTransaction()
+                .add(R.id.home_display_container, frag, "WAIT")
+                .addToBackStack(null);
+        transaction.commit();
     }
 
     @Override
@@ -363,7 +368,7 @@ public class HomeActivity extends AppCompatActivity implements
         //remove wait fragment from activity after asynchronous task is complete.
         getSupportFragmentManager()
                 .beginTransaction()
-                .remove(getSupportFragmentManager().findFragmentByTag("WAIT"))
+                .remove(Objects.requireNonNull(getSupportFragmentManager().findFragmentByTag("WAIT")))
                 .commit();
         mNavigationView.setEnabled(true);
     }
@@ -377,6 +382,7 @@ public class HomeActivity extends AppCompatActivity implements
         args.putSerializable("credential" , mCredentials);
         ConversationListFragment convers = new ConversationListFragment();
         convers.setArguments(args);
+        onWaitFragmentInteractionHide();
         loadFragment(convers);
     }
 
@@ -522,13 +528,11 @@ public class HomeActivity extends AppCompatActivity implements
             } else {
                 Log.e("ERROR!", "No response");
                 //notify user
-                onWaitFragmentInteractionHide();
             }
         } catch (JSONException e) {
             e.printStackTrace();
             Log.e("ERROR!", e.getMessage());
             //notify user
-            onWaitFragmentInteractionHide();
         }
 
 
@@ -932,16 +936,16 @@ public class HomeActivity extends AppCompatActivity implements
         @Override
         public void onReceive(Context context, Intent intent) {
 
-
             if (intent.getAction() == RECEIVED_NEW_MESSAGE) {
                 View badge = findViewById(R.id.badge_frame_layout_conversations);
                 badge.setVisibility(View.VISIBLE);
+    Log.e("whoadude","got a new message?");
             }
-            if (intent.getAction() == PushReceiver.RECEIVED_NEW_CONNECTION) {
+            if (intent.getAction() == (PushReceiver.RECEIVED_NEW_CONNECTION)) {
                 View badge = findViewById(R.id.badge_frame_layout_connections);
                 badge.setVisibility(View.VISIBLE);
                 loadConnections();
-                Log.e("whoadude","what happened?");
+
             }
         }
     }
