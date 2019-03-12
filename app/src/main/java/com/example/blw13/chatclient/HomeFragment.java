@@ -174,6 +174,7 @@ public class HomeFragment extends Fragment implements  View.OnClickListener{
 
         new SendPostAsyncTask.Builder(uri.toString(), json)
 //                .onPreExecute(this.mListener::onWaitFragmentInteractionShow)
+                //Should be adding placeholders
                 .onPostExecute(this::handleCurrentWeatherOnPost)
                 .addHeaderField("authorization", mListener.getJwtoken()) //add the JWT as a header
                 .build().execute();
@@ -209,7 +210,7 @@ public class HomeFragment extends Fragment implements  View.OnClickListener{
                             .appendPath(icon + ".png")
                             .build();
                     ImageView iv = mView.findViewById(R.id.imageView_homeFrag_Current_weather_icon);
-                    // This is a blocking task, but is being done in an async task... is this okay?
+
                     @SuppressLint("StaticFieldLeak") GetIconAsyncTask get = new GetIconAsyncTask() {
 
                         @Override
@@ -251,7 +252,6 @@ public class HomeFragment extends Fragment implements  View.OnClickListener{
             Log.e("ERROR!", e.getMessage());
             //notify user
         }
-//        this.mListener.onWaitFragmentInteractionHide();
     }
 
     private Bitmap fetchFavicon(Uri uri) {

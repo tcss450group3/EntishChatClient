@@ -8,7 +8,6 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.location.Location;
 import android.net.Uri;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
@@ -23,8 +22,6 @@ import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
-
-import com.example.blw13.chatclient.utils.GetAsyncTask;
 
 import com.example.blw13.chatclient.utils.SendPostAsyncTask;
 
@@ -98,9 +95,6 @@ public class WeatherFragment extends Fragment  {
         return v;
     }
 
-    private void SearchMyLocations(View view) {
-        mListener.DisplayFavoriteLocations();
-    }
     
     @Override
     public void onStart() {
@@ -109,6 +103,9 @@ public class WeatherFragment extends Fragment  {
     }
 
 
+    private void SearchMyLocations(View view) {
+        mListener.DisplayFavoriteLocations();
+    }
 
 
     public void DisplayWeather() {
@@ -315,11 +312,6 @@ public class WeatherFragment extends Fragment  {
                     };
                     get.execute();
 
-
-
-//                    iv.setImageBitmap(fetchFavicon(uri));
-
-
                     String weatherCode = details.getString("code");
                     String description = details.getString("description");
 
@@ -413,9 +405,6 @@ public class WeatherFragment extends Fragment  {
                         }
                     };
                     get.execute();
-
-
-                    iv.setImageBitmap(fetchFavicon(uri));
                     String weatherCode = details.getString("code");
                     String description = details.getString("description");
                     tv = mView.findViewById(R.id.textView_homeFrag_Weather_conditions);
@@ -429,7 +418,6 @@ public class WeatherFragment extends Fragment  {
             Log.e("ERROR!", e.getMessage());
             //notify user
         }
-//        this.mListener.onWaitFragmentInteractionHide();
     }
 
 
@@ -440,8 +428,6 @@ public class WeatherFragment extends Fragment  {
         args.putSerializable(getString(R.string.keys_zipcode), mCurrentZip);
         args.putSerializable(getString(R.string.keys_prefs_UserId), mUID);
         args.putSerializable("token", mListener.getJwtoken());
-
-
 
         frag.setArguments(args);
         FragmentTransaction transaction = getActivity().getSupportFragmentManager()
@@ -481,26 +467,5 @@ public class WeatherFragment extends Fragment  {
         mListener = null;
     }
 
-    private Bitmap fetchFavicon(Uri uri) {
-
-        Log.i(TAG, "Fetching icon from: " + uri);
-
-        try
-        {
-            HttpURLConnection conn = (HttpURLConnection) new URL(uri.toString()).openConnection();
-            conn.setRequestMethod("GET");
-            conn.connect();
-
-            InputStream is = conn.getInputStream();
-            BufferedInputStream bis = new BufferedInputStream(is);
-            return BitmapFactory.decodeStream(bis);
-        } catch (Exception e) {
-            Log.w(TAG, "Failed to fetch favicon from " + uri, e);
-            return null;
-        }
-
-
-//
-    }
 
 }
