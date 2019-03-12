@@ -204,6 +204,7 @@ public class OneConversation extends Fragment {
             Log.e("ERROR! ", e.getMessage());
         }
 
+        Log.e("AHH! ", messageJson.toString());
         new SendPostAsyncTask.Builder(mSendUrl, messageJson)
                 .onPostExecute(this::endOfSendMsgTask)
                 .onCancelled(error -> Log.e(TAG, error))
