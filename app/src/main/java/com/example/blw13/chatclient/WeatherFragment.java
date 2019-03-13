@@ -375,11 +375,8 @@ public class WeatherFragment extends Fragment  {
                             .appendPath(icon + ".png")
                             .build();
                     ImageView iv = getView().findViewById(R.id.imageView_homeFrag_Current_weather_icon);
-                    // This is a blocking task, but is being done in an async task... is this okay?
-
 
                     @SuppressLint("StaticFieldLeak") GetIconAsyncTask get = new GetIconAsyncTask() {
-
                         @Override
                         protected Bitmap doInBackground(Void... voids) {
                             Log.i(TAG, "Fetching icon from: " + uri);
