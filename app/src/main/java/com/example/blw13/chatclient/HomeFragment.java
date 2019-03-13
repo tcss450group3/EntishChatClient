@@ -138,23 +138,6 @@ public class HomeFragment extends Fragment implements  View.OnClickListener{
         mListener.onConnectionListFragmentNewConnection();
     }
 
-    /**
-     * This interface must be implemented by activities that contain this
-     * fragment to allow an interaction in this fragment to be communicated
-     * to the activity and potentially other fragments contained in that
-     * activity.
-     * <p/>
-     * See the Android Training lesson <a href=
-     * "http://developer.android.com/training/basics/fragments/communicating.html"
-     * >Communicating with Other Fragments</a> for more information.
-     */
-//    public interface OnListFragmentInteractionListener {
-//        void onConnectionListFragmentInteraction(Connection item);
-//        void onConnectionListFragmentNewConnection();
-//        String getJwtoken();
-//    }
-
-
     public void DisplayWeather() {
         JSONObject json = new JSONObject();
         Uri uri;
@@ -173,7 +156,7 @@ public class HomeFragment extends Fragment implements  View.OnClickListener{
                 .build();
 
         new SendPostAsyncTask.Builder(uri.toString(), json)
-//                .onPreExecute(this.mListener::onWaitFragmentInteractionShow)
+                //Should be adding placeholder for weather icon and text views
                 .onPostExecute(this::handleCurrentWeatherOnPost)
                 .addHeaderField("authorization", mListener.getJwtoken()) //add the JWT as a header
                 .build().execute();
@@ -209,7 +192,7 @@ public class HomeFragment extends Fragment implements  View.OnClickListener{
                             .appendPath(icon + ".png")
                             .build();
                     ImageView iv = mView.findViewById(R.id.imageView_homeFrag_Current_weather_icon);
-                    // This is a blocking task, but is being done in an async task... is this okay?
+
                     @SuppressLint("StaticFieldLeak") GetIconAsyncTask get = new GetIconAsyncTask() {
 
                         @Override
@@ -251,7 +234,6 @@ public class HomeFragment extends Fragment implements  View.OnClickListener{
             Log.e("ERROR!", e.getMessage());
             //notify user
         }
-//        this.mListener.onWaitFragmentInteractionHide();
     }
 
     private Bitmap fetchFavicon(Uri uri) {
