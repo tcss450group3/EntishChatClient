@@ -1,6 +1,7 @@
 package com.example.blw13.chatclient;
 
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -37,7 +38,13 @@ import java.net.URL;
 
 
 /**
- * A simple {@link Fragment} subclass.
+ *
+ *
+ * A  {@link Fragment} subclass. Displays weather information.
+ * Expects either {@link Location} Location to be passed in bundle OR Zip code as a 5 digit int
+ * If it receives neither of these, it will default to google maps default location
+ *
+ * @author TCSS450 Group 3 Robert Wolf, Ruito Yu, Chris Walsh, Caleb Rochette
  */
 public class WeatherFragment extends Fragment  {
 
@@ -46,17 +53,14 @@ public class WeatherFragment extends Fragment  {
     private TextView mLocationDisplay;
     private int mUID;
     private int mCurrentZip;
-    private FragmentActivity mActivity;
     private WeatherChoseLocationFragment.OnWeatherLocationChangeListener mListener;
     private View mView;
     private LinearLayout m24layout;
 
+
     public WeatherFragment() {
         // Required empty public constructor
     }
-
-
-
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -70,7 +74,7 @@ public class WeatherFragment extends Fragment  {
                         Context.MODE_PRIVATE);
         mUID =  prefs.getInt(getString(R.string.keys_prefs_UserId), 5);
 
-        //Initialize to prevent null pointer access
+        //Initialize to prevent null pointer access. defaults to google's default loc and zip =0
         mCurrentLocation = new Location("");
         mCurrentZip = 0;
 
@@ -97,14 +101,10 @@ public class WeatherFragment extends Fragment  {
             }
         }
         Log.d(TAG, "onCreateView: my location is " + mCurrentLocation.toString() + " my UID is "+ mUID);
-        //TODO make a ui progress bar and call DISPLAYWEATHER in OnStart
 
         return v;
     }
 
-    private void SearchMyLocations(View view) {
-        mListener.DisplayFavoriteLocations();
-    }
     
     @Override
     public void onStart() {
@@ -113,9 +113,12 @@ public class WeatherFragment extends Fragment  {
     }
 
 
+    private void SearchMyLocations(View view) {
+        mListener.DisplayFavoriteLocations();
+    }
 
 
-    public void DisplayWeather() {
+    private void DisplayWeather() {
         JSONObject json = new JSONObject();
         Uri uri;
         try {
@@ -132,7 +135,6 @@ public class WeatherFragment extends Fragment  {
                 .appendPath(getString(R.string.ep_weather_current))
                 .build();
         new SendPostAsyncTask.Builder(uri.toString(), json)
-//                .onPreExecute(this.mListener::onWaitFragmentInteractionShow)
                 .onPostExecute(this::handleCurrentWeatherOnPost)
                 .addHeaderField("authorization", mListener.getJwtoken()) //add the JWT as a header
                 .build().execute();
@@ -145,7 +147,6 @@ public class WeatherFragment extends Fragment  {
                 .appendPath(getString(R.string.ep_weather_hourly))
                 .build();
         new SendPostAsyncTask.Builder(uri.toString(), json)
-//                .onPreExecute(this.mListener::onWaitFragmentInteractionShow)
                 .onPostExecute(this::HandleHourlyWeatherOnPost)
                 .addHeaderField("authorization", mListener.getJwtoken()) //add the JWT as a header
                 .build().execute();
@@ -158,7 +159,6 @@ public class WeatherFragment extends Fragment  {
                 .appendPath(getString(R.string.ep_weather_daily))
                 .build();
         new SendPostAsyncTask.Builder(uri.toString(), json)
-//                .onPreExecute(this.mListener::onWaitFragmentInteractionShow)
                 .onPostExecute(this::HandleDailyWeatherOnPost)
                 .addHeaderField("authorization", mListener.getJwtoken()) //add the JWT as a header
                 .build().execute();
@@ -199,13 +199,33 @@ public class WeatherFragment extends Fragment  {
                     ImageView thisImageView = new ImageView(getActivity());
 
 
-//                    new GetAsyncTask.Builder(uri.toString())
-//                .onPreExecute(this.mListener::onWaitFragmentInteractionShow)
-//                            .onPostExecute(thisImageView.setImageBitmap(fetchFavicon(uri)))
-//                            .build().execute();
+                    @SuppressLint("StaticFieldLeak") GetIconAsyncTask get = new GetIconAsyncTask() {
 
-                    thisImageView.setImageBitmap(fetchFavicon(uri));
+                        @Override
+                        protected Bitmap doInBackground(Void... voids) {
+                            Log.i(TAG, "Fetching icon from: " + uri);
 
+                            try {
+                                HttpURLConnection conn = (HttpURLConnection) new URL(uri.toString()).openConnection();
+                                conn.setRequestMethod("GET");
+                                conn.connect();
+
+                                InputStream is = conn.getInputStream();
+                                BufferedInputStream bis = new BufferedInputStream(is);
+                                return BitmapFactory.decodeStream(bis);
+                            } catch (Exception e) {
+                                Log.w(TAG, "Failed to fetch favicon from " + uri, e);
+                                return null;
+                            }
+                        }
+
+                        @Override
+                        protected void onPostExecute(Bitmap result) {
+
+                            thisImageView.setImageBitmap(result);
+                        }
+                    };
+                    get.execute();
 
 
                     String weatherCode = details.getString("code");
@@ -233,73 +253,83 @@ public class WeatherFragment extends Fragment  {
 
     }
 
-    private void setImage(String s, ImageView thisImageView ) {
-
-    }
-
     private void HandleHourlyWeatherOnPost(final String result) {
-        new DisplayHourlyWeatherAsyncTask().execute(result);
+        LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT
+                , ViewGroup.LayoutParams.WRAP_CONTENT);
+        params.setMargins(10, 10, 10, 20);
+        params.height =ViewGroup.LayoutParams.WRAP_CONTENT;;
+        params.width = ViewGroup.LayoutParams.MATCH_PARENT;
 
-//        LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT
-//                , ViewGroup.LayoutParams.WRAP_CONTENT);
-//        params.setMargins(10, 10, 10, 20);
-//        params.height =ViewGroup.LayoutParams.WRAP_CONTENT;;
-//        params.width = ViewGroup.LayoutParams.MATCH_PARENT;
-//
-//        try {
-//            JSONObject root = new JSONObject(result);
-//
-//            if (root.has(getString(R.string.keys_json_weather_data))) {
-//                JSONArray data = root.getJSONArray(getString(R.string.keys_json_weather_data));
-//                LinearLayout mlayout = (LinearLayout) mView.findViewById(R.id.HourlyWeatherScrollView);
-//
-//                for (int i =0; i<data.length();i++){
-//                    LinearLayout thisFrame = new LinearLayout(getActivity());
-//                    JSONObject jsonWeather = data.getJSONObject(i);
-//
-//                    String timeStamp = jsonWeather.getString("timestamp_local");
-//                    String temp = jsonWeather.getString("temp");
-//                    String windSpStr = jsonWeather.getString("wind_spd");
-//                    String windDir = jsonWeather.getString("wind_cdir_full");
-//                    String humidStr = jsonWeather.getString("rh");
-//                    JSONObject details = jsonWeather.getJSONObject(getString(R.string.keys_json_weather_details));
-//                    String icon = details.getString("icon");
-//
-//                    Uri uri = new Uri.Builder()
-//                            .scheme("https")
-//                            .appendPath(getString(R.string.ep_weather_icon_base))
-//                            .appendPath(getString(R.string.ep_weather_icon_1))
-//                            .appendPath(getString(R.string.ep_weather_icon_2))
-//                            .appendPath(getString(R.string.ep_weather_icon_3))
-//                            .appendPath(icon + ".png")
-//                            .build();
-//                    ImageView iv = new ImageView(getActivity());
-//                    // This is a blocking task, but is being done in an async task... is this okay?
-//                    iv.setImageBitmap(fetchFavicon(uri));
-//
-//
-//                    String weatherCode = details.getString("code");
-//                    String description = details.getString("description");
-//
-//                    //Create a textview and display weather in loop
-//                    TextView thistextView = new TextView(mView.getContext());
-//                    thistextView.setText("Time: " + timeStamp + " \nTemperature: " + temp + "F\n"+description );
-//                    thistextView.setGravity(Gravity.CENTER_VERTICAL | Gravity.CENTER_HORIZONTAL);
-//                    thisFrame.setBackground(getResources().getDrawable(R.drawable.rounded_corner_for_conversation_list));
-//                    thisFrame.setLayoutParams(params);
-//
-//                    thisFrame.addView(iv);
-//                    thisFrame.addView(thistextView);
-//
-//                    mlayout.addView(thisFrame);
-//
-//                }
-//            }
-//        } catch (JSONException e) {
-//            e.printStackTrace();
-//            Log.e("ERROR!", e.getMessage());
-//            //notify user
-//        }
+        try {
+            JSONObject root = new JSONObject(result);
+
+            if (root.has(getString(R.string.keys_json_weather_data))) {
+                JSONArray data = root.getJSONArray(getString(R.string.keys_json_weather_data));
+                LinearLayout mlayout = (LinearLayout) mView.findViewById(R.id.HourlyWeatherScrollView);
+
+                for (int i =0; i<data.length();i++){
+                    LinearLayout thisFrame = new LinearLayout(getActivity());
+                    JSONObject jsonWeather = data.getJSONObject(i);
+
+                    String timeStamp = jsonWeather.getString("timestamp_local");
+                    String temp = jsonWeather.getString("temp");
+                    String windSpStr = jsonWeather.getString("wind_spd");
+                    String windDir = jsonWeather.getString("wind_cdir_full");
+                    String humidStr = jsonWeather.getString("rh");
+                    JSONObject details = jsonWeather.getJSONObject(getString(R.string.keys_json_weather_details));
+                    String icon = details.getString("icon");
+
+                    Uri uri = new Uri.Builder()
+                            .scheme("https")
+                            .appendPath(getString(R.string.ep_weather_icon_base))
+                            .appendPath(getString(R.string.ep_weather_icon_1))
+                            .appendPath(getString(R.string.ep_weather_icon_2))
+                            .appendPath(getString(R.string.ep_weather_icon_3))
+                            .appendPath(icon + ".png")
+                            .build();
+                    ImageView iv = new ImageView(getActivity());
+
+
+                    @SuppressLint("StaticFieldLeak") GetIconAsyncTask get = new GetIconAsyncTask() {
+
+                        @Override
+                        protected Bitmap doInBackground(Void... voids) {
+                            Log.i(TAG, "Fetching icon from: " + uri);
+
+                            try {
+                                HttpURLConnection conn = (HttpURLConnection) new URL(uri.toString()).openConnection();
+                                conn.setRequestMethod("GET");
+                                conn.connect();
+
+                                InputStream is = conn.getInputStream();
+                                BufferedInputStream bis = new BufferedInputStream(is);
+                                return BitmapFactory.decodeStream(bis);
+                            } catch (Exception e) {
+                                Log.w(TAG, "Failed to fetch favicon from " + uri, e);
+                                return null;
+                            }
+                        }
+
+                        @Override
+                        protected void onPostExecute(Bitmap result) {
+
+                            iv.setImageBitmap(result);
+                        }
+                    };
+                    get.execute();
+
+                    String weatherCode = details.getString("code");
+                    String description = details.getString("description");
+
+                    //Create a textview and display weather in loop
+                    TextView thistextView = new TextView(mView.getContext());
+                    thistextView.setText("Time: " + timeStamp + " \nTemperature: " + temp + "F\n"+description );
+                    thistextView.setGravity(Gravity.CENTER_VERTICAL | Gravity.CENTER_HORIZONTAL);
+                    thisFrame.setBackground(getResources().getDrawable(R.drawable.rounded_corner_for_conversation_list));
+                    thisFrame.setLayoutParams(params);
+
+                    thisFrame.addView(iv);
+                    thisFrame.addView(thistextView);
 
     }
 
@@ -368,7 +398,6 @@ public class WeatherFragment extends Fragment  {
             }
             return null;
         }
-
     }
 
     private void addIcon(LinearLayout thisFrame){
@@ -414,8 +443,33 @@ public class WeatherFragment extends Fragment  {
                             .appendPath(icon + ".png")
                             .build();
                     ImageView iv = getView().findViewById(R.id.imageView_homeFrag_Current_weather_icon);
-                    // This is a blocking task, but is being done in an async task... is this okay?
-                    iv.setImageBitmap(fetchFavicon(uri));
+
+                    @SuppressLint("StaticFieldLeak") GetIconAsyncTask get = new GetIconAsyncTask() {
+                        @Override
+                        protected Bitmap doInBackground(Void... voids) {
+                            Log.i(TAG, "Fetching icon from: " + uri);
+
+                            try {
+                                HttpURLConnection conn = (HttpURLConnection) new URL(uri.toString()).openConnection();
+                                conn.setRequestMethod("GET");
+                                conn.connect();
+
+                                InputStream is = conn.getInputStream();
+                                BufferedInputStream bis = new BufferedInputStream(is);
+                                return BitmapFactory.decodeStream(bis);
+                            } catch (Exception e) {
+                                Log.w(TAG, "Failed to fetch favicon from " + uri, e);
+                                return null;
+                            }
+                        }
+
+                        @Override
+                        protected void onPostExecute(Bitmap result) {
+
+                            iv.setImageBitmap(result);
+                        }
+                    };
+                    get.execute();
                     String weatherCode = details.getString("code");
                     String description = details.getString("description");
                     tv = mView.findViewById(R.id.textView_homeFrag_Weather_conditions);
@@ -429,7 +483,6 @@ public class WeatherFragment extends Fragment  {
             Log.e("ERROR!", e.getMessage());
             //notify user
         }
-//        this.mListener.onWaitFragmentInteractionHide();
     }
 
 
@@ -441,8 +494,6 @@ public class WeatherFragment extends Fragment  {
         args.putSerializable(getString(R.string.keys_zipcode), mCurrentZip);
         args.putSerializable(getString(R.string.keys_prefs_UserId), mUID);
         args.putSerializable("token", mListener.getJwtoken());
-
-
 
         frag.setArguments(args);
         FragmentTransaction transaction = getActivity().getSupportFragmentManager()
@@ -480,28 +531,6 @@ public class WeatherFragment extends Fragment  {
     public void onDetach() {
         super.onDetach();
         mListener = null;
-    }
-
-    private Bitmap fetchFavicon(Uri uri) {
-
-        Log.i(TAG, "Fetching icon from: " + uri);
-
-        try
-        {
-            HttpURLConnection conn = (HttpURLConnection) new URL(uri.toString()).openConnection();
-            conn.setRequestMethod("GET");
-            conn.connect();
-
-            InputStream is = conn.getInputStream();
-            BufferedInputStream bis = new BufferedInputStream(is);
-            return BitmapFactory.decodeStream(bis);
-        } catch (Exception e) {
-            Log.w(TAG, "Failed to fetch favicon from " + uri, e);
-            return null;
-        }
-
-
-//
     }
 
 

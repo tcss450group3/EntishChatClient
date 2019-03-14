@@ -1,6 +1,7 @@
 package com.example.blw13.chatclient;
 
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
@@ -54,6 +55,8 @@ public class HomeFragment extends Fragment implements  View.OnClickListener{
 
     private List<Connection> mConnections;
 
+    private View mView;
+
     public HomeFragment() {
         // Required empty public constructor
     }
@@ -74,6 +77,8 @@ public class HomeFragment extends Fragment implements  View.OnClickListener{
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View v = inflater.inflate(R.layout.fragment_home, container, false);
+
+        mView =v;
         Bundle args = getArguments();
 
         mCurrentLocation = new Location("");
@@ -101,6 +106,9 @@ public class HomeFragment extends Fragment implements  View.OnClickListener{
                 recyclerView.setLayoutManager(new GridLayoutManager(context, mColumnCount));
             }
             recyclerView.setAdapter(new MyConnectionListRecyclerViewAdapter(mConnections, mListener));
+            if (mConnections.size() == 0) recyclerView.setVisibility(View.INVISIBLE);
+            else recyclerView.setVisibility(View.VISIBLE);
+
         }
 
         mLocationDisplay = (TextView)v.findViewById(R.id.textView_homeFrag_weather_location);
@@ -130,23 +138,6 @@ public class HomeFragment extends Fragment implements  View.OnClickListener{
         mListener.onConnectionListFragmentNewConnection();
     }
 
-    /**
-     * This interface must be implemented by activities that contain this
-     * fragment to allow an interaction in this fragment to be communicated
-     * to the activity and potentially other fragments contained in that
-     * activity.
-     * <p/>
-     * See the Android Training lesson <a href=
-     * "http://developer.android.com/training/basics/fragments/communicating.html"
-     * >Communicating with Other Fragments</a> for more information.
-     */
-//    public interface OnListFragmentInteractionListener {
-//        void onConnectionListFragmentInteraction(Connection item);
-//        void onConnectionListFragmentNewConnection();
-//        String getJwtoken();
-//    }
-
-
     public void DisplayWeather() {
         JSONObject json = new JSONObject();
         Uri uri;
@@ -165,7 +156,7 @@ public class HomeFragment extends Fragment implements  View.OnClickListener{
                 .build();
 
         new SendPostAsyncTask.Builder(uri.toString(), json)
-//                .onPreExecute(this.mListener::onWaitFragmentInteractionShow)
+                //Should be adding placeholder for weather icon and text views
                 .onPostExecute(this::handleCurrentWeatherOnPost)
                 .addHeaderField("authorization", mListener.getJwtoken()) //add the JWT as a header
                 .build().execute();
@@ -186,7 +177,7 @@ public class HomeFragment extends Fragment implements  View.OnClickListener{
                 mLocationDisplay.append(", " + state);
 
                 String temp = jsonWeather.getString("temp");
-                TextView tv = getView().findViewById(R.id.textView_homeFrag_weather_temp);
+                TextView tv = mView.findViewById(R.id.textView_homeFrag_weather_temp);
                 tv.setText("Temperature: " +temp + "F");
 
                 if (jsonWeather.has("weather")){
@@ -200,12 +191,39 @@ public class HomeFragment extends Fragment implements  View.OnClickListener{
                             .appendPath(getString(R.string.ep_weather_icon_3))
                             .appendPath(icon + ".png")
                             .build();
-                    ImageView iv = getView().findViewById(R.id.imageView_homeFrag_Current_weather_icon);
-                    // This is a blocking task, but is being done in an async task... is this okay?
+                    ImageView iv = mView.findViewById(R.id.imageView_homeFrag_Current_weather_icon);
+
+                    @SuppressLint("StaticFieldLeak") GetIconAsyncTask get = new GetIconAsyncTask() {
+
+                        @Override
+                        protected Bitmap doInBackground(Void... voids) {
+                            Log.i(TAG, "Fetching icon from: " + uri);
+
+                            try {
+                                HttpURLConnection conn = (HttpURLConnection) new URL(uri.toString()).openConnection();
+                                conn.setRequestMethod("GET");
+                                conn.connect();
+
+                                InputStream is = conn.getInputStream();
+                                BufferedInputStream bis = new BufferedInputStream(is);
+                                return BitmapFactory.decodeStream(bis);
+                            } catch (Exception e) {
+                                Log.w(TAG, "Failed to fetch favicon from " + uri, e);
+                                return null;
+                            }
+                        }
+
+                        @Override
+                        protected void onPostExecute(Bitmap result) {
+
+                            iv.setImageBitmap(result);
+                        }
+                    };
+                    get.execute();
                     iv.setImageBitmap(fetchFavicon(uri));
                     String weatherCode = details.getString("code");
                     String description = details.getString("description");
-                    tv = getView().findViewById(R.id.textView_homeFrag_Weather_conditions);
+                    tv = mView.findViewById(R.id.textView_homeFrag_Weather_conditions);
                     tv.setText(description);
                 }
 
@@ -216,7 +234,6 @@ public class HomeFragment extends Fragment implements  View.OnClickListener{
             Log.e("ERROR!", e.getMessage());
             //notify user
         }
-//        this.mListener.onWaitFragmentInteractionHide();
     }
 
     private Bitmap fetchFavicon(Uri uri) {

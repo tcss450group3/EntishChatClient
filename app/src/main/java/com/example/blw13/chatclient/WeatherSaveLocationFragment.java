@@ -21,7 +21,11 @@ import org.json.JSONObject;
 
 
 /**
- * A simple {@link Fragment} subclass.
+ * A  {@link Fragment} subclass.
+ *
+ *  @author TCSS450 Group 3 Robert Wolf, Ruito Yu, Chris Walsh, Caleb Rochette
+ *  @version 13 Mar 2019
+ *
  */
 public class WeatherSaveLocationFragment extends Fragment {
 
@@ -90,13 +94,9 @@ public class WeatherSaveLocationFragment extends Fragment {
                 .appendPath("save")
                 .build();
         new SendPostAsyncTask.Builder(uri.toString(), json)
-//                .onPreExecute(this::onWaitFragmentInteractionShow)
-//                .onPostExecute(this::handlejoinConversationOnPostExecute)
                 .addHeaderField("authorization", mToken) //add the JWT as a header
                 .build().execute();
 
-        //TODO backend call to save location
-        //TODO Toast location saved
         Toast.makeText(getActivity(), "Location saved!",
                 Toast.LENGTH_LONG).show();
         getFragmentManager().popBackStackImmediate();
