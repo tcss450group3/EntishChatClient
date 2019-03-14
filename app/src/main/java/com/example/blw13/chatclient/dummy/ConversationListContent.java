@@ -6,6 +6,8 @@ import java.util.List;
 import java.util.Map;
 
 /**
+ * NOT USED IN THIS PROJECT
+ * would need to be used if recycler view was implemented
  * Helper class for providing sample name for user interfaces created by
  * Android template wizards.
  * <p>

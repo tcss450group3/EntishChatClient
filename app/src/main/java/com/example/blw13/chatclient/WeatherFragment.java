@@ -36,7 +36,13 @@ import java.net.URL;
 
 
 /**
- * A simple {@link Fragment} subclass.
+ *
+ *
+ * A  {@link Fragment} subclass. Displays weather information.
+ * Expects either {@link Location} Location to be passed in bundle OR Zip code as a 5 digit int
+ * If it receives neither of these, it will default to google maps default location
+ *
+ * @author TCSS450 Group 3 Robert Wolf, Ruito Yu, Chris Walsh, Caleb Rochette
  */
 public class WeatherFragment extends Fragment  {
 
@@ -45,16 +51,13 @@ public class WeatherFragment extends Fragment  {
     private TextView mLocationDisplay;
     private int mUID;
     private int mCurrentZip;
-    private FragmentActivity mActivity;
     private WeatherChoseLocationFragment.OnWeatherLocationChangeListener mListener;
     private View mView;
+
 
     public WeatherFragment() {
         // Required empty public constructor
     }
-
-
-
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -68,7 +71,7 @@ public class WeatherFragment extends Fragment  {
                         Context.MODE_PRIVATE);
         mUID =  prefs.getInt(getString(R.string.keys_prefs_UserId), 5);
 
-        //Initialize to prevent null pointer access
+        //Initialize to prevent null pointer access. defaults to google's default loc and zip =0
         mCurrentLocation = new Location("");
         mCurrentZip = 0;
 
@@ -108,7 +111,7 @@ public class WeatherFragment extends Fragment  {
     }
 
 
-    public void DisplayWeather() {
+    private void DisplayWeather() {
         JSONObject json = new JSONObject();
         Uri uri;
         try {
@@ -125,7 +128,6 @@ public class WeatherFragment extends Fragment  {
                 .appendPath(getString(R.string.ep_weather_current))
                 .build();
         new SendPostAsyncTask.Builder(uri.toString(), json)
-//                .onPreExecute(this.mListener::onWaitFragmentInteractionShow)
                 .onPostExecute(this::handleCurrentWeatherOnPost)
                 .addHeaderField("authorization", mListener.getJwtoken()) //add the JWT as a header
                 .build().execute();
@@ -138,7 +140,6 @@ public class WeatherFragment extends Fragment  {
                 .appendPath(getString(R.string.ep_weather_hourly))
                 .build();
         new SendPostAsyncTask.Builder(uri.toString(), json)
-//                .onPreExecute(this.mListener::onWaitFragmentInteractionShow)
                 .onPostExecute(this::HandleHourlyWeatherOnPost)
                 .addHeaderField("authorization", mListener.getJwtoken()) //add the JWT as a header
                 .build().execute();
@@ -151,7 +152,6 @@ public class WeatherFragment extends Fragment  {
                 .appendPath(getString(R.string.ep_weather_daily))
                 .build();
         new SendPostAsyncTask.Builder(uri.toString(), json)
-//                .onPreExecute(this.mListener::onWaitFragmentInteractionShow)
                 .onPostExecute(this::HandleDailyWeatherOnPost)
                 .addHeaderField("authorization", mListener.getJwtoken()) //add the JWT as a header
                 .build().execute();
@@ -245,7 +245,6 @@ public class WeatherFragment extends Fragment  {
         }
 
     }
-
 
     private void HandleHourlyWeatherOnPost(final String result) {
         LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT

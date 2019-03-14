@@ -28,7 +28,11 @@ import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.tasks.OnSuccessListener;
 
 /**
- * A simple {@link Fragment} subclass.
+ * A  {@link Fragment} subclass.
+ *
+ *  @author Robert Wolf
+ *  @version 13 Mar 2019
+ *
  */
 public class ChoseLocationByMapFragment extends Fragment implements OnMapReadyCallback,
         GoogleMap.OnMapClickListener {
