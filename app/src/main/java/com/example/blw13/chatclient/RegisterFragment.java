@@ -85,6 +85,7 @@ public class RegisterFragment extends Fragment implements View.OnClickListener {
                 if(resultsJSON.has("field")){
                     String field = resultsJSON.getString(getString(R.string.keys_json_incorrect_field));
                     EditText errorField;
+                    //find out where the error is
                     switch(field){
                         case "email":
                             errorField = mEmailEt;
@@ -105,11 +106,13 @@ public class RegisterFragment extends Fragment implements View.OnClickListener {
                             errorField = mEmailEt;
                             break;
                     }
+                    //set error on the field that was incorrect
                     errorField.setError(resultsJSON.getString(getString(R.string.keys_json_error)));
                 } else if(resultsJSON.has(getString(R.string.keys_json_error))){
                     JSONObject error = resultsJSON.getJSONObject(getString(R.string.keys_json_error));
                     if(error.has(getString(R.string.keys_json_detail))){
                         String details = error.getString(getString(R.string.keys_json_detail));
+
                         if(details.contains(getString(R.string.keys_json_detail_email))){
                             mEmailEt.setError("Account already exists with this email");
                         } if(details.contains(getString(R.string.keys_json_detail_username))){
@@ -128,6 +131,7 @@ public class RegisterFragment extends Fragment implements View.OnClickListener {
 
             mEmailEt.setError("Register Unsuccessful");
         }
+        //put fragment views back and remove wait fragment
         getView().findViewById(R.id.register_register_btn).setEnabled(true);
         mListener.onWaitFragmentInteractionHide();
     }
@@ -247,7 +251,7 @@ public class RegisterFragment extends Fragment implements View.OnClickListener {
      * >Communicating with Other Fragments</a> for more information.
      */
     public interface OnRegisterFragmentInteractionListener extends WaitFragment.OnWaitFragmentInteractionListener{
-
+        //activity handles moving to verify fragment
         void onRegisterSuccess(Credentials id);
     }
 

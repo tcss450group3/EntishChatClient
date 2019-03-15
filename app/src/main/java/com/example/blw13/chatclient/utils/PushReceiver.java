@@ -18,6 +18,12 @@ import me.pushy.sdk.Pushy;
 import static android.app.ActivityManager.RunningAppProcessInfo.IMPORTANCE_FOREGROUND;
 import static android.app.ActivityManager.RunningAppProcessInfo.IMPORTANCE_VISIBLE;
 
+/**
+ * Push receiver class. Extends {@link BroadcastReceiver}
+ * Deciphers the type of message and determines if it should be processed in foreground
+ * or background
+ * @author TCSS450 Group 3 Robert Wolf, Ruito Yu, Chris Walsh, Caleb Rochette
+ */
 public class PushReceiver extends BroadcastReceiver {
 
     public static final String RECEIVED_NEW_MESSAGE = "new message from pushy";

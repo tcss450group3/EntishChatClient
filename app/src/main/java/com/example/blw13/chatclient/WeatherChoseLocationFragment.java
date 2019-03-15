@@ -24,7 +24,11 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * A simple {@link Fragment} subclass.
+ * A  {@link Fragment} subclass.
+ *
+ *  @author Robert Wolf
+ *  @version 13 Mar 2019
+ *
  */
 public class WeatherChoseLocationFragment extends Fragment {
 
