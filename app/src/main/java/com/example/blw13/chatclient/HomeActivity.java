@@ -382,7 +382,6 @@ public class HomeActivity extends AppCompatActivity implements
         args.putSerializable("credential" , mCredentials);
         ConversationListFragment convers = new ConversationListFragment();
         convers.setArguments(args);
-        onWaitFragmentInteractionHide();
         loadFragment(convers);
     }
 
@@ -898,7 +897,6 @@ public class HomeActivity extends AppCompatActivity implements
                         Log.e("ERROR! ", e.getMessage());
                     }
                     new SendPostAsyncTask.Builder(uri.toString(), messageJson)
-                            .onPreExecute(myActivity::onWaitFragmentInteractionShow)
                             .onPostExecute(myActivity::handleConversationListGetOnPostExecute)
                             .addHeaderField("authorization", mJwToken) //add the JWT as a header
                             .build().execute();

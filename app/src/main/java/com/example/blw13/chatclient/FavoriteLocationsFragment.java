@@ -10,24 +10,17 @@ import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.CheckBox;
 import android.widget.LinearLayout;
-
-import com.example.blw13.chatclient.Content.Connection;
-import com.example.blw13.chatclient.R;
-
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
-
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * A simple {@link Fragment} subclass.
  */
 public class FavoriteLocationsFragment extends Fragment implements View.OnClickListener {
 
+    // instance fields
     private JSONArray mFavorites;
     private OnSelectFavoriteListener mListener;
 
@@ -39,16 +32,18 @@ public class FavoriteLocationsFragment extends Fragment implements View.OnClickL
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        View v = inflater.inflate(R.layout.fragment_favorite_locations, container, false);
 
+        /**
+         *  set the params of each textview
+         *  and initialized all the variables
+         */
+        View v = inflater.inflate(R.layout.fragment_favorite_locations, container, false);
         LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT
                 , ViewGroup.LayoutParams.WRAP_CONTENT);
         params.setMargins(10, 10, 10, 20);
         params.height =ViewGroup.LayoutParams.WRAP_CONTENT;;
         params.width = ViewGroup.LayoutParams.MATCH_PARENT;
-
         LinearLayout mlayout = (LinearLayout) v.findViewById(R.id.favoritelocation_scroll_layout);
-
 
 
         try {
@@ -57,6 +52,12 @@ public class FavoriteLocationsFragment extends Fragment implements View.OnClickL
                 JSONArray response = root.getJSONArray(
                         getString(R.string.keys_favorite_location));
                 mFavorites = response;
+
+                /**
+                 * For each data in the locations
+                 * create a co-responding textview to display the information of that
+                 * location
+                 */
                 for (int i = 0; i < response.length(); i++) {
                     JSONObject jsonConnection = response.getJSONObject(i);
 
@@ -64,23 +65,11 @@ public class FavoriteLocationsFragment extends Fragment implements View.OnClickL
                             jsonConnection.getString("nickname"),
                             jsonConnection.getString("lat"),
                             jsonConnection.getString("long"));
-
                     textView.setText(textView.getName());
 
-                    if(i==0) {
-                        textView.setCompoundDrawablesWithIntrinsicBounds(R.mipmap.coudy_rain, 0, 0, 0);
-                    } else if (i ==1) {
-                        textView.setCompoundDrawablesWithIntrinsicBounds(R.mipmap.cloud_wind, 0, 0, 0);
-
-                    } else {
-                        textView.setCompoundDrawablesWithIntrinsicBounds(R.mipmap.cloud_rain_lightning, 0, 0, 0);
-                    }
-
-
+                    // set the style of this text-view
                     textView.setGravity(Gravity.CENTER_VERTICAL | Gravity.CENTER_HORIZONTAL);
-
                     textView.setBackground(getResources().getDrawable(R.drawable.rounded_corner_for_conversation_list));
-
                     textView.setTextSize(24);
                     textView.setLayoutParams(params);
                     textView.setOnClickListener(this);
@@ -100,8 +89,18 @@ public class FavoriteLocationsFragment extends Fragment implements View.OnClickL
         return v;
     }
 
+    /**
+     * When the location text-view is clicked
+     * @param view  the text view
+     */
     @Override
     public void onClick(View view) {
+
+        /*
+            When a text view is clicked
+            get the text view ID from the JASON object
+            and change the location to a new one
+         */
         int i = view.getId();
         JSONObject favorite = null;
         try {
@@ -138,20 +137,28 @@ public class FavoriteLocationsFragment extends Fragment implements View.OnClickL
         }
     }
 
+    /**
+     * The interface of this class
+     */
     public interface OnSelectFavoriteListener {
         Boolean OnWeatherLocationChanged(Location theNewLoc);
         Boolean OnWeatherLocationChanged(int theNewZip);
     }
 
 
+    /**
+     * The custom textview class
+     */
     public class MyTextView extends android.support.v7.widget.AppCompatTextView {
 
-
+        /**
+         * instance field to store the chatid anf conversation name
+         */
         private String mLat;
         private String mLon;
         private String mName;
 
-
+        // constructor
         public MyTextView(Context context, String name, String lat, String lon ) {
 
             super(context);
@@ -159,15 +166,24 @@ public class FavoriteLocationsFragment extends Fragment implements View.OnClickL
             mLat = lat;
             mLon = lon;
         }
-
+        /**
+         * Method to get the location name  of this location
+         * @return  location name
+         */
         public String getName() {
             return mName;
         }
-
+        /**
+         * Method to get the latitude   of this location
+         * @return  latitude
+         */
         public String getLat() {
             return mLat;
         }
-
+        /**
+         * Method to get the longtitude   of this location
+         * @return  longtitude
+         */
         public String getLon() {
             return mLon;
         }

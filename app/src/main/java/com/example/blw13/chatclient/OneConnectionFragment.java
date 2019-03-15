@@ -172,7 +172,7 @@ public class OneConnectionFragment extends Fragment implements View.OnClickListe
                     mListener.onStartNewConversation(mConn);
                 }
             }
-        }catch(Exception e) {
+        }catch(Exception ignored) {
 
         }
     }
