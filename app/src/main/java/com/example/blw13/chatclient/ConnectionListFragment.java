@@ -73,6 +73,7 @@ public class ConnectionListFragment extends Fragment implements View.OnClickList
             }
             recyclerView.setAdapter(new MyConnectionListRecyclerViewAdapter(mConnections, mListener));
         }
+        //set this as click listener for new connection button
         Button b = view.findViewById(R.id.button_connection_list_new);
         b.setOnClickListener(this);
         return view;
@@ -96,6 +97,7 @@ public class ConnectionListFragment extends Fragment implements View.OnClickList
         mListener = null;
     }
 
+    //click listener for the new connection button
     @Override
     public void onClick(View v) {
         mListener.onConnectionListFragmentNewConnection();
@@ -113,8 +115,14 @@ public class ConnectionListFragment extends Fragment implements View.OnClickList
      */
     public interface OnListFragmentInteractionListener {
         // TODO: Update argument type and name
+
+        //called when an item in the list is clicked
         void onConnectionListFragmentInteraction(Connection item);
+
+        //called when the new connection button is clicked
         void onConnectionListFragmentNewConnection();
+
+        //gets jwtoken from the activity
         String getJwtoken();
     }
 }

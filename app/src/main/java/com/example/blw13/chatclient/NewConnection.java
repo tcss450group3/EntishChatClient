@@ -54,19 +54,26 @@ public class NewConnection extends Fragment implements View.OnClickListener {
         return v;
     }
 
+    //click listener for send email button
+    //sends an email to the address in mEmail
     private void sendEmail(View v){
         String email = mEmail.getText().toString();
         if(email.contains("@")) {
             try {
+                // build json object
                 JSONObject json = new JSONObject();
                 json.put("email", email);
                 json.put("sender", mListener.getCredentials().getUsername());
+
+                //build url
                 Uri uri = new Uri.Builder()
                         .scheme("https")
                         .appendPath(getString(R.string.ep_base_url))
                         .appendPath(getString(R.string.ep_connection))
                         .appendPath("email")
                         .build();
+
+                //build async task
                 new SendPostAsyncTask.Builder(uri.toString(), json)
                         .onPreExecute(this.mListener::onWaitFragmentInteractionShow)
                         .onPostExecute(this::handleEmailSendOnPostExecute)
@@ -81,11 +88,13 @@ public class NewConnection extends Fragment implements View.OnClickListener {
         }
     }
 
+    //handles return of send email request call
     private void handleEmailSendOnPostExecute(String s) {
         try{
             JSONObject response = new JSONObject(s);
             if(response.has(getString(R.string.keys_json_connections_success))){
                 if(response.getBoolean(getString(R.string.keys_json_connections_success))){
+                    //makes toast notifying the user that the email was sent successfully
                     Toast.makeText(getActivity(), "Email sent",
                             Toast.LENGTH_SHORT).show();
                 } else {
@@ -119,12 +128,13 @@ public class NewConnection extends Fragment implements View.OnClickListener {
         mListener = null;
     }
 
+    //handles return of new connection call
     private void handleNewConnectionOnPostExecute(final String result){
         try {
             JSONObject root = new JSONObject(result);
             if (root.has("success")) {
                 if(root.getBoolean("success")){
-                    // it was a success
+                    // connection request was sent successfully
                     Toast.makeText(getActivity(), "Connection sent",
                             Toast.LENGTH_SHORT).show();
                 } else {
@@ -140,20 +150,26 @@ public class NewConnection extends Fragment implements View.OnClickListener {
         }
     }
 
+    //click listener for search button
     @Override
     public void onClick(View v) {
         if(!mUsername.getText().toString().isEmpty()) {
             try {
+                //build json object
                 JSONObject json = new JSONObject();
                 json.put("username", mUsername.getText().toString());
                 json.put("id", mListener.getCredentials().getID());
                 json.put("sender", mListener.getCredentials().getUsername());
+
+                //build url
                 Uri uri = new Uri.Builder()
                         .scheme("https")
                         .appendPath(getString(R.string.ep_base_url))
                         .appendPath(getString(R.string.ep_connection))
                         .appendPath("new")
                         .build();
+
+                //build async task
                 new SendPostAsyncTask.Builder(uri.toString(), json)
                         .onPreExecute(this.mListener::onWaitFragmentInteractionShow)
                         .onPostExecute(this::handleNewConnectionOnPostExecute)
@@ -181,7 +197,10 @@ public class NewConnection extends Fragment implements View.OnClickListener {
      */
     public interface OnNewConnectionFragmentInteractionListener extends WaitFragment.OnWaitFragmentInteractionListener{
         // TODO: Update argument type and name
+        //retrieves jwtoken from activity
         String getJwtoken();
+
+        //retrieves credentials from activity
         Credentials getCredentials();
     }
 
