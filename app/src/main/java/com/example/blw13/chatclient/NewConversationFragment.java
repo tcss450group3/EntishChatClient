@@ -11,16 +11,10 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.LinearLayout;
-
-import com.example.blw13.chatclient.Content.Connection;
-
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
-
 import java.util.ArrayList;
-import java.util.List;
-
 
 /**
  * A simple {@link Fragment} subclass.
@@ -30,8 +24,8 @@ import java.util.List;
  */
 public class NewConversationFragment extends Fragment {
 
+    // the listener of this object
     private OnNewConversationFragmentInteractionListener mListener;
-
     private ArrayList<CheckBox> mCheckBoxList = new ArrayList<>();
 
     public NewConversationFragment() {
@@ -42,10 +36,15 @@ public class NewConversationFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+        /**
+         *  set the params of each textview
+         *  and initialized all the variables
+         */
         View v = inflater.inflate(R.layout.fragment_new_conversation, container, false);
         LinearLayout mlayout = (LinearLayout) v.findViewById(R.id.new_conversation_linear);
-
         Button confirm = (Button) v.findViewById(R.id.new_conversation_confirm_btn);
+
+        // when the comfirm button is clicked, call the co-responding method
         confirm.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -53,11 +52,16 @@ public class NewConversationFragment extends Fragment {
             }
         });
 
+
         try {
             JSONObject root = new JSONObject(getArguments().getString("result"));
             if (root.has(getString(R.string.keys_json_connections_response))) {
                 JSONArray response = root.getJSONArray(
                         getString(R.string.keys_json_connections_response));
+                /*
+                    For each connection of this user
+                    representing the user use a check box
+                 */
                 for (int i = 0; i < response.length(); i++) {
                     JSONObject jsonConnection = response.getJSONObject(i);
                     CheckBox cb = new CheckBox(v.getContext());
@@ -76,12 +80,6 @@ public class NewConversationFragment extends Fragment {
         return v;
     }
 
-    // TODO: Rename method, update argument and hook method into UI event
-    public void onButtonPressed(Uri uri) {
-        if (mListener != null) {
-            mListener.onNewConversationFragmentInteraction(uri);
-        }
-    }
 
     @Override
     public void onAttach(Context context) {
