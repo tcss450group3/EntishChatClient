@@ -13,7 +13,6 @@ import android.location.Location;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.os.StrictMode;
 import android.support.annotation.NonNull;
 import android.support.design.internal.BottomNavigationItemView;
 import android.support.design.widget.BottomNavigationView;
@@ -64,6 +63,13 @@ public class HomeActivity extends AppCompatActivity implements
     private final String TAG = "HomeActivity";
     public static final String RECEIVED_NEW_MESSAGE = "new message from pushy";
 
+
+    /**
+     * Fused location provider client. Will be used
+     */
+    public FusedLocationProviderClient mFusedLocationClient;
+
+
     private TextView mTextMessage;
     private String mJwToken;
     private int mID;
@@ -72,7 +78,6 @@ public class HomeActivity extends AppCompatActivity implements
     private static final int MY_PERMISSIONS_LOCATIONS = 8414;
     private LocationRequest mLocationRequest;
     private Location mCurrentLocation;
-    public FusedLocationProviderClient mFusedLocationClient;
     private LocationCallback mLocationCallback;
     private BottomNavigationView mNavigationView;
     private Connection[] mConnections;
@@ -96,7 +101,7 @@ public class HomeActivity extends AppCompatActivity implements
             UPDATE_INTERVAL_IN_MILLISECONDS / 30000;
 
 
-    @SuppressLint("RestrictedApi")
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 
@@ -107,9 +112,7 @@ public class HomeActivity extends AppCompatActivity implements
         mCurrentLocation.setLongitude(-122.439820);
         mCurrentLocation.setLatitude(47.245218);
 
-        //Let's me permit web calls syncronously. DO NOT ABUSE!!! (like I am in the weather fragment)
-        StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
-        StrictMode.setThreadPolicy(policy);
+
 
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
         setContentView(R.layout.activity_home);
@@ -386,7 +389,7 @@ public class HomeActivity extends AppCompatActivity implements
         loadFragment(convers);
     }
 
-    public JSONObject createJSONObject(String chatid) {
+    private JSONObject createJSONObject(String chatid) {
         //build the JSONObject
         JSONObject msg = new JSONObject();
         try {
