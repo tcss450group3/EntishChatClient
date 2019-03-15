@@ -1,11 +1,9 @@
 package com.example.blw13.chatclient;
 
 import android.app.AlertDialog;
-import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.os.Bundle;
-import android.support.v4.app.DialogFragment;
 import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.Gravity;
@@ -13,13 +11,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.TextView;
-import android.widget.Toast;
-
 import com.example.blw13.chatclient.Model.Credentials;
-
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -33,6 +26,7 @@ import org.json.JSONObject;
  */
 public class ConversationListFragment extends Fragment {
 
+    // the listener of this object
     private OnConversationListFragmentInteractionListener mListener;
 
 
@@ -49,75 +43,75 @@ public class ConversationListFragment extends Fragment {
         //gets arguments from Bundle and retrieves email to display.
         Bundle args = getArguments();
         if(args != null) {
-            try{
-
+            try{// try to get the result JSON object from the arguments
                 JSONObject root = new JSONObject((String) getArguments().get("result"));
-
-                if (root.has("conversation")) {
+                if (root.has("conversation")) {// If the JSON object has a conversation item
                     JSONArray data = root.getJSONArray("conversation");
 
+                    /**
+                     *  set the params of each textview
+                     *  and initialized all the variables
+                     */
                     LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT
                             , ViewGroup.LayoutParams.WRAP_CONTENT);
                     params.setMargins(10, 10, 10, 10);
                     params.height =ViewGroup.LayoutParams.WRAP_CONTENT;;
                     params.width = ViewGroup.LayoutParams.MATCH_PARENT;
-
                     LinearLayout mlayout = (LinearLayout) v.findViewById(R.id.chatlist_scroll_layout);
 
+                    /**
+                     * For each data in the conversation
+                     * create a co-responding textview to display the information of that
+                     * conversation
+                     */
                     for (int i = 0; i < data.length(); i++) {
                         JSONObject jsonBlog = data.getJSONObject(i);
                         String names = jsonBlog.getString("name");
-
                         String myName = ((Credentials)getArguments().get("credential")).getUsername();
-
                         int index = names.indexOf(myName);
                         String chatRoomName;
-
-                        if(index == 0) {
+                        if(index == 0) {// the current user's name is the first name of the conversation name
                             chatRoomName = names.substring(index + myName.length() + 2);
-                        } else {
+                        } else {// not the first
                             chatRoomName = names.substring(0, index-2) + names.substring(index + myName.length());
                         }
 
-
+                        // create a textview
                         MyTextView textView = new MyTextView(v.getContext()
                                 ,jsonBlog.getString("chatid")
                                 ,chatRoomName);
-
-
-
                         String[] chatMembers = jsonBlog.getString("name").split(", ");
 
-
+                        /**
+                         * variables to unread and un-verified conversation
+                         */
                         int verification = Integer.parseInt(jsonBlog.getString("verified"));
-
                         int unread = Integer.parseInt(jsonBlog.getString("unread"));
 
-
-
-                        if(chatMembers.length > 2) {
+                        if(chatMembers.length > 2) {// if it is a group chat
                             textView.setCompoundDrawablesWithIntrinsicBounds(R.mipmap.ic_group_chat_round, 0, 0, 0);
-                        } else{
+                        } else{// one to one chat
                             textView.setCompoundDrawablesWithIntrinsicBounds(R.mipmap.ic_one_on_one_round, 0, 0, 0);
                         }
 
-
+                        // set the style of this textview
                         textView.setGravity(Gravity.CENTER_VERTICAL | Gravity.CENTER_HORIZONTAL);
-
                         textView.setTextSize(24);
                         textView.setLayoutParams(params);
 
-
+                        /**
+                         * check if there is any unread msg in this conversation
+                         * or this is a un-verified conversation
+                         */
                         if(verification ==-1) {// if the conversation is verified
                             textView.setText( textView.getName());
-
                             if(unread ==0) {
                                 textView.setBackground(getResources().getDrawable(R.drawable.rounded_corner_orange));
                             } else {
                                 textView.setBackground(getResources().getDrawable(R.drawable.rounded_corner_for_conversation_list));
                             }
 
-                            textView.setOnClickListener(new View.OnClickListener() {
+                            textView.setOnClickListener(new View.OnClickListener() {// listener for verified conversation
                                 @Override
                                 public void onClick(View v) {
                                     mListener.onConversationListFragmentInteraction(((MyTextView) v).getChatid());
@@ -131,10 +125,10 @@ public class ConversationListFragment extends Fragment {
                                 textView.setBackground(getResources().getDrawable(R.drawable.unaccepted_conversation));
                             }
 
-                            textView.setOnClickListener(new View.OnClickListener() {
+                            textView.setOnClickListener(new View.OnClickListener() {// listener for un-verified conversation
                                 @Override
                                 public void onClick(View v) {
-                                    //mListener.onConversationListFragmentInteraction(((MyTextView) v).getChatid());
+                                    // Show a dialog ask user to confirm to join this conversation
                                     AlertDialog.Builder dia = new AlertDialog.Builder(getContext());
                                     dia.setMessage("Do you want to join this chat?").setCancelable(true)
                                             .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
@@ -157,17 +151,20 @@ public class ConversationListFragment extends Fragment {
                             });
                         }
 
-
+                        // add the textview to the layout
                         mlayout.addView(textView);
                     }
-
                 }
-
             }   catch (JSONException e) {
                 e.printStackTrace(); Log.e("ERROR!", e.getMessage()); //notify user onWaitFragmentInteractionHide();
             }
 
         }
+
+        /**
+         * This is the button to start a new conversation
+         * and its listener
+         */
         Button newBtn = (Button)v.findViewById(R.id.button_conversationList_Start_New_conversation2);
         newBtn.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -175,16 +172,9 @@ public class ConversationListFragment extends Fragment {
                 mListener.onNewConversationClick();
             }
         });
-
         return v;
     }
 
-//    // TODO: Rename method, update argument and hook method into UI event
-//    public void onButtonPressed(Uri uri) {
-//        if (mListener != null) {
-//            mListener.onConversationListFragmentInteraction();
-//        }
-//    }
 
     @Override
     public void onAttach(Context context) {
@@ -220,13 +210,18 @@ public class ConversationListFragment extends Fragment {
         void onJoinConversationClick(String chatid);
     }
 
+    /**
+     * This is an inner class for my custom textview in the conversation list
+     */
     public class MyTextView extends android.support.v7.widget.AppCompatTextView {
 
-
+        /**
+         * instance field to store the chatid anf conversation name
+         */
         private String mChatid;
         private String mName;
 
-
+        // constructor
         public MyTextView(Context context, String charid, String name ) {
 
             super(context);
@@ -234,10 +229,18 @@ public class ConversationListFragment extends Fragment {
             mName = name;
         }
 
+        /**
+         * Method to get the chatid of this conversation
+         * @return  chatid
+         */
         public String getChatid() {
             return mChatid;
         }
 
+        /**
+         * Method to get the conversation name
+         * @return  name of this conversation
+         */
         public String getName() {
             return mName;
         }
@@ -245,34 +248,4 @@ public class ConversationListFragment extends Fragment {
 
     }
 
-    public static class MyDialogFragment extends DialogFragment{
-        Context mContext;
-        public MyDialogFragment() {
-            mContext = getActivity();
-        }
-        @Override
-        public Dialog onCreateDialog(Bundle savedInstanceState) {
-            AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(mContext);
-            alertDialogBuilder.setTitle("Really?");
-            alertDialogBuilder.setMessage("Are you sure?");
-            alertDialogBuilder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
-
-                @Override
-                public void onClick(DialogInterface dialog, int which) {
-                    Toast.makeText(mContext.getApplicationContext(), "CLick-Click!!",Toast.LENGTH_LONG).show();
-                }
-            });
-
-            alertDialogBuilder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
-
-                @Override
-                public void onClick(DialogInterface dialog, int which) {
-                    dialog.dismiss();
-                }
-            });
-
-
-            return alertDialogBuilder.create();
-        }
-    }
 }

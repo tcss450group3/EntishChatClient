@@ -6,11 +6,9 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
-import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.text.Layout;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -19,19 +17,13 @@ import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.ScrollView;
-import android.widget.TableRow;
 import android.widget.TextView;
-
 import com.example.blw13.chatclient.Model.Credentials;
 import com.example.blw13.chatclient.utils.PushReceiver;
 import com.example.blw13.chatclient.utils.SendPostAsyncTask;
-
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
-
-import java.util.Random;
-
 
 
 /**
@@ -39,13 +31,11 @@ import java.util.Random;
  */
 public class OneConversation extends Fragment {
 
+    /*
+        instance fields
+     */
     private static final String TAG = "CHAT_FRAG";
-
-    //private static final String CHAT_ID = "1";
-
-    private TextView mMessageOutputTextView;
     private EditText mMessageInputEditText;
-
     private String mEmail;
     private com.example.blw13.chatclient.Model.Credentials mCredentials;
     private String mJwToken;
@@ -54,7 +44,6 @@ public class OneConversation extends Fragment {
     private String mChatid;
     private JSONObject mLastJSON;
     private View mView;
-
     private PushMessageReceiver mPushMessageReciever;
     private String mUsername;
 
@@ -100,7 +89,13 @@ public class OneConversation extends Fragment {
         setRead(mChatid, mCredentials.getID());
     }
 
+    /**
+     * Method the call the backend and set this conversation as read
+     * @param chatid    chat-id of the conversation to be set read
+     * @param memberid  member-id of the current user
+     */
     private void setRead(String chatid, int memberid){
+        // make a url
         String url = new Uri.Builder()
                 .scheme("https")
                 .appendPath(getString(R.string.ep_base_url))
@@ -109,6 +104,7 @@ public class OneConversation extends Fragment {
                 .build()
                 .toString();
 
+        // make a JSON object
         JSONObject messageJson = new JSONObject();
         try {
             messageJson.put("chatid", chatid);
@@ -118,7 +114,7 @@ public class OneConversation extends Fragment {
             Log.e("ERROR! ", e.getMessage());
         }
 
-        Log.e("ERROR! ", messageJson.toString());
+        // make a backend call
         new SendPostAsyncTask.Builder(url, messageJson)
                 .onCancelled(error -> Log.e(TAG, error))
                 .addHeaderField("authorization", mJwToken)
@@ -126,7 +122,13 @@ public class OneConversation extends Fragment {
 
     }
 
-
+    /**
+     * method to call when the view of this class is created
+     * @param inflater
+     * @param container
+     * @param savedInstanceState
+     * @return
+     */
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -139,39 +141,41 @@ public class OneConversation extends Fragment {
 
         //gets arguments from Bundle and retrieves email to display.
         Bundle args = getArguments();
-        if(args != null) {
+        if(args != null) {// make sure the argument is not empty, then get the credential
             mCredentials = (Credentials) getArguments().get(getString(R.string.keys_intent_credentials));
             mEmail = mCredentials.getEmail();
-            try{
+            try{// make sure there is an result JSON object in the result
                 JSONObject root = new JSONObject((String) getArguments().get("result"));
 
-                if (root.has("messages")) {
+                if (root.has("messages")) {// check if the JSOn item object has messages item
                     JSONArray data = root.getJSONArray("messages");
 
+                    /*
+                        For each item in the messgaes
+                        make a text-view that representing this message
+                        then set the style on whose message it is
+                     */
                     for (int i = data.length()-1; i >=0; i--) {
                         JSONObject jsonBlog = data.getJSONObject(i);
                         TextView textView = new TextView(v.getContext());
                         textView.setText( jsonBlog.getString("username")+ ": " + jsonBlog.getString("message"));
                         LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT
                                 , ViewGroup.LayoutParams.WRAP_CONTENT);
-
                         if(mEmail.equals(jsonBlog.getString("email"))) {
                             textView.setBackground(getResources().getDrawable(R.drawable.rounded_corner_orange));
                             params.gravity = Gravity.RIGHT;
                         } else {
                             textView.setBackground(getResources().getDrawable(R.drawable.rounded_corner));
                         }
-
-                       // textView.setGravity(Ori);
-
-
                         params.setMargins(10, 10, 10, 30);
                         params.height = ViewGroup.LayoutParams.WRAP_CONTENT;
-
                         textView.setTextSize(18);
                         textView.setLayoutParams(params);
                         mlayout.addView(textView);
                     }
+                    /*
+                        scroll to the buttom of the scroll view
+                     */
                     Runnable runnable= new Runnable() {
                         @Override
                         public void run() {
@@ -190,9 +194,19 @@ public class OneConversation extends Fragment {
         return v;
     }
 
+    /**
+     * Method to handle the click on the send message button
+     * @param theButton send button
+     */
     private void handleSendClick(final View theButton) {
+
+        /*
+            Get the message from the input text
+            then make a JSOn object to store all the information
+            to call the backend
+            then call the backend server
+         */
         String msg = mMessageInputEditText.getText().toString();
-        Log.e("ERROR!", "should happen. Email " + mUsername + " msg = "+msg+" chat id "+ mChatid);
         JSONObject messageJson = new JSONObject();
         try {
             messageJson.put("username", mUsername);
@@ -212,17 +226,23 @@ public class OneConversation extends Fragment {
         mLastJSON = messageJson;
     }
 
+    /**
+     * After the message is snet
+     * @param result    the result of the server call
+     */
     private void endOfSendMsgTask(final String result) {
-                ScrollView sv = ((ScrollView)mView.findViewById(R.id.scrollView_One_Conversation_Viewer));
 
-
-                Runnable runnable= new Runnable() {
-                    @Override
-                    public void run() {
-                        sv.fullScroll(ScrollView.FOCUS_DOWN);
-                    }
-                };
-                sv.post(runnable);
+        /*
+            Scroll to the bottom of this croll view
+         */
+        ScrollView sv = ((ScrollView)mView.findViewById(R.id.scrollView_One_Conversation_Viewer));
+        Runnable runnable= new Runnable() {
+            @Override
+            public void run() {
+                sv.fullScroll(ScrollView.FOCUS_DOWN);
+            }
+        };
+        sv.post(runnable);
     }
 
     @Override
@@ -258,7 +278,6 @@ public class OneConversation extends Fragment {
                 ScrollView sv = ((ScrollView)mView.findViewById(R.id.scrollView_One_Conversation_Viewer));
                 //its up to you to decide if you want to send the message to the output here
                 //or wait for the message to come back from the web service.
-                //JSONObject jsonBlog = mLastJSON;
                 TextView textView = new TextView(mView.getContext());
                 textView.setText( sender+ ": " + messageText);
                 LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT
@@ -277,6 +296,9 @@ public class OneConversation extends Fragment {
                 textView.setLayoutParams(params);
                 mlayout.addView(textView);
 
+                /*
+                        scroll to the buttom of the scroll view
+                 */
                 Runnable runnable= new Runnable() {
                     @Override
                     public void run() {
