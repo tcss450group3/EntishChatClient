@@ -37,7 +37,11 @@ import java.net.URL;
 
 
 /**
- * A simple {@link Fragment} subclass.
+ * A  {@link Fragment} subclass. Home page displayed after a user has logged in.
+ * Contains dynamic content for pending connection requests and current weather.
+ *
+ * @author TCSS450 Group 3 Robert Wolf, Ruito Yu, Chris Walsh, Caleb Rochette
+ *
  */
 public class HomeFragment extends Fragment implements  View.OnClickListener{
 

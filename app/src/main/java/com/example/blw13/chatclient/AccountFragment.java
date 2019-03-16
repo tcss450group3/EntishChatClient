@@ -14,7 +14,10 @@ import android.widget.TextView;
 
 
 /**
- * A simple {@link Fragment} subclass.
+ * A {@link Fragment} subclass. Displays user account information and the option to logout of an account.
+ *
+ * @author Chris Walsh
+ * @version 13 Mar 2019
  */
 public class AccountFragment extends Fragment implements View.OnClickListener {
 
