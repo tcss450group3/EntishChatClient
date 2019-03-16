@@ -42,6 +42,7 @@ import java.net.URL;
  * If it receives neither of these, it will default to google maps default location
  *
  * @author TCSS450 Group 3 Robert Wolf, Ruito Yu, Chris Walsh, Caleb Rochette
+ * @version 13 Mar 2019
  */
 public class WeatherFragment extends Fragment  {
 

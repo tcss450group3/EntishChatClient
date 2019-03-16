@@ -23,7 +23,9 @@ import org.json.JSONObject;
 
 
 /**
- * A simple {@link Fragment} subclass.
+ * A  {@link Fragment} subclass. Contains elements to view and interact with a connection
+ * @author Caleb Rochette
+ * @version 13 Mar 2019
  */
 public class OneConnectionFragment extends Fragment implements View.OnClickListener {
 
@@ -208,20 +210,41 @@ public class OneConnectionFragment extends Fragment implements View.OnClickListe
      * fragment to allow an interaction in this fragment to be communicated
      * to the activity and potentially other fragments contained in that
      * activity.
-     * <p/>
-     * See the Android Training lesson <a href=
-     * "http://developer.android.com/training/basics/fragments/communicating.html"
-     * >Communicating with Other Fragments</a> for more information.
      */
     public interface OnProfileFragmentInteractionListener extends WaitFragment.OnWaitFragmentInteractionListener{
 
-        //handle tasks in activity
+
+
+        /**
+         *   Starts when a new conversation with this connection by chat id is started
+         * @param chatid the chat to be joined
+         */
         void onStartNewConversation(String chatid);
+
+        /**
+         * Called to start a new conversation with this connection by other user is started
+         * @param conn the connection that the chat is being started with
+         */
         void onStartNewConversation(Connection conn);
+
+        /**
+         * Called when this connections request has been accepted
+         * @param conn the connection to be accepted
+         */
         void onAcceptProfileFragment(Connection conn);
+
+        /**
+         * Called when this connection is going to be deleted
+         * @param conn the connection to be deleted
+         */
         void onDeleteConnection(Connection conn);
 
         //get data from activity
+
+        /**
+         * Gets the credentials of this user
+         * @return credentials object for this user
+         */
         Credentials getCredentials();
 
         /**

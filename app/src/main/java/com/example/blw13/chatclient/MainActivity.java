@@ -16,6 +16,7 @@ import me.pushy.sdk.Pushy;
  *  Activity hosts login, register, and verify fragments
 
  *  @author TCSS450 Group 3 Robert Wolf, Ruito Yu, Chris Walsh, Caleb Rochette
+ *  @version 13 Mar 2019
  *
  */
 public class  MainActivity extends AppCompatActivity implements LoginFragment.OnLoginFragmentInteractionListener,

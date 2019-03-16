@@ -16,7 +16,10 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 /**
- * A simple {@link Fragment} subclass.
+ * A  {@link Fragment} subclass.
+ * Contains elements for viewing favorite locations
+ *  @author TCSS450 Group 3 Robert Wolf, Ruito Yu, Chris Walsh, Caleb Rochette
+ *  @version 13 Mar 2019
  */
 public class FavoriteLocationsFragment extends Fragment implements View.OnClickListener {
 
@@ -140,9 +143,19 @@ public class FavoriteLocationsFragment extends Fragment implements View.OnClickL
     /**
      * The interface of this class
      * Callbacks to update the weather fragment to a chosen favorite location
+     * Must be implimented
      */
     public interface OnSelectFavoriteListener {
+        /**
+         * Called when location has changed (by location object)
+         * @param theNewLoc the new location to viewed by the user
+         */
         void OnWeatherLocationChanged(Location theNewLoc);
+
+        /**
+         * Called when location is changed (by zip)
+         * @param theNewZip the new location to viewed by the user
+         */
         void OnWeatherLocationChanged(int theNewZip);
     }
 
@@ -150,14 +163,14 @@ public class FavoriteLocationsFragment extends Fragment implements View.OnClickL
     /**
      * The custom textview class
      */
-    public class MyTextView extends android.support.v7.widget.AppCompatTextView {
+    private class MyTextView extends android.support.v7.widget.AppCompatTextView {
 
         /**
          * instance field to store the chatid anf conversation name
          */
-        private String mLat;
-        private String mLon;
-        private String mName;
+        private final String mLat;
+        private final String mLon;
+        private final String mName;
 
         // constructor
         public MyTextView(Context context, String name, String lat, String lon ) {

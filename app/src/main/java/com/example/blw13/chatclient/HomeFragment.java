@@ -41,6 +41,7 @@ import java.net.URL;
  * Contains dynamic content for pending connection requests and current weather.
  *
  * @author TCSS450 Group 3 Robert Wolf, Ruito Yu, Chris Walsh, Caleb Rochette
+ * @version 13 Mar 2019
  *
  */
 public class HomeFragment extends Fragment implements  View.OnClickListener{

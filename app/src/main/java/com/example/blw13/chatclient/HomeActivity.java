@@ -66,6 +66,7 @@ import java.util.Objects;
  *
  *
  *  @author TCSS450 Group 3 Robert Wolf, Ruito Yu, Chris Walsh, Caleb Rochette
+ *  @version 13 Mar 2019
  *
  */
 public class HomeActivity extends AppCompatActivity implements

@@ -16,6 +16,7 @@ import java.util.List;
  * {@link RecyclerView.Adapter} that can display a {@link Connection} and makes a call to the
  * specified {@link OnListFragmentInteractionListener}.
  * @author TCSS450 Group 3 Robert Wolf, Ruito Yu, Chris Walsh, Caleb Rochette
+ * @version 13 Mar 2019
  */
 public class MyConnectionListRecyclerViewAdapter extends RecyclerView.Adapter<MyConnectionListRecyclerViewAdapter.ViewHolder> {
 

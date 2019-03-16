@@ -23,6 +23,8 @@ import org.json.JSONObject;
  * Activities that contain this fragment must implement the
  * {@link OnConversationListFragmentInteractionListener} interface
  * to handle interaction events.
+ *  @author Ruito Yu
+ *   @version 13 Mar 2019
  */
 public class ConversationListFragment extends Fragment {
 
@@ -198,28 +200,36 @@ public class ConversationListFragment extends Fragment {
      * fragment to allow an interaction in this fragment to be communicated
      * to the activity and potentially other fragments contained in that
      * activity.
-     * <p>
-     * See the Android Training lesson <a href=
-     * "http://developer.android.com/training/basics/fragments/communicating.html"
-     * >Communicating with Other Fragments</a> for more information.
      */
     public interface OnConversationListFragmentInteractionListener {
-        // TODO: Update argument type and name
+        /**
+         * ???
+         * @param charid the chat id that is being clicked
+         */
         void onConversationListFragmentInteraction(String charid);
+
+        /**
+         * Called when new Conversation is clicked
+         */
         void onNewConversationClick();
+
+        /**
+         * Called when conversation is being joined?
+         * @param chatid the chat id of the conversation to be joined
+         */
         void onJoinConversationClick(String chatid);
     }
 
     /**
      * This is an inner class for my custom textview in the conversation list
      */
-    public class MyTextView extends android.support.v7.widget.AppCompatTextView {
+    private class MyTextView extends android.support.v7.widget.AppCompatTextView {
 
         /**
          * instance field to store the chatid anf conversation name
          */
-        private String mChatid;
-        private String mName;
+        private final String mChatid;
+        private final String mName;
 
         // constructor
         public MyTextView(Context context, String charid, String name ) {

@@ -21,6 +21,8 @@ import java.util.ArrayList;
  * Activities that contain this fragment must implement the
  * {@link OnNewConversationFragmentInteractionListener} interface
  * to handle interaction events.
+ * @version 13 Mar 2019
+ * @author Ruiato Yu
  */
 public class NewConversationFragment extends Fragment {
 
@@ -109,8 +111,16 @@ public class NewConversationFragment extends Fragment {
      * >Communicating with Other Fragments</a> for more information.
      */
     public interface OnNewConversationFragmentInteractionListener {
-        // TODO: Update argument type and name
+        /**
+         * NOT USED
+         * @param uri not used
+         */
         void onNewConversationFragmentInteraction(Uri uri);
+
+        /**
+         * Conversation has been confirmed to join
+         * @param list the list of check boxes?
+         */
         void OnNewConversationConfirmClick(ArrayList<CheckBox> list);
     }
 }

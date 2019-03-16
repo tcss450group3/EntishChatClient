@@ -27,6 +27,7 @@ import me.pushy.sdk.Pushy;
  * A {@link Fragment} subclass.
  * Login fragment to house login elements
  * @author TCSS450 Group 3 Robert Wolf, Ruito Yu, Chris Walsh, Caleb Rochette
+ * @version 13 Mar 2019
  */
 public class LoginFragment extends Fragment implements View.OnClickListener {
 

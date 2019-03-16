@@ -19,9 +19,10 @@ import org.json.JSONObject;
 
 
 /**
- * A  {@link Fragment} subclass. Houses registration elements
+ * A  {@link Fragment} subclass. Houses registration elements for a user to register an account
  *
  * @author TCSS450 Group 3 Robert Wolf, Ruito Yu, Chris Walsh, Caleb Rochette
+ * @version 13 Mar 2019
  */
 public class RegisterFragment extends Fragment implements View.OnClickListener {
 

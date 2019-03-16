@@ -1,13 +1,13 @@
 package com.example.blw13.chatclient.Content;
 
 import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+
 
 /**
  * Connection class for storing details about a connection
+ *
+ * @version 13 Mar 2019
+ *  @author TCSS450 Robert Wolf
  */
 public class Connection implements Serializable {
 

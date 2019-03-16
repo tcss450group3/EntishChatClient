@@ -5,13 +5,11 @@ import android.location.Location;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -21,7 +19,7 @@ import org.json.JSONObject;
 
 
 /**
- * A  {@link Fragment} subclass.
+ * A  {@link Fragment} subclass. Contains the elements to save a location to a users favorites
  *
  *  @author TCSS450 Group 3 Robert Wolf, Ruito Yu, Chris Walsh, Caleb Rochette
  *  @version 13 Mar 2019

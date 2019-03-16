@@ -27,7 +27,10 @@ import org.json.JSONObject;
 
 
 /**
- * A simple {@link Fragment} subclass.
+ * A  {@link Fragment} subclass to display a single conversation. Can be between many users
+ * or just two
+ * @author Ruiato Yu
+ * @version 13 Mar 2019
  */
 public class OneConversation extends Fragment {
 
@@ -307,8 +310,8 @@ public class OneConversation extends Fragment {
                 };
                 sv.post(runnable);
             }
-        } }
-
+        }
+    }
 
 }
 

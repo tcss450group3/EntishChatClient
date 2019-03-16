@@ -27,6 +27,7 @@ import org.json.JSONObject;
  *
  * A fragment that prompts the user to verify their account using the 4 digit code they were emailed
  * @author TCSS450 Group 3 Robert Wolf, Ruito Yu, Chris Walsh, Caleb Rochette
+ * @version 13 Mar 2019
  *
  */
 public class VerifyFragment extends Fragment implements View.OnClickListener {
@@ -268,6 +269,10 @@ public class VerifyFragment extends Fragment implements View.OnClickListener {
      * activity.
      */
     public interface OnVerifyFragmentInteractionListener extends WaitFragment.OnWaitFragmentInteractionListener{
+        /**
+         * Called when successfully verified user
+         * @param cred the credentials of the user whos account has just been verified
+         */
         void onVerifySuccess(Credentials cred);
     }
 }

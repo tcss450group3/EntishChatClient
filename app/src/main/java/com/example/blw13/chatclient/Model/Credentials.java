@@ -12,9 +12,10 @@ import java.io.Serializable;
  *
  * Optional fields include username, first and last name.
  *
+ * 15 Mar added an ID field mID for a user ID
  *
- * @author Charles Bryan
- * @version 8 January 2019
+ * @author Charles Bryan, Robert Wolf
+ * @version 15 MAr 2019
  */
 public class Credentials implements Serializable {
     private static final long serialVersionUID = 1634677417576883013L;

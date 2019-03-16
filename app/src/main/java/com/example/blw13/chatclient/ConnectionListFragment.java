@@ -21,13 +21,13 @@ import java.util.List;
  * <p/>
  * Activities containing this fragment MUST implement the {@link OnListFragmentInteractionListener}
  * interface.
+ *  @version 13 Mar 2019
+ *   @author TCSS450 Group 3 Robert Wolf, Ruito Yu, Chris Walsh, Caleb Rochette
  */
 public class ConnectionListFragment extends Fragment implements View.OnClickListener {
 
-    // TODO: Customize parameter argument names
     private static final String ARG_COLUMN_COUNT = "column-count";
     public static final String ARG_CONNECTIONS = "MYCONNECTTIONS";
-    // TODO: Customize parameters
     private int mColumnCount = 1;
     private OnListFragmentInteractionListener mListener;
     private List<Connection> mConnections;
@@ -39,7 +39,6 @@ public class ConnectionListFragment extends Fragment implements View.OnClickList
     public ConnectionListFragment() {
     }
 
-    // TODO: Customize parameter initialization
     @SuppressWarnings("unused")
     public static ConnectionListFragment newInstance(int columnCount) {
         ConnectionListFragment fragment = new ConnectionListFragment();
@@ -114,15 +113,22 @@ public class ConnectionListFragment extends Fragment implements View.OnClickList
      * >Communicating with Other Fragments</a> for more information.
      */
     public interface OnListFragmentInteractionListener {
-        // TODO: Update argument type and name
 
-        //called when an item in the list is clicked
+        /**
+         * called when an item in the list is clicked
+         * @param item the item that is clicked
+         */
         void onConnectionListFragmentInteraction(Connection item);
 
-        //called when the new connection button is clicked
+        /**
+         *  called when the new connection button is clicked. user wants to start a new convo
+         */
         void onConnectionListFragmentNewConnection();
 
-        //gets jwtoken from the activity
+        /**
+         *       //gets jwtoken from the activity
+         * @return jwtoken
+         */
         String getJwtoken();
     }
 }

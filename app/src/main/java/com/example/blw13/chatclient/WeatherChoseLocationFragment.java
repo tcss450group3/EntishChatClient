@@ -98,9 +98,8 @@ public class WeatherChoseLocationFragment extends Fragment {
 
     /**
      * Classes that use this class must implement this listener.
-     *
      * @author Robert Wolf
-     *
+     * @version 13 Mar 2019
      */
     public interface OnWeatherLocationChangeListener extends WaitFragment.OnWaitFragmentInteractionListener{
 
@@ -116,7 +115,7 @@ public class WeatherChoseLocationFragment extends Fragment {
         String getJwtoken();
 
         /**
-         * The user wants to view weather for a new location (Location)
+         * The user wants to view weather for a new location (Location object)
          * @param theNewLoc The new location that the user has selected
          */
         void OnWeatherLocationChanged(Location theNewLoc);
