@@ -28,6 +28,9 @@ import org.json.JSONObject;
 
 /**
  * A simple {@link Fragment} subclass.
+ *
+ *
+ * @author TCSS450 Group 3 Ruitao Yu
  */
 public class OneConversation extends Fragment {
 

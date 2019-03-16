@@ -17,6 +17,8 @@ import org.json.JSONObject;
 
 /**
  * A simple {@link Fragment} subclass.
+ *
+ * @author TCSS450 Group 3 Ruitao Yu
  */
 public class FavoriteLocationsFragment extends Fragment implements View.OnClickListener {
 

@@ -23,6 +23,9 @@ import org.json.JSONObject;
  * Activities that contain this fragment must implement the
  * {@link OnConversationListFragmentInteractionListener} interface
  * to handle interaction events.
+ *
+ *
+ * @author TCSS450 Group 3 Ruitao Yu
  */
 public class ConversationListFragment extends Fragment {
 

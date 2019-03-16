@@ -21,6 +21,8 @@ import java.util.ArrayList;
  * Activities that contain this fragment must implement the
  * {@link OnNewConversationFragmentInteractionListener} interface
  * to handle interaction events.
+ *
+ * @author TCSS450 Group 3 Ruitao Yu
  */
 public class NewConversationFragment extends Fragment {
 
