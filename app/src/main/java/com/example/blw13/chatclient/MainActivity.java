@@ -1,15 +1,23 @@
 package com.example.blw13.chatclient;
 
 import android.content.Intent;
+import android.os.Bundle;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
-import android.util.Log;
 
 import com.example.blw13.chatclient.Model.Credentials;
 
 import me.pushy.sdk.Pushy;
 
+
+/**
+ *
+ *  Home Activity {@link android.app.Activity}for chatclient Entish.
+ *  Activity hosts login, register, and verify fragments
+
+ *  @author TCSS450 Group 3 Robert Wolf, Ruito Yu, Chris Walsh, Caleb Rochette
+ *
+ */
 public class  MainActivity extends AppCompatActivity implements LoginFragment.OnLoginFragmentInteractionListener,
         RegisterFragment.OnRegisterFragmentInteractionListener, VerifyFragment.OnVerifyFragmentInteractionListener {
 

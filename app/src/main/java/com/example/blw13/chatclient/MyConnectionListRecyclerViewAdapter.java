@@ -1,5 +1,6 @@
 package com.example.blw13.chatclient;
 
+import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -14,27 +15,28 @@ import java.util.List;
 /**
  * {@link RecyclerView.Adapter} that can display a {@link Connection} and makes a call to the
  * specified {@link OnListFragmentInteractionListener}.
- * TODO: Replace the implementation with code for your data type.
+ * @author TCSS450 Group 3 Robert Wolf, Ruito Yu, Chris Walsh, Caleb Rochette
  */
 public class MyConnectionListRecyclerViewAdapter extends RecyclerView.Adapter<MyConnectionListRecyclerViewAdapter.ViewHolder> {
 
     private final List<Connection> mValues;
     private final OnListFragmentInteractionListener mListener;
 
-    public MyConnectionListRecyclerViewAdapter(List<Connection> items, OnListFragmentInteractionListener listener) {
+    MyConnectionListRecyclerViewAdapter(List<Connection> items, OnListFragmentInteractionListener listener) {
         mValues = items;
         mListener = listener;
     }
 
+    @NonNull
     @Override
-    public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+    public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext())
                 .inflate(R.layout.fragment_connectionlist, parent, false);
         return new ViewHolder(view);
     }
 
     @Override
-    public void onBindViewHolder(final ViewHolder holder, int position) {
+    public void onBindViewHolder(@NonNull final ViewHolder holder, int position) {
         holder.mItem = mValues.get(position);
         holder.mContentView.setText(mValues.get(position).getName());
 
@@ -61,12 +63,12 @@ public class MyConnectionListRecyclerViewAdapter extends RecyclerView.Adapter<My
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder {
-        public final View mView;
-        public final TextView mContentView;
-        public final TextView mNotificationBubble;
-        public Connection mItem;
+        final View mView;
+        final TextView mContentView;
+        final TextView mNotificationBubble;
+        Connection mItem;
 
-        public ViewHolder(View view) {
+        ViewHolder(View view) {
             super(view);
             mView = view;
             mContentView = view.findViewById(R.id.connection_name);
@@ -74,6 +76,7 @@ public class MyConnectionListRecyclerViewAdapter extends RecyclerView.Adapter<My
 
         }
 
+        @NonNull
         @Override
         public String toString() {
             return super.toString() + " '" + mContentView.getText() + "'";

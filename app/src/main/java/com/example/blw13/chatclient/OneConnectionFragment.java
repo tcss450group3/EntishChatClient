@@ -223,6 +223,11 @@ public class OneConnectionFragment extends Fragment implements View.OnClickListe
 
         //get data from activity
         Credentials getCredentials();
+
+        /**
+         * Gets the jwt token
+         * @return string of the JWT token
+         */
         String getJwtoken();
     }
 

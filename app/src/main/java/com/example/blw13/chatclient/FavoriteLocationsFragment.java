@@ -141,8 +141,8 @@ public class FavoriteLocationsFragment extends Fragment implements View.OnClickL
      * The interface of this class
      */
     public interface OnSelectFavoriteListener {
-        Boolean OnWeatherLocationChanged(Location theNewLoc);
-        Boolean OnWeatherLocationChanged(int theNewZip);
+        void OnWeatherLocationChanged(Location theNewLoc);
+        void OnWeatherLocationChanged(int theNewZip);
     }
 
 

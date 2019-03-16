@@ -20,23 +20,22 @@ import org.json.JSONObject;
 
 
 /**
- * A simple {@link Fragment} subclass.
+ * A  {@link Fragment} subclass.
  * Activities that contain this fragment must implement the
  * {@link OnVerifyFragmentInteractionListener} interface
  * to handle interaction events.
  *
- * A fragment that prompts the user to
+ * A fragment that prompts the user to verify their account using the 4 digit code they were emailed
+ * @author TCSS450 Group 3 Robert Wolf, Ruito Yu, Chris Walsh, Caleb Rochette
+ *
  */
 public class VerifyFragment extends Fragment implements View.OnClickListener {
 
     private OnVerifyFragmentInteractionListener mListener;
-
     private Credentials mCredentials;
-
     private EditText mUsernameEt;
     private EditText mResendEmailEt;
     private EditText mVerifyEmailEt;
-
     private EditText mVerifyCodeEt;
     private EditText mResendUsernameET;
     private TextView mVerifyTextViewNotice;
@@ -267,10 +266,6 @@ public class VerifyFragment extends Fragment implements View.OnClickListener {
      * fragment to allow an interaction in this fragment to be communicated
      * to the activity and potentially other fragments contained in that
      * activity.
-     * <p>
-     * See the Android Training lesson <a href=
-     * "http://developer.android.com/training/basics/fragments/communicating.html"
-     * >Communicating with Other Fragments</a> for more information.
      */
     public interface OnVerifyFragmentInteractionListener extends WaitFragment.OnWaitFragmentInteractionListener{
         void onVerifySuccess(Credentials cred);

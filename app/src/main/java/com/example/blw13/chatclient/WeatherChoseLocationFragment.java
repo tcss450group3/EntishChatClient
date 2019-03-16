@@ -3,7 +3,6 @@ package com.example.blw13.chatclient;
 
 import android.content.Context;
 import android.location.Location;
-import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
@@ -13,18 +12,9 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
 
-import com.example.blw13.chatclient.Content.Connection;
-import com.example.blw13.chatclient.utils.SendPostAsyncTask;
-
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
-
-import java.util.ArrayList;
-import java.util.List;
-
 /**
- * A  {@link Fragment} subclass.
+ * A  {@link Fragment} subclass. Fragment to chose weather locations from.
+ * User can select chose by zip, chose by favorites, or chose by map.
  *
  *  @author Robert Wolf
  *  @version 13 Mar 2019
@@ -106,10 +96,35 @@ public class WeatherChoseLocationFragment extends Fragment {
         }
     }
 
+    /**
+     * Classes that use this class must implement this listener.
+     *
+     * @author Robert Wolf
+     *
+     */
     public interface OnWeatherLocationChangeListener extends WaitFragment.OnWaitFragmentInteractionListener{
-        Boolean DisplayFavoriteLocations();
+
+        /**
+         * Initiates an action to display users favorite locations
+         */
+        void DisplayFavoriteLocations();
+
+        /**
+         * Returns the JWT
+         * @return the JWT in string format
+         */
         String getJwtoken();
-        Boolean OnWeatherLocationChanged(Location theNewLoc);
-        Boolean OnWeatherLocationChanged(int theNewZip);
+
+        /**
+         * The user wants to view weather for a new location (Location)
+         * @param theNewLoc The new location that the user has selected
+         */
+        void OnWeatherLocationChanged(Location theNewLoc);
+
+        /**
+         * The user wants to view weather for a new location (zip code)
+         * @param theNewZip The new zip code the user wants to view weather for
+         */
+        void OnWeatherLocationChanged(int theNewZip);
     }
 }

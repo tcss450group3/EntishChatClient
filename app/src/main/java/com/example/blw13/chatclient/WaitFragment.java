@@ -9,7 +9,8 @@ import android.view.ViewGroup;
 
 
 /**
- * A simple {@link Fragment} subclass.
+ * A  {@link Fragment} subclass.
+ * @author Charles Bryan?
  */
 public class WaitFragment extends Fragment {
 

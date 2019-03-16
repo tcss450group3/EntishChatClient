@@ -1,7 +1,6 @@
 package com.example.blw13.chatclient;
 
 import android.Manifest;
-import android.annotation.SuppressLint;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -49,7 +48,26 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 
-
+/**
+ *
+ *  Main Home Activity {@link android.app.Activity}for chatclient Entish.
+ *  Implements action listeners for all associated fragments
+ *  Expects String in bundle, the JWT
+ *  Expects {@link Credentials} credentials of the user in bundle
+ *  App will not function reliably without these
+ *
+ *  When activity starts, it saves the credentials to shared preferences to access username and
+ *  email.
+ *
+ *  When activity starts, it determines what started the activity. If it is started from a
+ *  notification, it determines the type of notification and opens the appropriate fragment.
+ *  Default is the HomeFragment
+ *
+ *
+ *
+ *  @author TCSS450 Group 3 Robert Wolf, Ruito Yu, Chris Walsh, Caleb Rochette
+ *
+ */
 public class HomeActivity extends AppCompatActivity implements
         ConnectionListFragment.OnListFragmentInteractionListener,
         WaitFragment.OnWaitFragmentInteractionListener,
@@ -65,7 +83,7 @@ public class HomeActivity extends AppCompatActivity implements
 
 
     /**
-     * Fused location provider client. Will be used
+     * Fused location provider client. Will be used through duration of activity lifecycle
      */
     public FusedLocationProviderClient mFusedLocationClient;
 
@@ -121,6 +139,7 @@ public class HomeActivity extends AppCompatActivity implements
         Intent intent = getIntent();
         mArgs = new Bundle();
 
+        //Retrieve the JWT token and Credentials
         if (intent.getExtras().containsKey(getString(R.string.keys_intent_jwt))) {
             mJwToken = getIntent().getStringExtra(getString(R.string.keys_intent_jwt));
             mArgs.putSerializable(getString(R.string.keys_intent_jwt), mJwToken);
@@ -130,6 +149,7 @@ public class HomeActivity extends AppCompatActivity implements
             mArgs.putSerializable(getString(R.string.keys_json_field_username), mCredentials.getUsername());
             mID = mCredentials.getID();
         }
+
 
         mTextMessage = (TextView) findViewById(R.id.message);
         mNavigationView = (BottomNavigationView) findViewById(R.id.home_navigation_bar);
@@ -179,7 +199,8 @@ public class HomeActivity extends AppCompatActivity implements
 
         createLocationRequest();
 
-        //Decide where to start the app, home or did it come from a message. Also we will have to check if it came from a
+        //Decide where to start the app, home or did it come from a message.
+        // Also we will have to check if it came from a
         // different notification here
         if (getIntent().hasExtra(getString(R.string.keys_intent_notification_msg)) &&
                 getIntent().getBooleanExtra(getString(R.string.keys_intent_notification_msg), false)) {
@@ -317,6 +338,11 @@ public class HomeActivity extends AppCompatActivity implements
     }
 
 
+    /**
+     * Method used ot log user out. This removes credentials from the shared preferences, and deletes
+     * the pushy token from the web service. It then closes this activity and brings the user back
+     * to the login page.
+     */
     protected void logout() {
         new DeleteTokenAsyncTask().execute();
         SharedPreferences prefs =
@@ -328,10 +354,8 @@ public class HomeActivity extends AppCompatActivity implements
         prefs.edit().remove(getString(R.string.keys_prefs_password)).apply();
         prefs.edit().remove(getString(R.string.keys_prefs_email)).apply();
         prefs.edit().remove(getString(R.string.keys_prefs_username)).apply();
-        //close the app
-        //finishAndRemoveTask();
 
-        // or close this activity and bring back the Login
+        // close this activity and bring back the Login
         Intent i = new Intent(this, MainActivity.class);
         startActivity(i);
         // End this Activity and remove it from the Activity back stack.
@@ -688,7 +712,6 @@ public class HomeActivity extends AppCompatActivity implements
         // add my username to the list
         // sort the list to ASE order
         //list.add()
-
         ArrayList<String> sortednames = new ArrayList<>();
 
         int counter = 0;
@@ -732,7 +755,6 @@ public class HomeActivity extends AppCompatActivity implements
                 .onPostExecute(this::handleShowingNewConversationOnPostExecute)
                 .addHeaderField("authorization", mJwToken) //add the JWT as a header
                 .build().execute();
-        //return true;
     }
 
     private void handleShowingNewConversationOnPostExecute(final String result) {
@@ -748,8 +770,6 @@ public class HomeActivity extends AppCompatActivity implements
                 JSONObject temp =response.getJSONObject(0);
                 String chatid = temp.getString(getString(R.string.keys_json_newconversation_chatid));
                 onConversationListFragmentInteraction(chatid);
-            } else {
-
             }
         } catch (JSONException e) {
             e.printStackTrace();
@@ -759,12 +779,14 @@ public class HomeActivity extends AppCompatActivity implements
 
 
     @Override
-    public Boolean DisplayFavoriteLocations() {
+    public void DisplayFavoriteLocations() {
         JSONObject json = new JSONObject();
         try {
             json.put("memberid", mID);
 
         } catch (Exception e){
+            Log.e(TAG, "DisplayFavoriteLocations: error");
+            e.printStackTrace();
 
         }
         Uri uri = new Uri.Builder()
@@ -778,7 +800,6 @@ public class HomeActivity extends AppCompatActivity implements
                 .onPostExecute(this::handleShowingfavoriteLocationOnPostExecute)
                 .addHeaderField("authorization", mJwToken) //add the JWT as a header
                 .build().execute();
-        return null;
     }
 
     private void handleShowingfavoriteLocationOnPostExecute(String result) {
@@ -796,30 +817,30 @@ public class HomeActivity extends AppCompatActivity implements
     }
 
     @Override
-    public Boolean OnWeatherLocationChanged(Location theNewLoc) {
+    public void OnWeatherLocationChanged(Location theNewLoc) {
         Fragment frag = new WeatherFragment();
         Bundle args = new Bundle();
         args.putParcelable(getString(R.string.keys_location), theNewLoc);
         frag.setArguments(args);
         loadFragment(frag);
-        return true;
     }
 
     @Override
-    public Boolean OnWeatherLocationChanged(int theNewZip) {
+    public void OnWeatherLocationChanged(int theNewZip) {
         Fragment frag = new WeatherFragment();
         Bundle args = new Bundle();
         args.putSerializable(getString(R.string.keys_zipcode), theNewZip);
         frag.setArguments(args);
         loadFragment(frag);
-        return true;
     }
 
-    public void loadConnections(){
+    private void loadConnections(){
         JSONObject json = new JSONObject();
         try {
             json.put("id", mID);
         } catch (Exception e){
+            Log.e(TAG, "loadConnections: ");
+            e.printStackTrace();
         }
         Uri uri = new Uri.Builder()
                 .scheme("https")
@@ -846,8 +867,6 @@ public class HomeActivity extends AppCompatActivity implements
         Connection[] requests;
         ArrayList<Connection> list = new ArrayList<Connection>();
 
-
-
         for(Connection i : mConnections){
             //add all connections that are requests
             if(i.isRequest()){
@@ -866,11 +885,20 @@ public class HomeActivity extends AppCompatActivity implements
     }
 
 
-    public class ButtomNaviListener implements BottomNavigationView.OnNavigationItemSelectedListener {
+    /**
+     * Inner class to contain bottome navigation bar for the app.
+     * Contains conversations button, Connections button, weather button, and account button
+     *
+     * @author TCSS450 Group 3 Robert Wolf, Ruito Yu, Chris Walsh, Caleb Rochette
+     */
+    protected class ButtomNaviListener implements BottomNavigationView.OnNavigationItemSelectedListener {
 
         private HomeActivity myActivity;
 
-        public ButtomNaviListener(HomeActivity theActivity) {
+        /**
+         * @param theActivity The activity this will be attached to
+         */
+        ButtomNaviListener(HomeActivity theActivity) {
 
             myActivity = theActivity;
         }
@@ -917,7 +945,6 @@ public class HomeActivity extends AppCompatActivity implements
                     args.putParcelable(getString(R.string.keys_location), mCurrentLocation);
                     frag.setArguments(args);
                     loadFragment(frag);
-//                    ((WeatherFragment) frag).DisplayWeather();
                     return true;
                 case R.id.butt_navigation_account:
                     loadFragment(new AccountFragment());
@@ -931,6 +958,7 @@ public class HomeActivity extends AppCompatActivity implements
 
     /**
      * A BroadcastReceiver that listens for messages sent from PushReceiver
+     *  @author TCSS450 Group 3 Robert Wolf, Ruito Yu, Chris Walsh, Caleb Rochette
      */
     private class PushMessageReceiver extends BroadcastReceiver {
 
@@ -940,13 +968,11 @@ public class HomeActivity extends AppCompatActivity implements
             if (intent.getAction() == RECEIVED_NEW_MESSAGE) {
                 View badge = findViewById(R.id.badge_frame_layout_conversations);
                 badge.setVisibility(View.VISIBLE);
-    Log.e("whoadude","got a new message?");
             }
             if (intent.getAction() == (PushReceiver.RECEIVED_NEW_CONNECTION)) {
                 View badge = findViewById(R.id.badge_frame_layout_connections);
                 badge.setVisibility(View.VISIBLE);
                 loadConnections();
-
             }
         }
     }
@@ -954,7 +980,12 @@ public class HomeActivity extends AppCompatActivity implements
 
     // Deleting the Pushy device token must be done asynchronously. Good thing
     // we have something that allows us to do that.
-    class DeleteTokenAsyncTask extends AsyncTask<Void, Void, Void> {
+
+    /**
+     * Class to delete token from pushy service
+     *  @author Charles Bryan?
+     */
+     class DeleteTokenAsyncTask extends AsyncTask<Void, Void, Void> {
 
         @Override
         protected void onPreExecute() {
@@ -983,7 +1014,6 @@ public class HomeActivity extends AppCompatActivity implements
         protected void onPostExecute(Void aVoid) {
             super.onPostExecute(aVoid);
         }
-
 
     }
 }

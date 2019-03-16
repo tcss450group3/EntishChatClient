@@ -24,13 +24,15 @@ import me.pushy.sdk.Pushy;
 
 
 /**
- * A simple {@link Fragment} subclass.
+ * A {@link Fragment} subclass.
+ * Login fragment to house login elements
+ * @author TCSS450 Group 3 Robert Wolf, Ruito Yu, Chris Walsh, Caleb Rochette
  */
 public class LoginFragment extends Fragment implements View.OnClickListener {
 
     private final String TAG = "Login Fragment";
     private OnLoginFragmentInteractionListener mListener;
-    public Credentials mCredentials;
+    private Credentials mCredentials;
     private EditText mEmailEntry;
     private EditText mPassEntry;
     private String mJwt;
@@ -201,14 +203,10 @@ public class LoginFragment extends Fragment implements View.OnClickListener {
                         .addUsername(resultsJSON.getString(getString(R.string.keys_json_login_username)))
                         .addID(resultsJSON.getInt(getString(R.string.keys_json_login_id)))
                         .build();
-//                saveCredentials(mCredentials);
                 new RegisterForPushNotificationsAsync().execute();
-
-//                mListener.onLoginSuccess(mCredentials, mJwt);
                 return;
 
             } else {
-
                 //Login was unsuccessful. Don’t switch fragments and
                 // inform the user
                 // get JSON result to extract error message to pass to user

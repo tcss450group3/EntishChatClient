@@ -10,7 +10,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
-import android.widget.Switch;
 
 import com.example.blw13.chatclient.Model.Credentials;
 import com.example.blw13.chatclient.utils.SendPostAsyncTask;
@@ -20,7 +19,9 @@ import org.json.JSONObject;
 
 
 /**
- * A simple {@link Fragment} subclass.
+ * A  {@link Fragment} subclass. Houses registration elements
+ *
+ * @author TCSS450 Group 3 Robert Wolf, Ruito Yu, Chris Walsh, Caleb Rochette
  */
 public class RegisterFragment extends Fragment implements View.OnClickListener {
 
@@ -245,13 +246,14 @@ public class RegisterFragment extends Fragment implements View.OnClickListener {
      * fragment to allow an interaction in this fragment to be communicated
      * to the activity and potentially other fragments contained in that
      * activity.
-     * <p>
-     * See the Android Training lesson <a href=
-     * "http://developer.android.com/training/basics/fragments/communicating.html"
-     * >Communicating with Other Fragments</a> for more information.
      */
     public interface OnRegisterFragmentInteractionListener extends WaitFragment.OnWaitFragmentInteractionListener{
         //activity handles moving to verify fragment
+
+        /**
+         * Handles registration seccess
+         * @param id the credentials of the user
+         */
         void onRegisterSuccess(Credentials id);
     }
 
