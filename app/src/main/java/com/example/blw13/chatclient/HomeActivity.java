@@ -342,6 +342,8 @@ public class HomeActivity extends AppCompatActivity implements
      * Method used ot log user out. This removes credentials from the shared preferences, and deletes
      * the pushy token from the web service. It then closes this activity and brings the user back
      * to the login page.
+     *
+     * Called from AccountFragment.
      */
     protected void logout() {
         new DeleteTokenAsyncTask().execute();

@@ -141,6 +141,7 @@ public class FavoriteLocationsFragment extends Fragment implements View.OnClickL
 
     /**
      * The interface of this class
+     * Callbacks to update the weather fragment to a chosen favorite location
      */
     public interface OnSelectFavoriteListener {
         void OnWeatherLocationChanged(Location theNewLoc);
